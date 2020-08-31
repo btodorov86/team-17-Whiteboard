@@ -6,17 +6,34 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
-import { FormControlLabel, Switch, Avatar, Button } from "@material-ui/core";
+import {
+  FormControlLabel,
+  Switch,
+  Avatar,
+  Button,
+  Fab,
+} from "@material-ui/core";
 import { logOutHandler, BASE_URL } from "../../../Constants/Constant";
 import AuthContext from "../../../Providers/Context/AuthContext";
 import { withRouter } from "react-router-dom";
+import AlignItemsList from '../../Page/Chat/Chat1';
 
 const Navigation = ({ history, location }) => {
   const { user, setUser } = useContext(AuthContext);
 
   // const [auth, setAuth] = useState(!!user);
 
+  const [open, setOpen] = useState(false);
+
   const [bookName, setBookName] = useState("");
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   const searchHandler = () => {
     return bookName ? history.push(`/books/search/${bookName}`) : null;
@@ -84,6 +101,11 @@ const Navigation = ({ history, location }) => {
         display: "flex",
       },
     },
+    fab: {
+      position: "absolute",
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
   }));
 
   const classes = useStyles();
@@ -97,7 +119,12 @@ const Navigation = ({ history, location }) => {
         style={{ cursor: "pointer" }}
       />
       <div
-        style={{ marginBottom: "7px", marginLeft: "10px", fontSize: "22px", marginTop: "3px" }}
+        style={{
+          marginBottom: "7px",
+          marginLeft: "10px",
+          fontSize: "22px",
+          marginTop: "3px",
+        }}
       >
         {user.userName}
       </div>
@@ -111,9 +138,13 @@ const Navigation = ({ history, location }) => {
         style={{ cursor: "pointer" }}
       />
       <div
-        style={{ marginBottom: "7px", marginLeft: "10px", fontSize: "22px", marginTop: "3px" }}
-      >
-      </div>
+        style={{
+          marginBottom: "7px",
+          marginLeft: "10px",
+          fontSize: "22px",
+          marginTop: "3px",
+        }}
+      ></div>
     </>
   );
 
@@ -178,6 +209,9 @@ const Navigation = ({ history, location }) => {
           </div>
         </Toolbar>
       </AppBar>
+      { !open ? <Fab color="secondary" className={classes.fab} onClick={handleDrawerOpen}>
+        Chat
+      </Fab> : <AlignItemsList onClose={handleDrawerClose}/> }
     </div>
   );
 };

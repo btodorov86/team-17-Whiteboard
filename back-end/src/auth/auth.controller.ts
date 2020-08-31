@@ -1,6 +1,5 @@
 import { Controller, Post, Body, Req, Delete } from '@nestjs/common';
 import { AuthService } from 'src/core/services/auth/auth.service';
-import { CreateUserDTO } from 'src/models/users/create.user.dto';
 import { Request } from 'express'
 import { LoginUserDTO } from 'src/models/users/login.user.dto';
 

@@ -9,7 +9,7 @@ import ExceptionContext from "../../../../Providers/Context/ExceptionContext";
 import Orders from "../../AdminDashboard/Orders";
 import AdminBookContainer from "../../AdminDashboard/Containers/BookContainer/AdminBookContainer";
 import AdminSideBar from "../../../Base/SideBars/AdminSideBar";
-import AdminDashboard from "../../AdminDashboard/AdminDashboard";
+import AdminDashboard from "../../LoggedUserHome/LoggedUserHome";
 import Loading from '../../Loading/Loading';
 import LoadingContext from '../../../../Providers/Context/LoadingContext';
 

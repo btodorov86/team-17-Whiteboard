@@ -1,20 +1,17 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDTO } from 'src/models/users/create.user.dto';
 import { ReturnUserDTO } from 'src/models/users/return.user.dto';
-import { ValidatorService } from '../validator/validator.service';
 import { User } from 'src/models/users/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TransformService } from '../transform/transform.service';
 import * as bcrypt from 'bcrypt';
 // import { Cron } from '@nestjs/schedule';
-import { UserRole } from 'src/core/enum/user-role.enum';
 import { UpdateUserDTO } from 'src/models/users/update.user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly validator: ValidatorService,
     @InjectRepository(User)
     private readonly usersRepo: Repository<User>,
     private readonly transform: TransformService,
@@ -182,18 +179,4 @@ public async upload(id: string, filename: string): Promise<Partial<ReturnUserDTO
 
   return this.transform.toReturnUserDto(await this.usersRepo.save(user), true)
 }
-  // public async changePassword(id: string, password: string): Promise<string> {
-  //     const user = await this.usersRepo.findOne({
-  //         where: { id: id, isDeleted: false, isBanned: false }
-  //     });
-  //     if (!user) {
-  //         throw new NotFoundException(`User with id: ${id} is not found`)
-  //     }
-  //     // this.validator.string(password, 2, 10);
-
-  //     user.password = await bcrypt.hash(password, 10);
-  //     this.usersRepo.save(user);
-
-  //     return 'Password changed'
-  // }
 }

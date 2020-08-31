@@ -6,7 +6,6 @@ import { JwtService } from '@nestjs/jwt';
 import { JWTPayload } from 'src/models/payload/jwt-payload';
 import * as bcrypt from 'bcrypt'
 import { LoginUserDTO } from 'src/models/users/login.user.dto';
-import { UserRole } from 'src/core/enum/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -16,45 +15,22 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ){}
 
-  async findUserByEmail(email: string, userName?: string): Promise<User> {
+  async findUserByEmail(email: string): Promise<User> {
 
-    return !userName ? await this.userRepository.findOne({
+    return await this.userRepository.findOne({
       where: {
         email,
         isDeleted: false,
       },
-      relations: ["isBanned"]
-     }) : await this.userRepository.findOne({
-      where: {
-        email,
-        userName,
-        isDeleted: false,
-      },
-      relations: ["isBanned"]
      })
   }
 
-  async validateUser(email: string, password: string, userName?: string): Promise<User> {
-    const user = await this.findUserByEmail(email, userName);
+  async validateUser(email: string, password: string): Promise<User> {
+    const user = await this.findUserByEmail(email);
 
     if (!user) {
       return null;
     }
-
-    if (userName) {
-
-
-
-      if (user.role !== UserRole.Admin) {
-        return null;
-      }
-    } else {
-
-      if (user.role !== UserRole.User) {
-        return null;
-      }
-    }
-
 
     const isUserValidated = await bcrypt.compare(password, user.password);
     return isUserValidated
@@ -63,7 +39,7 @@ export class AuthService {
   }
 
   async login(loginUser: LoginUserDTO): Promise<{ token: string }> {
-    const user = await this.validateUser(loginUser.email, loginUser.password, loginUser?.userName);
+    const user = await this.validateUser(loginUser.email, loginUser.password);
     if (!user) {
       throw new UnauthorizedException('Wrong credentials!');
     }
@@ -72,11 +48,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
       userName: user.userName,
-      role: UserRole[user.role],
-      isBanned: user.isBanned === null ? false : true,
       avatarURL: user.avatarURL,
-
-
     };
 
     const token = await this.jwtService.signAsync(payload);

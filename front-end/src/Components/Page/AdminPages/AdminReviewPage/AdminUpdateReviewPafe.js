@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import ExceptionContext from '../../../../Providers/Context/ExceptionContext';
 import { BASE_URL, exceptionMsg, exceptionStatus, isErrorResponse } from '../../../../Constants/Constant';
 import AdminSideBar from '../../../Base/SideBars/AdminSideBar';
-import AdminDashboard from '../../AdminDashboard/AdminDashboard';
+import AdminDashboard from '../../LoggedUserHome/LoggedUserHome';
 import Orders from '../../AdminDashboard/Orders';
 import AdminUpdateReviewContainer from '../../AdminDashboard/Containers/ReviewContainer/AdminUpdateReviewContainer';
 import Loading from '../../Loading/Loading';

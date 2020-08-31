@@ -1,30 +1,26 @@
 import { Module } from "@nestjs/common";
-import { BooksService } from "./services/books/books.service";
 import { UsersService } from "./services/users/users.service";
-import { ReviewsService } from "./services/reviews/reviews.service";
 import { TransformService } from './services/transform/transform.service';
-import { ValidatorService } from './services/validator/validator.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/models/users/user.entity';
-import { Book } from 'src/models/books/books.entity';
-import { Review } from 'src/models/reviews/review.entity';
-import { Rating } from 'src/models/rating/rating.entity';
-import { RatingService } from './services/rating/rating.service';
-import { Reaction } from 'src/models/reaction/reaction.entity';
-import { ReactionService } from './services/reactions/reaction.service';
-import { IsBannedService } from './services/isBanned/isBanned.service';
+import { WhiteBoards } from 'src/models/whiteBoards/whiteBoards';
+import { Circle } from 'src/models/circle/circle.entity';
+import { CircleService } from './services/circle/circle.service';
+import { Rectangle } from 'src/models/rectangle/rectangle.entity';
+import { RectangleService } from './services/rectangle/rectangle.service';
+import { LineService } from './services/line/line.service';
 import { PassportModule } from '@nestjs/passport'
 import { JwtModule } from '@nestjs/jwt'
 import { jwtConstants } from 'src/constants/secret';
 import { JwtStrategy } from './services/strategy/jwt-strategy';
 import { AuthService } from './services/auth/auth.service';
-import { IsBanned } from 'src/models/isBanned/isBanned.entity';
+import { Line } from 'src/models/line/line.entity';
 import { ScheduleModule } from '@nestjs/schedule';
-import { UserLevelService } from './services/level/user-level.service';
+import { WhiteBoardService } from './services/whiteBoard/whiteBoard.service';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Book, Review, Rating, Reaction, IsBanned]),
+        TypeOrmModule.forFeature([User, Circle, Rectangle, Line, WhiteBoards]),
         ScheduleModule.forRoot(),
         PassportModule,
         JwtModule.register({
@@ -35,30 +31,24 @@ import { UserLevelService } from './services/level/user-level.service';
         }),
     ],
     providers:[
-        BooksService, 
-        UsersService, 
-        ReviewsService,
-        RatingService, 
-        TransformService, 
-        ValidatorService,
-        ReactionService,
-        IsBannedService,
+        UsersService,
+        TransformService,
         AuthService,
         JwtStrategy,
-        UserLevelService,
-    ], 
+        WhiteBoardService,
+        CircleService,
+        RectangleService,
+        LineService,
+    ],
     exports:[
-        BooksService, 
-        UsersService, 
-        ReviewsService,
-        RatingService, 
-        TransformService, 
-        ValidatorService,
-        ReactionService,
-        IsBannedService,
+        UsersService,
+        TransformService,
         AuthService,
-        TypeOrmModule.forFeature([IsBanned]),
+        JwtStrategy,
+        WhiteBoardService,
+        CircleService,
+        RectangleService,
+        LineService,
     ],
 })
 export class CoreModule{}
-

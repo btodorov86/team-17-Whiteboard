@@ -30,6 +30,11 @@ import AdminUserPage from "./Components/Page/AdminPages/AdminUserPage/AdminUserP
 import AdminCreateUserPage from "./Components/Page/AdminPages/AdminUserPage/AdminCreateReviewPage";
 import AdminUpdateUserPage from "./Components/Page/AdminPages/AdminUserPage/AdminUpdateReviewPage";
 import LoadingContext from "./Providers/Context/LoadingContext";
+import Chat from './Chat/Chat';
+import BottomAppBar from './Components/Page/Chat/Chat';
+import DrawerTest from './Components/Page/Chat/Drawer';
+import LoggedUserHomePage from './Components/Page/LoggedUserHome/LoggedUserHome';
+import Home from './Components/Page/Home/Home';
 
 const App = () => {
   const [user, setUser] = useState(getUser(getToken()));
@@ -47,82 +52,23 @@ const App = () => {
         <AuthContext.Provider value={{ user, setUser }}>
           <ExceptionContext.Provider value={{ open, setOpen }}>
             <Exception />
-            <Navigation />
+            {/* <Navigation /> */}
             <Switch>
               <Redirect from="/" exact to="/home" />
-              <Redirect from="/home" to="/books" />
+              <Route path="/home" component={Home} />
               <Route path="/login" component={Login} />
+              <Route path="/chat" component={Chat} />   {/*test*/}
+              <Route path="/test" component={BottomAppBar} />   {/*test*/}
+              <Route path="/test1" component={DrawerTest} />   {/*test*/}
               <Route path="/register" component={Register} />
               <Route path="/loading" component={Loading} />
-              <Route path="/admin" exact component={Login} />
-              <Redirect
-                from="/admin/dashboard"
-                exact
-                to="/admin/dashboard/books"
-              />
-              <GuardedRouteAdminAuth
-                user={user}
-                path="/admin/dashboard/books"
-                exact
-                component={AdminBookPage}
-              />
-              <GuardedRouteAdminAuth
-                user={user}
-                path="/admin/dashboard/users"
-                exact
-                component={AdminUserPage}
-              />
-              <GuardedRouteAdminAuth
-                user={user}
-                path="/admin/dashboard/reviews"
-                exact
-                component={AdminReviewPage}
-              />
-              <GuardedRouteAdminAuth
-                user={user}
-                path="/admin/dashboard/users/create"
-                exact
-                component={AdminCreateUserPage}
-              />
-              <GuardedRouteAdminAuth
-                user={user}
-                path="/admin/dashboard/reviews/create"
-                exact
-                component={AdminCreateReviewPage}
-              />
-              <GuardedRouteAdminAuth
-                user={user}
-                path="/admin/dashboard/users/:id/update"
-                exact
-                component={AdminUpdateUserPage}
-              />
-              <GuardedRouteAdminAuth
-                user={user}
-                path="/admin/dashboard/books/:id/update"
-                exact
-                component={AdminUpdateBookPage}
-              />
-              <GuardedRouteAdminAuth
-                user={user}
-                path="/admin/dashboard/reviews/:id/update"
-                exact
-                component={AdminUpdateReviewPage}
-              />
-              <GuardedRouteAdminAuth
-                user={user}
-                path="/admin/dashboard/books/create"
-                exact
-                component={AdminCreateBookPage}
-              />
-              <Route path="/books" exact component={AllBooks} />
-              <Route path="/books/search/:header" component={AllBooks} />
               <GuardedRouteAuth
-                exact
-                path="/books/:id"
                 user={user}
-                component={SingleBook}
+                path="/profile"
+                exact
+                component={LoggedUserHomePage}
               />
-              <GuardedRouteAuth
+              {/* <GuardedRouteAuth
                 path="/account"
                 exact
                 user={user}
@@ -138,10 +84,9 @@ const App = () => {
                 path="/account/avatar/upload"
                 user={user}
                 component={UpdateAvatar}
-              />
+              /> */}
               <Route path="*" component={NotFound} />
             </Switch>
-            <Footer />
           </ExceptionContext.Provider>
         </AuthContext.Provider>
       </LoadingContext.Provider>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import AdminDashboard from '../../AdminDashboard/AdminDashboard';
+import AdminDashboard from '../../LoggedUserHome/LoggedUserHome';
 import AdminSideBar from '../../../Base/SideBars/AdminSideBar';
 import Orders from '../../AdminDashboard/Orders';
 import ExceptionContext from '../../../../Providers/Context/ExceptionContext';

@@ -27,19 +27,6 @@ const AdminDashboard = ({ history, loggedUser, children, sideBar: SideBar, locat
 
   const { user, setUser } = useContext(AuthContext);
 
-  const Copyright = () => {
-    return (
-      <Typography variant="body2" color="textSecondary" align="center">
-        {"Copyright © "}
-        <Link color="inherit" href="">
-          B&A ООД
-        </Link>{" "}
-        {new Date().getFullYear()}
-        {"."}
-      </Typography>
-    );
-  };
-
   const drawerWidth = 240;
 
   const useStyles = makeStyles((theme) => ({
@@ -228,7 +215,6 @@ const AdminDashboard = ({ history, loggedUser, children, sideBar: SideBar, locat
             </Grid>
           </Grid>
           <Box pt={4}>
-          {!location.pathname.includes('loading') ? <Copyright /> : null}
           </Box>
         </Container>
       </main>

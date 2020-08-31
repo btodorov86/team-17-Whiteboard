@@ -1,6 +1,4 @@
-import { UserRole } from 'src/core/enum/user-role.enum';
-import { IsString, Length, IsEnum, IsOptional, IsEmail, IsNotEmpty } from 'class-validator';
-import { type } from 'os';
+import { IsString, Length, IsEnum, IsOptional } from 'class-validator';
 
 export class UpdateUserDTO {
     @IsString()
@@ -12,7 +10,4 @@ export class UpdateUserDTO {
     @IsString()
     @Length(2)
     password: string;
-    @IsOptional()
-    @IsEnum(UserRole)
-    role?: UserRole;
 }

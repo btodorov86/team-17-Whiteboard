@@ -14,17 +14,14 @@ import jwt from 'jwt-decode';
 import AuthContext from '../../../Providers/Context/AuthContext';
 import ExceptionContext from '../../../Providers/Context/ExceptionContext';
 
-const Login = (props) => {
+const Login = ({ history }) => {
 
   const { setOpen } = useContext(ExceptionContext);
 
-  const { user, setUser } = useContext(AuthContext);
-
-  const isAdminPath = props.location.pathname.includes('admin');
+  const { setUser } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userName, setUserName] = useState("");
 
   const signInHandler = (e, obj) => {
     e.preventDefault();
@@ -50,7 +47,7 @@ const Login = (props) => {
 
         localStorage.setItem("token", `Bearer ${resp.token}`);
 
-        isAdminPath ? props.history.push('/admin/dashboard/books') : props.history.push('/books')
+        history.push('/profile')
 
 
       })
@@ -80,30 +77,6 @@ const Login = (props) => {
 
   const classes = useStyles();
 
-  const inputUserName = (
-    <TextField
-      variant="outlined"
-      margin="normal"
-      required
-      fullWidth
-      id="userName"
-      label="Username"
-      name="userName"
-      autoComplete="userName"
-      autoFocus
-      value={userName}
-      onChange={(e) => setUserName(e.target.value)}
-    />
-  );
-
-  const toggleAdmin = isAdminPath
-    ? inputUserName
-    : null;
-
-  const toggleObj = props.location.pathname.includes("login")
-    ? { email, password }
-    : { email, userName, password };
-
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -127,7 +100,6 @@ const Login = (props) => {
             error={false}
             onChange={(e) => setEmail(e.target.value)}
           />
-          {toggleAdmin}
           <TextField
             variant="outlined"
             margin="normal"
@@ -148,7 +120,7 @@ const Login = (props) => {
             color="primary"
             className={classes.submit}
             // href="/login"
-            onClick={(e) => signInHandler(e, toggleObj)}
+            onClick={(e) => signInHandler(e, { email, password })}
           >
             Sign In
           </Button>

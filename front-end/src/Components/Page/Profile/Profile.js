@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { BASE_URL, isErrorResponse, exceptionStatus } from '../../../Constants/Constant';
 import AuthContext from '../../../Providers/Context/AuthContext';
-import AdminDashboard from '../AdminDashboard/AdminDashboard';
+import AdminDashboard from '../LoggedUserHome/LoggedUserHome';
 import ProfileSideBar from '../../Base/SideBars/ProfileSideBar';
 import Register from '../Register/Register';
 import SliderBorrowingBooks from '../../Base/SliderProfile/SliderBorrowingBooks';

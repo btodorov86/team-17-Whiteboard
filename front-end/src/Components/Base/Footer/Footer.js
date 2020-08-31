@@ -6,19 +6,6 @@ import Link from "@material-ui/core/Link";
 import { withRouter } from 'react-router-dom';
 
 const Footer = (props) => {
-  const Copyright = () => {
-    return (
-      <Typography align="center" variant="body2" color="textSecondary" >
-        {"Copyright © "}
-        <Link color="inherit" href="">
-          B&A ООД
-        </Link>{" "}
-        {new Date().getFullYear()}
-        {"."}
-      </Typography>
-    );
-  };
-
   const useStyles = makeStyles((theme) => ({
     root: {
       display: "flex",
@@ -47,7 +34,6 @@ const Footer = (props) => {
           <Typography variant="body2">
           {/* text here */}
           </Typography>
-          {!props.location.pathname.includes('loading') ? <Copyright /> : null}
         </Container>
       </footer>
     </div>

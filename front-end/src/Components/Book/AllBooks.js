@@ -2,15 +2,26 @@ import React, { useState, useEffect, useContext } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import GridList from "@material-ui/core/GridList";
 import Book from "./Book";
-import { BASE_URL, isErrorResponse, exceptionStatus } from "../../Constants/Constant";
+import {
+  BASE_URL,
+  isErrorResponse,
+  exceptionStatus,
+} from "../../Constants/Constant";
 import { Container, Box } from "@material-ui/core";
-import propTypes from 'prop-types';
-import ExceptionContext from '../../Providers/Context/ExceptionContext';
-import Loading from '../Page/Loading/Loading';
-import LoadingContext from '../../Providers/Context/LoadingContext';
+import propTypes from "prop-types";
+import ExceptionContext from "../../Providers/Context/ExceptionContext";
+import Loading from "../Page/Loading/Loading";
+import LoadingContext from "../../Providers/Context/LoadingContext";
+import { Fab } from "@material-ui/core";
+import AddIcon from "@material-ui/icons/Add";
 
-const AllBooks = ({location, match, history, searchResult, resultFromSearch}) => {
-
+const AllBooks = ({
+  location,
+  match,
+  history,
+  searchResult,
+  resultFromSearch,
+}) => {
   const { setOpen } = useContext(ExceptionContext);
 
   const { loading, setLoading } = useContext(LoadingContext);
@@ -25,11 +36,17 @@ const AllBooks = ({location, match, history, searchResult, resultFromSearch}) =>
     fetch(URL)
       .then((r) => r.json())
       .then((resp) => {
-        isErrorResponse(resp)
+        isErrorResponse(resp);
         setBooks(resp);
       })
-      .catch((err) => setOpen({value: true, msg: err.message, statusType: exceptionStatus.error}))
-      .finally(() => setLoading(false))
+      .catch((err) =>
+        setOpen({
+          value: true,
+          msg: err.message,
+          statusType: exceptionStatus.error,
+        })
+      )
+      .finally(() => setLoading(false));
   }, [location.pathname, match.params.header]);
 
   const toSingleBookRedirect = (e, bookId) => {
@@ -74,18 +91,17 @@ const AllBooks = ({location, match, history, searchResult, resultFromSearch}) =>
 
   return (
     <>
-    { loading ? <Loading /> : null}
-    <Container>
-      <div className={classes.root}>
-        <GridList className={classes.gridList} style={{ marginTop: "50px" }}>
-          {" "}
-          {/* style = cellHeight={250} spacing={20} cols={4} */}
-          {toggleFromSearch}
-        </GridList>
-      </div>
-      <Box mt={33}>
-      </Box>
-    </Container>
+      {loading ? <Loading /> : null}
+      <Container>
+        <div className={classes.root}>
+          <GridList className={classes.gridList} style={{ marginTop: "50px" }}>
+            {" "}
+            {/* style = cellHeight={250} spacing={20} cols={4} */}
+            {toggleFromSearch}
+          </GridList>
+        </div>
+        <Box mt={33}></Box>
+      </Container>
     </>
   );
 };
@@ -93,6 +109,6 @@ const AllBooks = ({location, match, history, searchResult, resultFromSearch}) =>
 AllBooks.prototype = {
   setMsg: propTypes.func.isRequired,
   setOpen: propTypes.func.isRequired,
-}
+};
 
 export default AllBooks;

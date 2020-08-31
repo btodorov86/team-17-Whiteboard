@@ -5,7 +5,7 @@ import { User } from 'src/models/users/user.entity';
 import { UsersService } from 'src/core/services/users/users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/roles.guard';
-import { UserRole } from 'src/core/enum/user-role.enum';
+import { UserRole } from 'src/core/services/whiteBoard/node_modules/src/core/enum/user-role.enum';
 import { Request } from 'express';
 import { IsBanGuard } from 'src/auth/ban.guard';
 import { UpdateUserDTO } from 'src/models/users/update.user.dto';

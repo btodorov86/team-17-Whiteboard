@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import AdminSideBar from '../../../Base/SideBars/AdminSideBar';
-import AdminDashboard from '../../AdminDashboard/AdminDashboard';
+import AdminDashboard from '../../LoggedUserHome/LoggedUserHome';
 import { BASE_URL, isErrorResponse, exceptionStatus, exceptionMsg } from "../../../../Constants/Constant";
 import ExceptionContext from '../../../../Providers/Context/ExceptionContext';
 import Orders from '../../AdminDashboard/Orders';

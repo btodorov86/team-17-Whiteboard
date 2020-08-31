@@ -1,6 +1,6 @@
 import React from "react";
 import AdminSideBar from '../../../Base/SideBars/AdminSideBar';
-import AdminDashboard from '../../AdminDashboard/AdminDashboard';
+import AdminDashboard from '../../LoggedUserHome/LoggedUserHome';
 import Orders from '../../AdminDashboard/Orders';
 import AdminCreateBookContainer from '../../AdminDashboard/Containers/BookContainer/AdminCreateBookContainer';
 
