@@ -7,4 +7,4 @@
     "database": "whiteboard",
     "entities": ["dist/**/*.entity{.ts,.js}"],
     "synchronize": true
-  }
+}

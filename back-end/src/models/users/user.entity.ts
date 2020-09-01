@@ -1,5 +1,5 @@
-import { PrimaryGeneratedColumn, Column, Entity, ManyToMany, JoinTable, OneToMany, OneToOne, JoinColumn } from 'typeorm';
-import { WhiteBoards } from '../whiteBoards/whiteBoards';
+import { PrimaryGeneratedColumn, Column, Entity, OneToMany } from 'typeorm';
+import { Whiteboard } from '../whiteboard/whiteboard.entity';
 
 @Entity('users')
 export class User {
@@ -17,8 +17,8 @@ export class User {
     password: string;
     @Column({type: 'boolean', default: false})
     isDeleted: boolean
-    @OneToMany(type => WhiteBoards, whiteBoard => whiteBoard.author)
-    whiteBoards: WhiteBoards[]
+    @OneToMany(type => Whiteboard, whiteboard => whiteboard.author)
+    whiteboards: Whiteboard[]
     @Column({ default: null, length: 500 })
     token: string
     @Column({nullable: true})

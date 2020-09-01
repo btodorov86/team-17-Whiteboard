@@ -1,19 +1,19 @@
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { WhiteBoards } from '../whiteBoards/whiteBoards';
+import { Whiteboard } from '../whiteboard/whiteboard.entity';
 
-@Entity('circle')
+@Entity('circles')
 export class Circle {
     @PrimaryGeneratedColumn('uuid')
     id: string;
-    @ManyToOne(type => WhiteBoards, whiteBoards => whiteBoards.circle)
-    whiteBoard: WhiteBoards;
-    @Column({type: 'number'})
+    @ManyToOne(type => Whiteboard, whiteboard => whiteboard.circle)
+    whiteboard: Whiteboard;
+    @Column()
     startX: number
-    @Column({type: 'number'})
+    @Column()
     startY: number
-    @Column({type: 'number'})
+    @Column()
     endX: number
-    @Column({type: 'number'})
+    @Column()
     endY: number
 
 }

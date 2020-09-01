@@ -3,7 +3,7 @@ import { UsersService } from "./services/users/users.service";
 import { TransformService } from './services/transform/transform.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/models/users/user.entity';
-import { WhiteBoards } from 'src/models/whiteBoards/whiteBoards';
+import { Whiteboard } from 'src/models/whiteboard/whiteboard.entity';
 import { Circle } from 'src/models/circle/circle.entity';
 import { CircleService } from './services/circle/circle.service';
 import { Rectangle } from 'src/models/rectangle/rectangle.entity';
@@ -20,7 +20,7 @@ import { WhiteBoardService } from './services/whiteBoard/whiteBoard.service';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Circle, Rectangle, Line, WhiteBoards]),
+        TypeOrmModule.forFeature([User, Circle, Rectangle, Line, Whiteboard]),
         ScheduleModule.forRoot(),
         PassportModule,
         JwtModule.register({

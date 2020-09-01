@@ -4,10 +4,7 @@ import { CreateUserDTO } from "src/models/users/create.user.dto";
 import { User } from 'src/models/users/user.entity';
 import { UsersService } from 'src/core/services/users/users.service';
 import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { UserRole } from 'src/core/services/whiteBoard/node_modules/src/core/enum/user-role.enum';
 import { Request } from 'express';
-import { IsBanGuard } from 'src/auth/ban.guard';
 import { UpdateUserDTO } from 'src/models/users/update.user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -20,13 +17,13 @@ export class UsersController {
         private readonly userService: UsersService,
     ) { }
 
-    @UseGuards(AuthGuard('jwt'), new RolesGuard(UserRole.Admin), IsBanGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Get()
     public async all(): Promise<Partial<ReturnUserDTO>[]> {
         return await this.userService.all()
     }
 
-    @UseGuards(AuthGuard('jwt'), IsBanGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Get(':id')
     public async getById(@Param('id') id: string): Promise<Partial<ReturnUserDTO>> {
         try {
@@ -48,31 +45,31 @@ export class UsersController {
 
     }
 
-    @UseGuards(AuthGuard('jwt'), new RolesGuard(UserRole.Admin), IsBanGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Delete(':id')
     public async delete(@Param('id') id: string): Promise<string> {
         return await this.userService.delete(id)
     }
 
-    @UseGuards(AuthGuard('jwt'), new RolesGuard(UserRole.Admin), IsBanGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Patch(':id')
     public async undelete(@Param('id') id: string): Promise<string> {
         return await this.userService.unDelete(id)
     }
 
-    @UseGuards(AuthGuard('jwt'), IsBanGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Put(':id')
     public async update(
         @Body(new ValidationPipe({ whitelist: true })) body: Partial<UpdateUserDTO>,
         @Param('id') id: string,
-        @Req() req: Request,): Promise<Partial<ReturnUserDTO>> {
+        @Req() req: Request,): Promise<any> {
         const user = req.user as User;
         // validate name and password
         // delete every not needed property from input obj
-        return await this.userService.update(id, body, user.id)
+        // return await this.userService.update(id, body, user.id)
     }
 
-    @UseGuards(AuthGuard('jwt'), IsBanGuard)
+    @UseGuards(AuthGuard('jwt'))
     @Post('upload')
     @UseInterceptors(FileInterceptor('files', {
         storage: diskStorage({
@@ -89,26 +86,10 @@ export class UsersController {
     async uploadFile(
         @UploadedFile() files,
         @Req() req: Request,
-        ): Promise<Partial<ReturnUserDTO>> {
+        ): Promise<any> {
             const user = req.user as User;
 
-            return this.userService.upload(user.id, files.filename)
+            // return this.userService.upload(user.id, files.filename)
 
     }
-
-    // @Patch(':id/ban/:userId')
-    // public async ban(
-    //     @Param('id') id: string,
-    //     @Param('userId') userId: string ): Promise<string> {
-
-    //     return await this.userService.ban(userId);
-    // }
-    // @Patch(':id/unban/:userId')
-    // public async unban(
-    //     @Param('id') id: string,
-    //     @Param('userId') userId: string ): Promise<string> {
-
-    //     return await this.userService.unban(userId);
-    // }
-
 }

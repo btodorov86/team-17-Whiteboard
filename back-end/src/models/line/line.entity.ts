@@ -1,15 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, OneToOne, Column, CreateDateColumn } from 'typeorm';
-import { User } from '../users/user.entity';
-import { WhiteBoards } from '../whiteBoards/whiteBoards';
+import { Entity, PrimaryGeneratedColumn, OneToOne, Column } from 'typeorm';
+import { Whiteboard } from '../whiteboard/whiteboard.entity';
 
-@Entity('line')
+@Entity('lines')
 export class Line {
     @PrimaryGeneratedColumn('uuid')
     id: string
-    @OneToOne(type => WhiteBoards, whiteBoards => whiteBoards.line)
-    whiteBoard: WhiteBoards
-    @Column({type: 'number'})
+    @OneToOne(type => Whiteboard, whiteboard => whiteboard.line)
+    whiteboard: Whiteboard
+    @Column()
     startX: number
-    @Column({type: 'number'})
+    @Column()
     startY: number
 }

@@ -1,19 +1,19 @@
 import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
-import { WhiteBoards } from '../whiteBoards/whiteBoards';
+import { Whiteboard } from '../whiteboard/whiteboard.entity';
 
 
-@Entity('rectangle')
+@Entity('rectangles')
 export class Rectangle {
     @PrimaryGeneratedColumn('uuid')
     id: string
-    @ManyToOne(type => WhiteBoards, whiteBoards => whiteBoards.rectangle)
-    whiteBoard: WhiteBoards
-    @Column({type: 'number'})
+    @ManyToOne(type => Whiteboard, whiteboard => whiteboard.rectangle)
+    whiteboard: Whiteboard
+    @Column()
     startX: number
-    @Column({type: 'number'})
+    @Column()
     startY: number
-    @Column({type: 'number'})
+    @Column()
     endX: number
-    @Column({type: 'number'})
+    @Column()
     endY: number
 }
