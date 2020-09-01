@@ -35,6 +35,7 @@ import BottomAppBar from './Components/Page/Chat/Chat';
 import DrawerTest from './Components/Page/Chat/Drawer';
 import LoggedUserHomePage from './Components/Page/LoggedUserHome/LoggedUserHome';
 import Home from './Components/Page/Home/Home';
+import Test from './Test';
 
 const App = () => {
   const [user, setUser] = useState(getUser(getToken()));
@@ -58,6 +59,7 @@ const App = () => {
               <Route path="/home" component={Home} />
               <Route path="/login" component={Login} />
               <Route path="/chat" component={Chat} />   {/*test*/}
+              <Route path="/chat1" component={Test} />   {/*test*/}
               <Route path="/test" component={BottomAppBar} />   {/*test*/}
               <Route path="/test1" component={DrawerTest} />   {/*test*/}
               <Route path="/register" component={Register} />

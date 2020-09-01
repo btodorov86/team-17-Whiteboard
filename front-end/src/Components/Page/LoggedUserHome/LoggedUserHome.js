@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -16,6 +16,7 @@ import AuthContext from '../../../Providers/Context/AuthContext';
 import { logOutHandler } from '../../../Constants/Constant';
 import RightDrawer from '../../Base/Drawer/RightDrawer';
 import LeftDrawer from '../../Base/Drawer/LeftDrawer';
+import { Stage, Layer, Line } from 'react-konva';
 
 const LoggedUserHomePage = ({ history }) => {
 
@@ -145,6 +146,27 @@ const LoggedUserHomePage = ({ history }) => {
     </Fab>
   ) : null;
 
+  const [line, setline] = useState({
+    points: [],
+    drawing: false
+  })
+  const [shapes, setShapes] = useState([])
+
+  const mouseDown = (e) => {
+    setline({...line, drawing: true})
+  }
+  const mouseMove = (e) => {
+    if (line.drawing) {
+      setline({...line, points: [...line.points, e.evt.clientX, e.evt.clientY]})
+    }
+  }
+  const mouseUp = (e) => {
+    setline({...line, drawing: false})
+    setShapes([...shapes, line])
+  }
+
+
+
   return (
     <>
       <div className={classes.root}>
@@ -193,6 +215,12 @@ const LoggedUserHomePage = ({ history }) => {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
+          <Stage onMouseDown={mouseDown} onMouseMove={mouseMove} onMouseUp={mouseUp} height={window.innerHeight} width={window.innerWidth}>
+              <Layer>
+                <Line points={line.points} stroke="black" strokeWidth={"5"} />
+                {/* {shapes.map( shape => <Line stroke={'red'} strokeWidth={5} points={line.points} />)} */}
+              </Layer>
+            </Stage>
             {/* <Grid container spacing={3}>
             <Grid item xs={12}>
               <Paper className={classes.paper}>{children}</Paper>
