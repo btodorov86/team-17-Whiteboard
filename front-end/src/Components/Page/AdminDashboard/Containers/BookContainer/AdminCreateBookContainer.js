@@ -4,7 +4,7 @@ import propTypes from "prop-types";
 import { withRouter } from 'react-router-dom';
 import { BASE_URL, isErrorResponse, exceptionMsg, exceptionStatus } from '../../../../../Constants/Constant';
 import ExceptionContext from '../../../../../Providers/Context/ExceptionContext';
-import FormFileInput from 'react-bootstrap/esm/FormFileInput';
+// import FormFileInput from 'react-bootstrap/esm/FormFileInput';
 
 const AdminCreateBookContainer = ({ history }) => {
 
@@ -123,7 +123,7 @@ const AdminCreateBookContainer = ({ history }) => {
         />
       </TableCell>
       <TableCell>
-        <FormFileInput onChange={(e) => setFiles(Array.from(e.target.files))}/>
+        {/* <FormFileInput onChange={(e) => setFiles(Array.from(e.target.files))}/> */}
       </TableCell>
       <TableCell>
         <Button size="small" variant="contained" color="primary"

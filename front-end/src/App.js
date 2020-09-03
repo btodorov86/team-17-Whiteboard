@@ -58,6 +58,8 @@ const App = () => {
               <Redirect from="/" exact to="/home" />
               <Route path="/home" component={Home} />
               <Route path="/login" component={Login} />
+              <Route path="/password/reset" exact component={Login} />
+              <Route path="/password/change" component={Register} />
               <Route path="/chat" component={Chat} />   {/*test*/}
               <Route path="/chat1" component={Test} />   {/*test*/}
               <Route path="/test" component={BottomAppBar} />   {/*test*/}

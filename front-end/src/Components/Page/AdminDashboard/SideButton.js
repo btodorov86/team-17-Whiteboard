@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useContext, useRef } from "react";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import propTypes from "prop-types";
 import { withRouter } from 'react-router-dom';
+import AuthContext from '../../../Providers/Context/AuthContext';
+import io from 'socket.io-client'
 
-const SideButton = ({name, component: Component, history, location, onClickParam}) => {
+const SideButton = ({name, component: Component, history, location, onClickParam, setReRender, reRender}) => {
+
+  const { user, setUser } = useContext(AuthContext);
+
+  const socketRef = useRef();
+
+  socketRef.current = io('http://localhost:3000/chat');
+
+
   return (
-    <ListItem onClick={(e) => location.pathname !== onClickParam ? history.push(onClickParam) : location.pathname} button >
+    <ListItem onClick={(e) => (socketRef.current.emit('joinRoom', 'myRoom'), setUser({...user, room: 'myRoom'}), setReRender(!reRender))} button >
       <ListItemIcon>
         <Component />
       </ListItemIcon>
@@ -20,7 +30,8 @@ SideButton.propTypes = {
     name: propTypes.string.isRequired,
     component: propTypes.object.isRequired,
     onClickParam: propTypes.string.isRequired,
-    history: propTypes.object.isRequired
+    history: propTypes.object.isRequired,
+    setReRender: propTypes.func.isRequired
 }
 
 export default withRouter(SideButton)

@@ -13,6 +13,7 @@ import { BASE_URL, isErrorResponse, exceptionStatus } from '../../../Constants/C
 import { withRouter } from 'react-router-dom';
 import AuthContext from '../../../Providers/Context/AuthContext';
 import ExceptionContext from '../../../Providers/Context/ExceptionContext';
+import { Input, OutlinedInput, InputLabel, InputBase } from '@material-ui/core';
 
 const Register = (props) => {
 
@@ -25,8 +26,9 @@ const Register = (props) => {
     lastName: '',
     email: '',
     userName: '',
-    password: ''
+    password: '',
   })
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   const updateHandler = (e) => {
     e.preventDefault();
@@ -104,7 +106,7 @@ const Register = (props) => {
 
   const classes = useStyles();
 
-  const toggleEmailAndUsername = props.location.pathname.includes('account/password') ? null : <><Grid item xs={12}>
+  const toggleEmailAndUsername = props.location.pathname.includes('password/change') ? null : <><Grid item xs={12}>
   <TextField
     variant="outlined"
     required
@@ -140,7 +142,7 @@ const Register = (props) => {
           {/* <LockOutlinedIcon /> */}
         </Avatar>
         <Typography component="h1" variant="h5">
-          { props.location.pathname.includes('account/password') ? user.userName : 'Sign up' }
+          { props.location.pathname.includes('password/change') ? user.userName : 'Sign up' }
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
@@ -187,6 +189,20 @@ const Register = (props) => {
               />
             </Grid>
             <Grid item xs={12}>
+            <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="Confirm password"
+                label="Confirm password"
+                type="password"
+                id="confirm password"
+                autoComplete="current-password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
             </Grid>
           </Grid>
           <Button
@@ -195,17 +211,32 @@ const Register = (props) => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={props.location.pathname.includes('account/password') ? updateHandler : signInHandler}
+            onClick={props.location.pathname.includes('password/change') ? updateHandler : signInHandler}
           >
-            {props.location.pathname.includes('account/password') ? 'Update' : 'Sign Up'}
+            {props.location.pathname.includes('password/change') ? 'Update' : 'Sign Up'}
           </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
+          {/* <Grid container justify="flex-start">
               { props.location.pathname.includes('account/password') ? null : <Link href="/login" variant="body2">
-                Already have an account? Sign in
+                Forgotten password
               </Link>}
+          </Grid> */}
+                    <Grid container>
+            <Grid item xs>
+            </Grid>
+            <Grid item>
+              { props.location.pathname.includes('password/change') ? null : <Link href="/login" variant="body2">
+              Already have an account?
+              </Link> }
             </Grid>
           </Grid>
+
+          {/* <Grid container justify="flex-end">
+            <Grid item>
+              { props.location.pathname.includes('account/password') ? null : <Link href="/login" variant="body2">
+                Already have an account?
+              </Link>}
+            </Grid>
+          </Grid> */}
         </form>
       </div>
       <Box mt={3}></Box>

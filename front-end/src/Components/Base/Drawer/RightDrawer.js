@@ -11,7 +11,7 @@ import { TextField } from "@material-ui/core";
 import SingleUser from '../SingleUser/SingleUser';
 import AdminSideBar from '../SideBars/AdminSideBar';
 
-const RightDrawer = ({ open, onClose }) => {
+const RightDrawer = ({ open, onClose, setReRender, reRender }) => {
 
     const drawerWidth = 240;
 
@@ -136,7 +136,7 @@ const RightDrawer = ({ open, onClose }) => {
         </Toolbar>
       </div>
       <List>
-        { !open ? <AdminSideBar /> : [1, 2, 3].map( x => <SingleUser name={""} avatar={""} />) }
+        { !open ? <AdminSideBar setReRender={setReRender} reRender={reRender} /> : [1, 2, 3].map( x => <SingleUser name={""} avatar={""} />) }
       </List>
       {/* <Divider />
       <List>

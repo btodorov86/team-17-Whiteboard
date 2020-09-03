@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -6,8 +6,12 @@ import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
-import { TextField } from "@material-ui/core";
+import { TextField, Button, Container } from "@material-ui/core";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import AuthContext from '../../../Providers/Context/AuthContext';
+import io from 'socket.io-client';
+import SingleMessage from '../SingleMessage/SingleMessage';
+import IntegrationNotistack from '../../Page/Chat/Drawer';
 
 
 
@@ -110,6 +114,40 @@ const LeftDrawer = ({ onClose, openLeft}) => {
 
   const classes = useStyles();
 
+  const { user } = useContext(AuthContext);
+
+  const socketRef = useRef();
+
+  const [message, setMessage] = useState({
+    from: user.id,
+    avatar: user.avatarURL || '',
+    room: user.id,
+    message: '',
+  })
+
+  const [messages, setMessages] = useState([]);
+
+  const pressEnter = (e) => e.key === 'Enter' ? sendMessage() : null;
+  useEffect(() => {
+    console.log('from useEffect');
+
+    socketRef.current = io('http://localhost:3000/chat');
+
+    socketRef.current.on('come-message', (data) => {
+      setMessages(prev => [...prev, data]);
+    })
+
+  }, [messages]);
+
+  const sendMessage = () => {
+    socketRef.current.emit('send-message', message);
+    setMessage(prev => ({...prev, message: '' }))
+  }
+
+  const onChangeHandler = (e) => {
+    setMessage({...message, message: e.target.value})
+  }
+
     return (
         <Drawer
       variant="persistent"
@@ -133,7 +171,7 @@ const LeftDrawer = ({ onClose, openLeft}) => {
           <ChevronRightIcon onClick={onClose} />
         </IconButton>
         <TextField
-          multiline
+          // multiline
           style={{
             backgroundColor: "white",
             borderRadius: "5px",
@@ -141,9 +179,15 @@ const LeftDrawer = ({ onClose, openLeft}) => {
           fullWidth
           variant="outlined"
           id="firstName"
+          value={message.message}
+          onChange={onChangeHandler}
+          onKeyPress={pressEnter}
         />
+        <Button onClick={(e) => socketRef.current.emit('joinRoom', message.room)}>Join</Button>
       </Toolbar>
-      <List></List>
+      <List>
+        {messages.map( message => <SingleMessage key={`${message.from}-${Math.random()}`} from={message.from} avatar={""} message={message.message} />)}
+      </List>
     </Drawer>
     )
 

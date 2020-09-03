@@ -13,6 +13,7 @@ const Chat = () => {
     const socketRef = useRef();
 
     useEffect(() => {
+        console.log('from use');
 
         socketRef.current = io('http://localhost:3000/chat');
 

@@ -10,7 +10,7 @@ import AddIcon from "@material-ui/icons/Add";
 import { BASE_URL, isErrorResponse, exceptionStatus, exceptionMsg } from '../../../Constants/Constant';
 import ExceptionContext from '../../../Providers/Context/ExceptionContext';
 import { withRouter } from 'react-router-dom';
-import FormFileInput from 'react-bootstrap/esm/FormFileInput';
+// import FormFileInput from 'react-bootstrap/esm/FormFileInput';
 import AuthContext from '../../../Providers/Context/AuthContext';
 
 const UpdateAvatar = ({match, setRender, render, history}) => {
@@ -102,7 +102,7 @@ const UpdateAvatar = ({match, setRender, render, history}) => {
             <div id="transition-modal-description-2">
               <form className={classes.root} noValidate autoComplete="off">
                 <div>
-                  <FormFileInput onChange={(e) => setFiles(Array.from(e.target.files))}/>
+                  {/* <FormFileInput onChange={(e) => setFiles(Array.from(e.target.files))}/> */}
                 </div>
               </form>
             </div>

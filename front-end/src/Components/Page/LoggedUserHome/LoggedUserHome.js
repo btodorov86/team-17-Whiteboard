@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -11,19 +11,25 @@ import Container from "@material-ui/core/Container";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import ExitToApp from "@material-ui/icons/ExitToApp";
-import { Fab } from "@material-ui/core";
+import { Fab, ListItemAvatar, Avatar } from "@material-ui/core";
 import AuthContext from '../../../Providers/Context/AuthContext';
 import { logOutHandler } from '../../../Constants/Constant';
 import RightDrawer from '../../Base/Drawer/RightDrawer';
 import LeftDrawer from '../../Base/Drawer/LeftDrawer';
 import { Stage, Layer, Line } from 'react-konva';
+import {Widget, addResponseMessage, } from 'react-chat-widget';
+import 'react-chat-widget/lib/styles.css';
+import io from 'socket.io-client';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
 
 const LoggedUserHomePage = ({ history }) => {
 
   const { user, setUser } = useContext(AuthContext);
-
-
   const drawerWidth = 240;
+
+
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -165,7 +171,38 @@ const LoggedUserHomePage = ({ history }) => {
     setShapes([...shapes, line])
   }
 
+  const [avatar, setAvatar] = useState('')
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const socketRef = useRef();
+  socketRef.current = io('http://localhost:3000/chat');
 
+  const [message, setMessage] = useState({
+    message: '',
+    room: user.email,
+    from: 'dsfsdf',
+    avatar: user.avatarURL,
+  });
+
+
+  useEffect(() => {
+
+    socketRef.current.emit('joinRoom', message.room)
+    socketRef.current.on('come-message', (incomingMsg) => {
+      setAvatar('https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg')
+      // setAvatar(incomingMsg.avatar)
+      return incomingMsg.from === message.from ? null : addResponseMessage(incomingMsg.message);
+    });
+  }, [])
+
+  const handleNewUserMessage = (data) => socketRef.current.emit('send-message', { message: data, room: message.room, from: message.from, avatar: message.avatar });
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <>
@@ -188,6 +225,9 @@ const LoggedUserHomePage = ({ history }) => {
             >
               <MenuIcon />
             </IconButton>
+            <ListItemAvatar>
+                <Avatar src={''} alt={'ava'} style={{cursor: 'pointer'}} onClick={handleClick} />
+            </ListItemAvatar>
             <Typography
               component="h1"
               variant="h6"
@@ -197,6 +237,18 @@ const LoggedUserHomePage = ({ history }) => {
             >
               {user.userName}
             </Typography>
+            <Menu
+            style={{top: '-4px'}}
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose} style={{margin: '10px'}}>Create board</MenuItem>
+        <MenuItem onClick={handleClose} style={{margin: '10px'}}>Change password</MenuItem>
+        <MenuItem onClick={handleClose} style={{margin: '10px'}}>Update avatar</MenuItem>
+      </Menu>
             <span style={{ paddingRight: "10px" }}>Log Out</span>
             <ExitToApp
               style={{ cursor: "pointer" }}
@@ -215,12 +267,12 @@ const LoggedUserHomePage = ({ history }) => {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
-          <Stage onMouseDown={mouseDown} onMouseMove={mouseMove} onMouseUp={mouseUp} height={window.innerHeight} width={window.innerWidth}>
+          {/* <Stage onMouseDown={mouseDown} onMouseMove={mouseMove} onMouseUp={mouseUp} height={window.innerHeight} width={window.innerWidth}>
               <Layer>
                 <Line points={line.points} stroke="black" strokeWidth={"5"} />
-                {/* {shapes.map( shape => <Line stroke={'red'} strokeWidth={5} points={line.points} />)} */}
+                {shapes.map( shape => <Line stroke={'red'} strokeWidth={5} points={line.points} />)}
               </Layer>
-            </Stage>
+            </Stage> */}
             {/* <Grid container spacing={3}>
             <Grid item xs={12}>
               <Paper className={classes.paper}>{children}</Paper>
@@ -229,11 +281,11 @@ const LoggedUserHomePage = ({ history }) => {
           <Box pt={4}></Box> */}
           </Container>
         </main>
-        <LeftDrawer onClose={handleDrawerLeftClose} openLeft={openLeft} />
+        <Widget handleNewUserMessage={handleNewUserMessage} showTimeStamp={false} profileAvatar={avatar} title={'Chat'} />
+        {/* <LeftDrawer onClose={handleDrawerLeftClose} openLeft={openLeft} /> */}
       </div>
-      {toggleChatBtn}
+      {/* {toggleChatBtn} */}
     </>
   );
 };
-
 export default LoggedUserHomePage;

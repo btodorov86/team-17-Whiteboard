@@ -5,9 +5,8 @@ import { Socket, Server } from 'socket.io'
 export class AppGateway implements OnGatewayInit{
 
   @WebSocketServer() wss: Server;
-  afterInit(server: Server) {
+  afterInit(server: Server): void {
     console.log("Init");
-
   }
   // handleConnection(client: Socket, ...args: any[]) {
   //   console.log("Connection");
@@ -15,29 +14,39 @@ export class AppGateway implements OnGatewayInit{
   // handleDisconnect(client: Socket) {
   //   console.log("Disconnect");
   // }
-  @SubscribeMessage('newMessage')
-  handleMessage(client: Socket, payload: {sender: string, room: string, message: string}) {
-    client.emit('newMessage', payload)
+  // @SubscribeMessage('newMessage')
+  // handleMessage(client: Socket, payload: {sender: string, room: string, message: string}) {
+  //   client.emit('newMessage', payload)
 
-    // this.wss.to(payload.room).emit('clientMessage', payload);
-  }
+  //   // this.wss.to(payload.room).emit('clientMessage', payload);
+  // }
 
   @SubscribeMessage('joinRoom')
-  joinRoom(client: Socket, room: string) {
+  joinRoom(client: Socket, room: string): void {
     client.join(room);
+    // console.log('join');
+
+
     // client.emit('joinedRoom', room);
   }
 
   @SubscribeMessage('leaveRoom')
-  leaveRoom(client: Socket, room: string) {
+  leaveRoom(client: Socket, room: string): void {
     client.leave(room);
     // client.emit('leavedRoom', room);
   }
 
-  @SubscribeMessage('mesg')
-  mesge(client: Socket, msg: {room: string, msg: string}) {
-    console.log(msg.msg);
-    this.wss.to(msg.room).emit('mesg', msg)
+  @SubscribeMessage('send-message')
+  message(client: Socket, message: {message: string, from: string, room: string, avatar: string}): void {
+    console.log(message);
+      this.wss.to(message.room).emit('come-message', message)
+
   }
+  // @SubscribeMessage('mesg')
+  // message1(client: Socket, message: {room: string, msg: string, from: string, avatar: string}): void {
+
+  //     this.wss.to(message.room).emit('mesg', message)
+
+  // }
 
 }

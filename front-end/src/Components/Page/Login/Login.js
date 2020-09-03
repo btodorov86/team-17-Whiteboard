@@ -14,7 +14,7 @@ import jwt from 'jwt-decode';
 import AuthContext from '../../../Providers/Context/AuthContext';
 import ExceptionContext from '../../../Providers/Context/ExceptionContext';
 
-const Login = ({ history }) => {
+const Login = ({ history, location }) => {
 
   const { setOpen } = useContext(ExceptionContext);
 
@@ -54,6 +54,10 @@ const Login = ({ history }) => {
       .catch((err) => setOpen({ value: true, msg: err.message, statusType: exceptionStatus.error}));
   };
 
+  const resetPasswordHandler = (e) => {
+    // send mail to user with new password
+  }
+
 
   const useStyles = makeStyles((theme) => ({
     paper: {
@@ -73,6 +77,15 @@ const Login = ({ history }) => {
     submit: {
       margin: theme.spacing(3, 0, 2),
     },
+    resetPassRightBtn: {
+      width: '49%',
+      marginLeft: '2%',
+      margin: theme.spacing(3, 0, 2),
+    },
+    resetPassLeftBtn: {
+      width: '49%',
+      margin: theme.spacing(3, 0, 2),
+    }
   }));
 
   const classes = useStyles();
@@ -83,7 +96,7 @@ const Login = ({ history }) => {
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>{/* <LockOutlinedI /> */}</Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          { location.pathname.includes('password/reset') ? "Password recovery" : "Sign in" }
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -100,7 +113,7 @@ const Login = ({ history }) => {
             error={false}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <TextField
+         { location.pathname.includes('password/reset') ? null : <TextField
             variant="outlined"
             margin="normal"
             required
@@ -112,24 +125,38 @@ const Login = ({ history }) => {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          />
+          /> }
           <Button
             type="button"
-            fullWidth
+            fullWidth={!location.pathname.includes('password/reset')}
             variant="contained"
             color="primary"
-            className={classes.submit}
+            className={location.pathname.includes('password/reset') ? classes.resetPassLeftBtn : classes.submit}
             // href="/login"
-            onClick={(e) => signInHandler(e, { email, password })}
+            onClick={(e) => location.pathname.includes('password/reset') ? resetPasswordHandler(e) : signInHandler(e, { email, password }) }
           >
-            Sign In
+            { location.pathname.includes('password/reset') ? 'Reset password' : 'Sign In' }
           </Button>
+          { location.pathname.includes('password/reset') ? <Button
+            type="button"
+            fullWidth={!location.pathname.includes('password/reset')}
+            variant="contained"
+            color="primary"
+            className={location.pathname.includes('password/reset') ? classes.resetPassRightBtn : classes.submit}
+            href="/login"
+            onClick={(e) => history.goBack()}
+          >
+            Back
+          </Button> : null }
           <Grid container>
             <Grid item xs>
+            <Link href="/password/reset" variant="body2">
+                { location.pathname.includes('password/reset') ? null : "Forgot password?" }
+               </Link>
             </Grid>
             <Grid item>
               <Link  href="/register" variant="body2">
-                {"Don't have an account? Sign Up"}
+               { location.pathname.includes('password/reset') ? null : "Don't have an account? Sign Up" }
               </Link>
             </Grid>
           </Grid>

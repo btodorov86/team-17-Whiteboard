@@ -5,7 +5,7 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import PeopleIcon from "@material-ui/icons/People";
 import LayersIcon from "@material-ui/icons/Layers";
 
-const AdminSideBar = () => {
+const AdminSideBar = ({setReRender, reRender}) => {
   return (
       <div>
         <ListSubheader inset>Resources</ListSubheader>
@@ -16,6 +16,8 @@ const AdminSideBar = () => {
         />
         <SideButton
           name={"Books"}
+          setReRender={setReRender}
+          reRender={reRender}
           component={LayersIcon}
           onClickParam={"/admin/dashboard/books"}
         />
