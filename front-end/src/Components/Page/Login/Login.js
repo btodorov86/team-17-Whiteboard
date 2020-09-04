@@ -16,7 +16,7 @@ import ExceptionContext from '../../../Providers/Context/ExceptionContext';
 import { Modal } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 
-const Login = ({ history, location }) => {
+const Login = ({ history, setIsLoginPage, isLoginPage }) => {
 
   const { setOpen } = useContext(ExceptionContext);
 
@@ -24,6 +24,7 @@ const Login = ({ history, location }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordReset, setIsPasswordReset] = useState(false)
 
   const signInHandler = (e, obj) => {
     e.preventDefault();
@@ -100,7 +101,8 @@ const Login = ({ history, location }) => {
       <div className={classes.paper}>
         <Avatar src={'https://i1.wp.com/geolok.eu/wp-content/uploads/2018/02/blue-planet-earth-rotation-with-space-background-4k-animation_ed3hfc3cl__F0000-min-min.jpg?fit=555%2C340'} className={classes.avatar}>{/* <LockOutlinedI /> */}</Avatar>
         <Typography component="h1" variant="h5">
-          { location.pathname.includes('password/reset') ? "Password recovery" : "Sign in" }
+          {/* { location.pathname.includes('password/reset') ? "Password recovery" : "Sign in" } */}
+          { isPasswordReset ? "Password recovery" : "Sign in" }
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
@@ -117,7 +119,8 @@ const Login = ({ history, location }) => {
             error={false}
             onChange={(e) => setEmail(e.target.value)}
           />
-         { location.pathname.includes('password/reset') ? null : <TextField
+         {/* { location.pathname.includes('password/reset') ? null : <TextField */}
+         { isPasswordReset ? null : <TextField
             variant="outlined"
             margin="normal"
             required
@@ -132,35 +135,44 @@ const Login = ({ history, location }) => {
           /> }
           <Button
             type="button"
-            fullWidth={!location.pathname.includes('password/reset')}
+            // fullWidth={!location.pathname.includes('password/reset')}
+            fullWidth={!isPasswordReset}
             variant="contained"
             color="primary"
-            className={location.pathname.includes('password/reset') ? classes.resetPassLeftBtn : classes.submit}
+            // className={location.pathname.includes('password/reset') ? classes.resetPassLeftBtn : classes.submit}
+            className={isPasswordReset ? classes.resetPassLeftBtn : classes.submit}
             // href="/login"
-            onClick={(e) => location.pathname.includes('password/reset') ? resetPasswordHandler(e) : signInHandler(e, { email, password }) }
+            // onClick={(e) => location.pathname.includes('password/reset') ? resetPasswordHandler(e) : signInHandler(e, { email, password }) }
+            onClick={(e) => isPasswordReset ? resetPasswordHandler(e) : signInHandler(e, { email, password }) }
           >
-            { location.pathname.includes('password/reset') ? 'Reset password' : 'Sign In' }
+            {/* { location.pathname.includes('password/reset') ? 'Reset password' : 'Sign In' } */}
+            { isPasswordReset ? 'Reset password' : 'Sign In' }
           </Button>
-          { location.pathname.includes('password/reset') ? <Button
+          {/* { location.pathname.includes('password/reset') ? <Button */}
+          { isPasswordReset ? <Button
             type="button"
-            fullWidth={!location.pathname.includes('password/reset')}
+            fullWidth={!isPasswordReset}
+            // fullWidth={!location.pathname.includes('password/reset')}
             variant="contained"
             color="primary"
-            className={location.pathname.includes('password/reset') ? classes.resetPassRightBtn : classes.submit}
-            href="/login"
-            onClick={(e) => history.goBack()}
+            // className={location.pathname.includes('password/reset') ? classes.resetPassRightBtn : classes.submit}
+            className={isPasswordReset ? classes.resetPassRightBtn : classes.submit}
+            onClick={(e) => (e.preventDefault(), setIsPasswordReset(!isPasswordReset))}
+            style={{cursor: 'pointer'}}
           >
             Back
           </Button> : null }
           <Grid container>
             <Grid item xs>
-            <Link href="/password/reset" variant="body2">
-                { location.pathname.includes('password/reset') ? null : "Forgot password?" }
+            <Link style={{cursor: 'pointer'}} variant="body2" onClick={(e) => (e.preventDefault(), setIsPasswordReset(!isPasswordReset))}>
+                {/* { location.pathname.includes('password/reset') ? null : "Forgot password?" } */}
+                { isPasswordReset ? null : "Forgot password?" }
                </Link>
             </Grid>
             <Grid item>
-              <Link  href="/register" variant="body2">
-               { location.pathname.includes('password/reset') ? null : "Don't have an account? Sign Up" }
+              <Link  style={{cursor: 'pointer'}} variant="body2" onClick={(e) => (e.preventDefault(), setIsLoginPage(!isLoginPage))}>
+               {/* { location.pathname.includes('password/reset') ? null : "Don't have an account? Sign Up" } */}
+               { isPasswordReset ? null : "Don't have an account? Sign Up" }
               </Link>
             </Grid>
           </Grid>

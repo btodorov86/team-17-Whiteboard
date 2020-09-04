@@ -9,7 +9,7 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import { ListItemAvatar, Avatar } from "@material-ui/core";
 import AuthContext from "../../../Providers/Context/AuthContext";
-import { logOutHandler } from "../../../Constants/Constant";
+import { logOutHandler, BASE_URL } from "../../../Constants/Constant";
 import { Widget, addResponseMessage } from "react-chat-widget";
 import "react-chat-widget/lib/styles.css";
 import io from "socket.io-client";
@@ -55,6 +55,8 @@ const LoggedUserHomePage = ({ history }) => {
     from: "dsfsdf",
     avatar: user.avatarURL,
   });
+
+  console.log(user);
 
   useEffect(() => {
     socketRef.current.emit("joinRoom", message.room);
@@ -108,8 +110,8 @@ const LoggedUserHomePage = ({ history }) => {
             </IconButton> */}
             <ListItemAvatar>
               <Avatar
-                src={""}
-                alt={"ava"}
+                src={`${BASE_URL}/${user.avatarURL}`}
+                alt={user.userName}
                 style={{ cursor: "pointer" }}
                 onClick={handleClick}
               />

@@ -15,7 +15,7 @@ import AuthContext from '../../../Providers/Context/AuthContext';
 import ExceptionContext from '../../../Providers/Context/ExceptionContext';
 import { Input, OutlinedInput, InputLabel, InputBase } from '@material-ui/core';
 
-const Register = (props) => {
+const Register = ({ isLoginPage, setIsLoginPage, history, isPasswordChange }) => {
 
   const { user } = useContext(AuthContext);
 
@@ -52,7 +52,7 @@ const Register = (props) => {
         .then((r) => r.json())
         .then((resp) => {
           isErrorResponse(resp);
-          props.history.goBack();
+          history.goBack();
         })
         .catch((err) => setOpen({ value: true, msg: err.message, statusType: exceptionStatus.error}))
     };
@@ -77,7 +77,7 @@ const Register = (props) => {
         isErrorResponse(resp)
       }
 
-      props.history.push('/login')
+      setIsLoginPage(!isLoginPage)
 
     })
     .catch( err => setOpen({ value: true, msg: err.message, statusType: exceptionStatus.error}))
@@ -108,7 +108,7 @@ const Register = (props) => {
 
   const classes = useStyles();
 
-  const toggleEmailAndUsername = props.location.pathname.includes('password/change') ? null : <><Grid item xs={12}>
+  const toggleEmailAndUsername = isPasswordChange ? null : <><Grid item xs={12}>
   <TextField
     variant="outlined"
     required
@@ -144,7 +144,7 @@ const Register = (props) => {
           {/* <LockOutlinedIcon /> */}
         </Avatar>
         <Typography component="h1" variant="h5">
-          { props.location.pathname.includes('password/change') ? user.userName : 'Sign up' }
+          { isPasswordChange ? user.userName : 'Sign up' }
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
@@ -213,9 +213,9 @@ const Register = (props) => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={props.location.pathname.includes('password/change') ? updateHandler : signInHandler}
+            onClick={isPasswordChange ? updateHandler : signInHandler}
           >
-            {props.location.pathname.includes('password/change') ? 'Update' : 'Sign Up'}
+            {isPasswordChange ? 'Update' : 'Sign Up'}
           </Button>
           {/* <Grid container justify="flex-start">
               { props.location.pathname.includes('account/password') ? null : <Link href="/login" variant="body2">
@@ -226,7 +226,7 @@ const Register = (props) => {
             <Grid item xs>
             </Grid>
             <Grid item>
-              { props.location.pathname.includes('password/change') ? null : <Link href="/login" variant="body2">
+              { isLoginPage ? null : <Link style={{cursor: 'pointer'}} variant="body2" onClick={(e) => (e.preventDefault(), setIsLoginPage(!isLoginPage))}>
               Already have an account?
               </Link> }
             </Grid>
