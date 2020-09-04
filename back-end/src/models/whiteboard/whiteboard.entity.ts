@@ -10,8 +10,10 @@ export class Whiteboard {
     id: string
     @Column({type: 'boolean', default: false})
     isDeleted: boolean
-    bookId: number
-    @ManyToOne(type => User, user => user.whiteboards)
+    // bookId: number
+    // @ManyToOne(type => User, user => user.whiteboards)
+    @Column({ type: 'nvarchar'})
+    whiteBoardName: string;
     author: User
     @OneToMany(type => Line, line => line.whiteboard )
     line: Line[]

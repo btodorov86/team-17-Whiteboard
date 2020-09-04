@@ -51,11 +51,11 @@ export class UsersController {
         return await this.userService.delete(id)
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Patch(':id')
-    public async undelete(@Param('id') id: string): Promise<string> {
-        return await this.userService.unDelete(id)
-    }
+    // @UseGuards(AuthGuard('jwt'))
+    // @Patch(':id')
+    // public async undelete(@Param('id') id: string): Promise<string> {
+    //     return await this.userService.unDelete(id)
+    // }
 
     @UseGuards(AuthGuard('jwt'))
     @Put(':id')
