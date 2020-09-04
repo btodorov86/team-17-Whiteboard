@@ -21,6 +21,6 @@ export class User {
     whiteboards: Whiteboard[]
     @Column({ default: null, length: 500 })
     token: string
-    @Column({nullable: true})
+    @Column({ default: 'avatar.png'})
     avatarURL: string
 }
