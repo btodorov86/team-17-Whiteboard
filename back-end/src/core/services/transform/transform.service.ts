@@ -8,9 +8,9 @@ export class TransformService {
     if (token) {
       return {
         id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
+        // firstName: user.firstName,
+        // lastName: user.lastName,
+        // email: user.email,
         userName: user.userName,
         avatarURL: user.avatarURL,
 
@@ -18,9 +18,9 @@ export class TransformService {
     }
     return {
       id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
+      // firstName: user.firstName,
+      // lastName: user.lastName,
+      // email: user.email,
       userName: user.userName,
       avatarURL: user.avatarURL,
 
