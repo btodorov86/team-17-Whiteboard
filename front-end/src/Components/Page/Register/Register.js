@@ -94,6 +94,8 @@ const Register = (props) => {
     avatar: {
       margin: theme.spacing(1),
       backgroundColor: theme.palette.secondary.main,
+      height: '80px',
+      width: '80px'
     },
     form: {
       width: '100%', // Fix IE 11 issue.
@@ -138,7 +140,7 @@ const Register = (props) => {
     <Container component="main" maxWidth="xs" style={{backgroundImage: './book.jpg'}}>
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
+        <Avatar src={'https://i1.wp.com/geolok.eu/wp-content/uploads/2018/02/blue-planet-earth-rotation-with-space-background-4k-animation_ed3hfc3cl__F0000-min-min.jpg?fit=555%2C340'} className={classes.avatar}>
           {/* <LockOutlinedIcon /> */}
         </Avatar>
         <Typography component="h1" variant="h5">

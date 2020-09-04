@@ -13,6 +13,8 @@ import { BASE_URL, exceptionStatus, isErrorResponse } from "../../../Constants/C
 import jwt from 'jwt-decode';
 import AuthContext from '../../../Providers/Context/AuthContext';
 import ExceptionContext from '../../../Providers/Context/ExceptionContext';
+import { Modal } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 
 const Login = ({ history, location }) => {
 
@@ -69,6 +71,8 @@ const Login = ({ history, location }) => {
     avatar: {
       margin: theme.spacing(1),
       backgroundColor: theme.palette.secondary.main,
+      height: '80px',
+      width: '80px'
     },
     form: {
       width: "100%",
@@ -94,7 +98,7 @@ const Login = ({ history, location }) => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>{/* <LockOutlinedI /> */}</Avatar>
+        <Avatar src={'https://i1.wp.com/geolok.eu/wp-content/uploads/2018/02/blue-planet-earth-rotation-with-space-background-4k-animation_ed3hfc3cl__F0000-min-min.jpg?fit=555%2C340'} className={classes.avatar}>{/* <LockOutlinedI /> */}</Avatar>
         <Typography component="h1" variant="h5">
           { location.pathname.includes('password/reset') ? "Password recovery" : "Sign in" }
         </Typography>
@@ -168,4 +172,4 @@ const Login = ({ history, location }) => {
   );
 };
 
-export default Login;
+export default withRouter(Login);
