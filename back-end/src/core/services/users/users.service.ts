@@ -23,13 +23,7 @@ export class UsersService {
     const allUsers = await this.usersRepo.find({
       where: { isDeleted: false },
       relations: [
-        'borrowedBooks',
-        'readBooks',
-        'reviews',
-        'ratings',
-        'reviews.reaction',
-        'isBanned',
-        'reviews.author'
+        'whiteboards',
       ],
     });
     return allUsers.map(user => this.transform.toReturnUserDto(user));
@@ -38,13 +32,7 @@ export class UsersService {
     const user = await this.usersRepo.findOne({
       where: { id: id, isDeleted: false },
       relations: [
-        'borrowedBooks',
-        'readBooks',
-        'reviews',
-        'reviews.reaction',
-        'isBanned',
-        'ratings',
-        'reviews.author'
+        'whiteboards',
       ],
     });
 
@@ -90,19 +78,19 @@ export class UsersService {
 
     return 'User is deleted';
   }
-  public async unDelete(id: string): Promise<string> {
-    const user = await this.usersRepo.findOne({
-      where: { id: id, isDeleted: true },
-    });
+  // public async unDelete(id: string): Promise<string> {
+  //   const user = await this.usersRepo.findOne({
+  //     where: { id: id, isDeleted: true },
+  //   });
 
-    if (!user) {
-      throw new NotFoundException(`User with id: ${id} is not found`);
-    }
+  //   if (!user) {
+  //     throw new NotFoundException(`User with id: ${id} is not found`);
+  //   }
 
-    user.isDeleted = false;
-    this.usersRepo.save(user);
+  //   user.isDeleted = false;
+  //   this.usersRepo.save(user);
 
-    return 'User is restored';
-  }
+  //   return 'User is restored';
+  // }
 
   }
