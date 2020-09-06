@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Stage, Layer, Line } from 'react-konva';
+import { SketchPicker } from 'react-color'
 
 const Test = () => {
 
@@ -8,6 +9,7 @@ const Test = () => {
         drawing: false
       })
       const [shapes, setShapes] = useState([])
+      const [color, setColor] = useState('black')
 
       const mouseDown = (e) => {
         setline({...line, drawing: true})
@@ -27,6 +29,13 @@ const Test = () => {
       console.log(line.points.toString().length);
 
   return (
+    <>
+    <SketchPicker
+    position='sticky'
+    color={color}
+    onChange={(color)=>{setColor(color.hex)}}
+    />
+
     <Stage
       onMouseDown={mouseDown}
       onMouseMove={mouseMove}
@@ -34,11 +43,14 @@ const Test = () => {
       height={window.innerHeight}
       width={window.innerWidth}
     >
+    
       <Layer>
-        <Line points={line.points} stroke="black" strokeWidth={"5"} />
-        {shapes.map( shape => <Line stroke={'red'} strokeWidth={5} points={shape.points} />)}
+        <Line points={line.points} stroke={color} strokeWidth={"5"} />
+        {shapes.map( shape => <Line stroke={color} strokeWidth={5} points={shape.points} />)}
+
       </Layer>
     </Stage>
+    </>
   );
 };
 
