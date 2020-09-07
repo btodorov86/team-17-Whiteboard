@@ -6,13 +6,14 @@ const Test = () => {
 
     const [line, setline] = useState({
         points: [],
-        drawing: false
+        drawing: false,
+        stroke: 'black'
       })
       const [shapes, setShapes] = useState([])
       const [color, setColor] = useState('black')
 
       const mouseDown = (e) => {
-        setline({...line, drawing: true})
+        setline({...line, drawing: true, stroke: color})
       }
       const mouseMove = (e) => {
         if (line.drawing) {
@@ -45,8 +46,9 @@ const Test = () => {
     >
     
       <Layer>
+        
+        {shapes.map( shape => <Line stroke={shape.stroke} strokeWidth={5} points={shape.points} />)}
         <Line points={line.points} stroke={color} strokeWidth={5} />
-        {shapes.map( shape => <Line stroke={color} strokeWidth={5} points={shape.points} />)}
 
       </Layer>
     </Stage>
