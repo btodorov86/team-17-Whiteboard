@@ -16,7 +16,7 @@ const Test = () => {
       }
       const mouseMove = (e) => {
         if (line.drawing) {
-          setline({...line, points: [...line.points, e.evt.clientX, e.evt.clientY]})
+          setline({...line, points: [...line.points, e.evt.clientX - 200, e.evt.clientY]})
         }
       }
       const mouseUp = (e) => {
@@ -31,9 +31,9 @@ const Test = () => {
   return (
     <>
     <SketchPicker
-    position='sticky'
     color={color}
     onChange={(color)=>{setColor(color.hex)}}
+    
     />
 
     <Stage
@@ -41,11 +41,11 @@ const Test = () => {
       onMouseMove={mouseMove}
       onMouseUp={mouseUp}
       height={window.innerHeight}
-      width={window.innerWidth}
+      width={window.innerWidth - 200}
     >
     
       <Layer>
-        <Line points={line.points} stroke={color} strokeWidth={"5"} />
+        <Line points={line.points} stroke={color} strokeWidth={5} />
         {shapes.map( shape => <Line stroke={color} strokeWidth={5} points={shape.points} />)}
 
       </Layer>

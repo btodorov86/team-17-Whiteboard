@@ -8,6 +8,8 @@ export class Line {
     @OneToOne(type => Whiteboard, whiteboard => whiteboard.line)
     whiteboard: Whiteboard
     @Column()
+    color: string
+    @Column()
     startX: number
     @Column()
     startY: number

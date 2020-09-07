@@ -8,12 +8,14 @@ export class Circle {
     @ManyToOne(type => Whiteboard, whiteboard => whiteboard.circle)
     whiteboard: Whiteboard;
     @Column()
-    startX: number
+    color: string;
     @Column()
-    startY: number
+    startX: number;
     @Column()
-    endX: number
+    startY: number;
     @Column()
-    endY: number
+    endX: number;
+    @Column()
+    endY: number;
 
 }
