@@ -16,6 +16,7 @@ import io from "socket.io-client";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import Test from "../../../Test";
+import { SketchPicker } from 'react-color';
 
 const LoggedUserHomePage = ({ history }) => {
   const { user, setUser } = useContext(AuthContext);
@@ -45,6 +46,7 @@ const LoggedUserHomePage = ({ history }) => {
   const classes = useStyles();
 
   const [avatar, setAvatar] = useState("");
+  const [color, setColor] = useState('black')
   const [anchorEl, setAnchorEl] = React.useState(null);
   const socketRef = useRef();
   socketRef.current = io("http://localhost:3000/chat");
@@ -157,7 +159,12 @@ const LoggedUserHomePage = ({ history }) => {
             </ExitToApp>
           </Toolbar>
         </AppBar>
-        <Test />
+        
+        
+        <Test color={color} />
+        <div style={{position:'absolute', marginTop:'60px', display:'inline-block'}}>
+        <SketchPicker color={color} onChange={(color)=>{setColor(color.hex)}}/>
+        </div>
         <Widget
           handleNewUserMessage={handleNewUserMessage}
           showTimeStamp={false}
