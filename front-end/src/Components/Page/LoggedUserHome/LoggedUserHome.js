@@ -3,19 +3,23 @@ import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Badge from "@material-ui/core/Badge";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import ExitToApp from "@material-ui/icons/ExitToApp";
-import { ListItemAvatar, Avatar } from "@material-ui/core";
+import { ListItemAvatar, Avatar, IconButton, ListItem } from "@material-ui/core";
 import AuthContext from "../../../Providers/Context/AuthContext";
 import { logOutHandler, BASE_URL } from "../../../Constants/Constant";
 import { Widget, addResponseMessage } from "react-chat-widget";
 import "react-chat-widget/lib/styles.css";
 import io from "socket.io-client";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
 import Test from "../../../Test";
+import Next from "@material-ui/icons/NavigateNext"
+import Before from "@material-ui/icons/NavigateBefore"
+import ProfileMenu from './ProfileMenu';
+import DrawWidget from './DrawWidget';
+import SpeedDial from '@material-ui/lab/SpeedDial';
+import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
+import "./chat.css"
 
 const LoggedUserHomePage = ({ history }) => {
   const { user, setUser } = useContext(AuthContext);
@@ -45,13 +49,13 @@ const LoggedUserHomePage = ({ history }) => {
   const classes = useStyles();
 
   const [avatar, setAvatar] = useState("");
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(false);
   const socketRef = useRef();
   socketRef.current = io("http://localhost:3000/chat");
 
   const [message, setMessage] = useState({
     message: "",
-    room: user.email,
+    room: 'bob@dfef.com',
     from: "dsfsdf",
     avatar: user.avatarURL,
   });
@@ -64,10 +68,10 @@ const LoggedUserHomePage = ({ history }) => {
       setAvatar(
         "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
       );
-      // setAvatar(incomingMsg.avatar)
-      return incomingMsg.from === message.from
-        ? null
-        : addResponseMessage(incomingMsg.message);
+      // // setAvatar(incomingMsg.avatar)
+      // return incomingMsg.from === message.from
+      //   ? null :
+      addResponseMessage(incomingMsg.message);
     });
   }, []);
 
@@ -79,16 +83,15 @@ const LoggedUserHomePage = ({ history }) => {
       avatar: message.avatar,
     });
 
-  const handleClick = (event) => {
+  const handleClickProfile = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleCloseProfile = () => {
+    setAnchorEl(false);
   };
 
   return (
-    <>
       <div className={classes.root}>
         <CssBaseline />
         <AppBar
@@ -113,37 +116,23 @@ const LoggedUserHomePage = ({ history }) => {
                 src={`${BASE_URL}/${user.avatarURL}`}
                 alt={user.userName}
                 style={{ cursor: "pointer" }}
-                onClick={handleClick}
+                onClick={handleClickProfile}
               />
             </ListItemAvatar>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              className={classes.title}
-            >
+            <span style={{fontSize: '25px'}}>
               {user.userName}
-            </Typography>
-            <Menu
-              style={{ top: "-4px" }}
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose} style={{ margin: "10px" }}>
-                Create board
-              </MenuItem>
-              <MenuItem onClick={handleClose} style={{ margin: "10px" }}>
-                Change password
-              </MenuItem>
-              <MenuItem onClick={handleClose} style={{ margin: "10px" }}>
-                Update avatar
-              </MenuItem>
-            </Menu>
-            <span style={{ paddingRight: "10px" }}>Log Out</span>
+            </span>
+            <ProfileMenu anchorEl={anchorEl} handleClose={handleCloseProfile} />
+            <ListItem style={{justifyContent: 'center'}}>
+            <IconButton>
+             <Before />
+             </IconButton>
+              <span style={{fontSize: '20px'}}>sdfdsfgadf</span>
+             <IconButton>
+             <Next />
+            </IconButton>
+            </ListItem>
+            <span style={{ paddingRight: "10px", fontSize: '20px'}}>Logout</span>
             <ExitToApp
               style={{ cursor: "pointer" }}
               color="inherit"
@@ -163,9 +152,11 @@ const LoggedUserHomePage = ({ history }) => {
           showTimeStamp={false}
           profileAvatar={avatar}
           title={"Chat"}
+          display={'inline-block'}
+          style={{backgroundColor: 'red'}}
         />
+      <DrawWidget />
       </div>
-    </>
   );
 };
 export default LoggedUserHomePage;

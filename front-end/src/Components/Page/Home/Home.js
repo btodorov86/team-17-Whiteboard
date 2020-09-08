@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import images from "./img1.png";
 import "./home.css";
 import { Modal, makeStyles, Fade } from "@material-ui/core";
 import Login from "../Login/Login";
 import Backdrop from "@material-ui/core/Backdrop";
 import Register from "../Register/Register";
+import AuthContext from '../../../Providers/Context/AuthContext';
+import propTypes from 'prop-types';
 
 const Home = ({ history }) => {
+
+  const { user } = useContext(AuthContext)
   const useStyles = makeStyles((theme) => ({
     modal: {
       display: "flex",
@@ -36,6 +40,7 @@ const Home = ({ history }) => {
       <div class="phonering-alo-ph-circle"></div>
       <div class="phonering-alo-ph-circle-fill"></div>
       <a
+        href
         style={{ cursor: "pointer" }}
         onClick={(e) => (e.preventDefault(), setOpenModal(true))}
         class="pps-btn-img"
@@ -86,5 +91,9 @@ const Home = ({ history }) => {
     </div>
   );
 };
+
+Home.propTypes = {
+  history: propTypes.object.isRequired,
+}
 
 export default Home;

@@ -39,7 +39,7 @@ export class AppGateway implements OnGatewayInit{
   @SubscribeMessage('send-message')
   message(client: Socket, message: {message: string, from: string, room: string, avatar: string}): void {
     console.log(message);
-      this.wss.to(message.room).emit('come-message', message)
+    client.to(message.room).broadcast.emit('come-message', message)
 
   }
   // @SubscribeMessage('mesg')
