@@ -13,7 +13,8 @@ export class Whiteboard {
     // bookId: number
     // @ManyToOne(type => User, user => user.whiteboards)
     @Column({ type: 'nvarchar'})
-    whiteBoardName: string;
+    name: string;
+    @Column({ type: 'nvarchar'})
     author: User
     @OneToMany(type => Line, line => line.whiteboard )
     line: Line[]

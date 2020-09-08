@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { Stage, Layer, Line } from 'react-konva';
+import { SketchPicker } from 'react-color'
 
-const Test = () => {
+const Test = ({color}) => {
 
     const [line, setline] = useState({
         points: [],
-        drawing: false
+        drawing: false,
+        stroke: 'black'
       })
       const [shapes, setShapes] = useState([])
 
       const mouseDown = (e) => {
-        setline({...line, drawing: true})
+        setline({...line, drawing: true, stroke: color})
       }
       const mouseMove = (e) => {
         if (line.drawing) {
@@ -22,23 +24,35 @@ const Test = () => {
           setline({ points: [], drawing: false})
       }
 
-      console.log(shapes);
-      console.log(line);
-      console.log(line.points.toString().length);
+      // console.log(shapes);
+      // console.log(line);
+      // console.log(line.points.toString().length);
 
   return (
+    // <>
+    // <SketchPicker
+    // color={color}
+    // onChange={(color)=>{setColor(color.hex)}}
+    
+    // />
+
     <Stage
       onMouseDown={mouseDown}
       onMouseMove={mouseMove}
       onMouseUp={mouseUp}
       height={window.innerHeight}
       width={window.innerWidth}
-    >
+      // draggable={mouseUp ? false : true} 
+      >
+    
       <Layer>
-        <Line points={line.points} stroke="black" strokeWidth={"5"} />
-        {shapes.map( shape => <Line stroke={'red'} strokeWidth={5} points={shape.points} />)}
+      
+        {shapes.map( shape => <Line stroke={shape.stroke} strokeWidth={5} points={shape.points} />)}
+        <Line points={line.points} stroke={color} strokeWidth={5} />
+
       </Layer>
     </Stage>
+    // </>
   );
 };
 

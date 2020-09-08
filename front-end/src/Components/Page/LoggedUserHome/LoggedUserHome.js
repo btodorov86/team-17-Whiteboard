@@ -17,9 +17,8 @@ import Next from "@material-ui/icons/NavigateNext"
 import Before from "@material-ui/icons/NavigateBefore"
 import ProfileMenu from './ProfileMenu';
 import DrawWidget from './DrawWidget';
-import SpeedDial from '@material-ui/lab/SpeedDial';
-import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import "./chat.css"
+import { SketchPicker } from 'react-color';
 
 const LoggedUserHomePage = ({ history }) => {
   const { user, setUser } = useContext(AuthContext);
@@ -50,6 +49,8 @@ const LoggedUserHomePage = ({ history }) => {
 
   const [avatar, setAvatar] = useState("");
   const [anchorEl, setAnchorEl] = React.useState(false);
+  const [color, setColor] = useState('black')
+  // const [anchorEl, setAnchorEl] = React.useState(null);
   const socketRef = useRef();
   socketRef.current = io("http://localhost:3000/chat");
 
@@ -146,10 +147,15 @@ const LoggedUserHomePage = ({ history }) => {
             </ExitToApp>
           </Toolbar>
         </AppBar>
-        <Test />
+
+
+        <Test color={color} />
+        <div style={{position:'absolute', marginTop:'60px', display:'inline-block'}}>
+        <SketchPicker color={color} onChange={(color)=>{setColor(color.hex)}}/>
+        </div>
         <Widget
           handleNewUserMessage={handleNewUserMessage}
-          showTimeStamp={false}
+          // showTimeStamp={false}
           profileAvatar={avatar}
           title={"Chat"}
           display={'inline-block'}

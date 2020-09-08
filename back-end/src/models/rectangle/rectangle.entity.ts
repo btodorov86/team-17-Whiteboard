@@ -9,6 +9,8 @@ export class Rectangle {
     @ManyToOne(type => Whiteboard, whiteboard => whiteboard.rectangle)
     whiteboard: Whiteboard
     @Column()
+    color: string
+    @Column()
     startX: number
     @Column()
     startY: number
