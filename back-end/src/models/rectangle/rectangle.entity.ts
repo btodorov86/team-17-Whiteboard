@@ -6,7 +6,7 @@ import { Whiteboard } from '../whiteboard/whiteboard.entity';
 export class Rectangle {
     @PrimaryGeneratedColumn('uuid')
     id: string
-    @ManyToOne(type => Whiteboard, whiteboard => whiteboard.rectangle)
+    @ManyToOne(type => Whiteboard, whiteboard => whiteboard.rectangles)
     whiteboard: Whiteboard
     @Column()
     color: string

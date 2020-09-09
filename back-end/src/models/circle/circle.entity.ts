@@ -5,7 +5,7 @@ import { Whiteboard } from '../whiteboard/whiteboard.entity';
 export class Circle {
     @PrimaryGeneratedColumn('uuid')
     id: string;
-    @ManyToOne(type => Whiteboard, whiteboard => whiteboard.circle)
+    @ManyToOne(type => Whiteboard, whiteboard => whiteboard.circles)
     whiteboard: Whiteboard;
     @Column()
     color: string;

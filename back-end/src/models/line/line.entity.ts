@@ -1,16 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, OneToOne, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, OneToOne, Column, OneToMany, ManyToOne } from 'typeorm';
 import { Whiteboard } from '../whiteboard/whiteboard.entity';
 
 @Entity('lines')
 export class Line {
     @PrimaryGeneratedColumn('uuid')
     id: string
-    @OneToOne(type => Whiteboard, whiteboard => whiteboard.line)
+    @ManyToOne(type => Whiteboard, whiteboard => whiteboard.lines)
     whiteboard: Whiteboard
     @Column()
     color: string
+    @Column({length: 5000})
+    points: string
     @Column()
-    startX: number
+    stroke: string
     @Column()
-    startY: number
+    strokeWidth: number
 }

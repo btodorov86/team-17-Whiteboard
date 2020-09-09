@@ -28,8 +28,6 @@ const Register = ({
 
   const { setOpen } = useContext(ExceptionContext);
 
-  const [errorValidationMessage, setErrorValidationMessage] = useState([])
-
   const [createUser, setCreateUser] = useState({
     firstName: {
       isValid: true,
@@ -194,17 +192,11 @@ const Register = ({
 
   const classes = useStyles();
 
-
-
   const isDisable = () => {
     return !Object.values(createUser).reduce((acc, value) => {
       return value.isTouched && value.isValid && acc ? true : false
     }, true)
-  }
-
-  console.log(createUser.firstName.isValid);
-  console.log(!/[0-9]/.test(createUser.firstName.value));
-  console.log(errorValidationMessage);
+  };
 
   const renderError = (prop) => {
     return createUser[prop].isTouched ? userValidation[prop]

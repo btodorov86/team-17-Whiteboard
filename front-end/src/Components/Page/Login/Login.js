@@ -13,7 +13,6 @@ import { BASE_URL, exceptionStatus, isErrorResponse } from "../../../Constants/C
 import jwt from 'jwt-decode';
 import AuthContext from '../../../Providers/Context/AuthContext';
 import ExceptionContext from '../../../Providers/Context/ExceptionContext';
-import { Modal } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 
 const Login = ({ history, setIsLoginPage, isLoginPage }) => {

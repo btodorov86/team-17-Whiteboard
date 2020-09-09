@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import "./App.css";
 import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
-import Login from "./Components/Page/Login/Login";
-import Register from "./Components/Page/Register/Register";
 import NotFound from "./Components/Page/NotFound/NotFound";
 import Loading from "./Components/Page/Loading/Loading";
 import AuthContext, {

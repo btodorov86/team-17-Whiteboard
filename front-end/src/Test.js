@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Stage, Layer, Line } from 'react-konva';
-import { SketchPicker } from 'react-color'
+import propTypes from 'prop-types';
+import { v4 as uuid } from 'uuid';
 
 const Test = ({color}) => {
 
@@ -16,7 +17,7 @@ const Test = ({color}) => {
       }
       const mouseMove = (e) => {
         if (line.drawing) {
-          setline({...line, points: [...line.points, e.evt.clientX, e.evt.clientY]})
+          setline({...line, points: [...line.points, e.evt.clientX, e.evt.clientY]});
         }
       }
       const mouseUp = (e) => {
@@ -33,7 +34,7 @@ const Test = ({color}) => {
     // <SketchPicker
     // color={color}
     // onChange={(color)=>{setColor(color.hex)}}
-    
+
     // />
 
     <Stage
@@ -42,18 +43,21 @@ const Test = ({color}) => {
       onMouseUp={mouseUp}
       height={window.innerHeight}
       width={window.innerWidth}
-      // draggable={mouseUp ? false : true} 
+      // draggable={mouseUp ? false : true}
       >
-    
       <Layer>
-      
-        {shapes.map( shape => <Line stroke={shape.stroke} strokeWidth={5} points={shape.points} />)}
+        {shapes.map( shape => <Line key={uuid()} stroke={shape.stroke} strokeWidth={5} points={shape.points} />)}
         <Line points={line.points} stroke={color} strokeWidth={5} />
-
       </Layer>
     </Stage>
     // </>
   );
 };
+
+Test.propTypes = {
+  color: propTypes.string.isRequired,
+  // setShareMouse: propTypes.func.isRequired,
+  // shareMouse: propTypes.object.isRequired,
+}
 
 export default Test

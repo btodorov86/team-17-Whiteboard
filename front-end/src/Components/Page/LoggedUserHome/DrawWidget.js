@@ -60,14 +60,6 @@ const DrawWidget = () => {
   const [openWidget, setOpenWidget] = useState(false);
   const [hidden, setHidden] = useState(false);
 
-  const handleDirectionChange = (event) => {
-    setDirection(event.target.value);
-  };
-
-  const handleHiddenChange = (event) => {
-    setHidden(event.target.checked);
-  };
-
   const handleCloseWidget = () => {
     setOpenWidget(false);
   };
@@ -117,7 +109,6 @@ const DrawWidget = () => {
             />
           ))}
         </SpeedDial>
-      {/* </div> */}
     </div>
   );
 };

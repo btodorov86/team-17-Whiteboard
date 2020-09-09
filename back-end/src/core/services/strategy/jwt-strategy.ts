@@ -19,8 +19,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JWTPayload): Promise<User> {
-
-    // the returned user is injected into Request
     return await this.authService.findUserByEmail(payload.email);
   }
 }

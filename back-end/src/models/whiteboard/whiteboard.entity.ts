@@ -10,16 +10,19 @@ export class Whiteboard {
     id: string
     @Column({type: 'boolean', default: false})
     isDeleted: boolean
+    @Column({type: 'boolean', default: true})
+    isPublic: boolean
     // bookId: number
     // @ManyToOne(type => User, user => user.whiteboards)
     @Column({ type: 'nvarchar'})
     name: string;
-    @Column({ type: 'nvarchar'})
+    @ManyToOne(type => User, user => user.whiteboards )
     author: User
     @OneToMany(type => Line, line => line.whiteboard )
-    line: Line[]
+    lines: Line[]
     @OneToMany(type => Circle, circle => circle.whiteboard  )
-    circle: Circle[]
+    circles: Circle[]
     @OneToMany(type => Rectangle, rectangle => rectangle.whiteboard )
-    rectangle: Rectangle[]
+    rectangles: Rectangle[]
+
 }

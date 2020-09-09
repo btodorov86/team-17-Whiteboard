@@ -1,16 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import images from "./img1.png";
 import "./home.css";
 import { Modal, makeStyles, Fade } from "@material-ui/core";
 import Login from "../Login/Login";
 import Backdrop from "@material-ui/core/Backdrop";
 import Register from "../Register/Register";
-import AuthContext from '../../../Providers/Context/AuthContext';
-import propTypes from 'prop-types';
 
-const Home = ({ history }) => {
-
-  const { user } = useContext(AuthContext)
+const Home = () => {
   const useStyles = makeStyles((theme) => ({
     modal: {
       display: "flex",
@@ -91,9 +87,4 @@ const Home = ({ history }) => {
     </div>
   );
 };
-
-Home.propTypes = {
-  history: propTypes.object.isRequired,
-}
-
 export default Home;

@@ -15,7 +15,7 @@ const NotFound = ({history}) => {
 
     return (
     <div className={classes.paper}>
-        <img src={require('./image404.PNG')}></img>
+        <img src={require('./image404.PNG')} alt='' />
     <h5>Looks like you have followed a broken link or the resource does not exist anymore.</h5>
     <Button variant='contained' color='primary' onClick={() => history.push("/home")}>Go back home</Button>
     </div>
