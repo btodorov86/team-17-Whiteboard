@@ -25,40 +25,42 @@ const useStyles = makeStyles((theme) => ({
     height: 60,
 
   },
-//   exampleWrapper: {
-//     position: 'relative',
-//     marginTop: theme.spacing(3),
-//     height: 380,
-//   },
-//   radioGroup: {
-//     margin: theme.spacing(1, 0),
-//   },
-//   speedDial: {
-//     position: 'absolute',
-//     '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
-//       bottom: theme.spacing(2),
-//       right: theme.spacing(2),
-//     },
-//     '&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight': {
-//       top: theme.spacing(2),
-//       left: theme.spacing(2),
-//     },
-//   },
+  // exampleWrapper: {
+  //   position: 'relative',
+  //   marginTop: theme.spacing(3),
+  //   height: 380,
+  // },
+  // radioGroup: {
+  //   margin: theme.spacing(1, 0),
+  // },
+  // speedDial: {
+  //   position: 'absolute',
+  //   '&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft': {
+  //     bottom: theme.spacing(2),
+  //     right: theme.spacing(2),
+  //   },
+  //   '&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight': {
+  //     top: theme.spacing(2),
+  //     left: theme.spacing(2),
+  //   },
+  // },
 }));
 
-const actions = [
-  { icon: <FileCopyIcon />, name: 'Copy' },
-  { icon: <SaveIcon />, name: 'Save' },
-  { icon: <PrintIcon />, name: 'Print' },
-  { icon: <ShareIcon />, name: 'Share' },
-  { icon: <FavoriteIcon />, name: 'Like' },
-];
 
-const DrawWidget = () => {
+
+const DrawWidget = ({shareHandler}) => {
   const classes = useStyles();
   const [direction, setDirection] = useState('up');
   const [openWidget, setOpenWidget] = useState(false);
   const [hidden, setHidden] = useState(false);
+
+  const actions = [
+    { icon: <FileCopyIcon />, name: 'Copy' },
+    { icon: <SaveIcon />, name: 'Save' },
+    { icon: <PrintIcon />, name: 'Print' },
+    { icon: <ShareIcon />, name: 'Share' },
+    { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
+  ];
 
   const handleCloseWidget = () => {
     setOpenWidget(false);

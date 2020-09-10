@@ -39,6 +39,7 @@ export class TransformService {
       line: whiteboard.lines,
       name: whiteboard.name,
       rectangle: whiteboard.rectangles,
+      textBoxes: whiteboard.textBoxes
     }
   }
   toReturnCreatedWhiteboardDto(whiteboard: Whiteboard, user: User): ReturnCreatedWhiteboardDTO {

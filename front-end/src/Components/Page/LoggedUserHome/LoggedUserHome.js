@@ -24,6 +24,7 @@ import ProfileMenu from "./ProfileMenu";
 import DrawWidget from "./DrawWidget";
 import "./chat.css";
 import { SketchPicker } from "react-color";
+import pointer from './pointer.jpg'
 
 const LoggedUserHomePage = ({ history }) => {
   const { user, setUser } = useContext(AuthContext);
@@ -55,48 +56,31 @@ const LoggedUserHomePage = ({ history }) => {
   const [avatar, setAvatar] = useState("");
   const [anchorEl, setAnchorEl] = useState(false);
   const [color, setColor] = useState("black");
+
   const [shareMouse, setShareMouse] = useState({
     isShare: false,
     mouseX: 0,
     mouseY: 0,
+    room: user.email,
   });
 
   const [message, setMessage] = useState({
-    message: "",
     room: user.email,
     from: user.id,
     avatar: user.avatarURL,
   });
 
-  const [sharedUsers, setSharedUsers] = useState([
-    {
-      id: "",
-      avatar: "string",
-      mouseX: 0,
-      mouseY: 0,
-    },
-  ]);
+  const [sharedUsers, setSharedUsers] = useState([]);
 
-  const socketRef = useRef();
-  socketRef.current = io("http://localhost:3000/chat");
+  const socket = io("http://localhost:3000");
   useEffect(() => {
-    // if (shareMouse.isShare) {
-    //   socketRef.current.emit("sendMousePoints", {
-    //     user: user.id,
-    //     mouseX: shareMouse.mousePositionX,
-    //     mouseY: shareMouse.mousePositionY,
-    //     avatar: user.avatarURL,
-    //     room: message.room,
-    //   })
-    // }
 
-    socketRef.current.on("incomingMousePoints", (data) => {
-      console.log(data);
-      // const user = sharedUsers.find( x => x.id === data.userId);
-      if (true) {
+    socket.on("incomingMousePoints", (data) => {
+      const user = sharedUsers.find( x => x.id === data.userId);
+      if (user) {
         setSharedUsers([
           {
-            ...sharedUsers[0],
+            ...user,
             mouseX: data.mouseX,
             mouseY: data.mouseY,
           },
@@ -114,26 +98,29 @@ const LoggedUserHomePage = ({ history }) => {
       }
     });
 
-    socketRef.current.emit("joinRoom", {
+    socket.emit("joinRoom", {
       room: message.room,
       userName: user.userName,
     });
-    socketRef.current.on("joinedToRoom", (data) => {
+    socket.on("joinedToRoom", (data) => {
       addResponseMessage(data);
     });
-    socketRef.current.on("leftRoom", (data) => {
+    socket.on("leftRoom", (data) => {
       addResponseMessage(data);
     });
-    socketRef.current.on("come-message", (incomingMsg) => {
-      setAvatar(
-        "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
-      );
-      addResponseMessage(incomingMsg.message);
+    socket.on("come-message", (incomingMsg) => {
+      if (incomingMsg.from !== user.id) {
+        setAvatar(
+          "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
+        );
+        addResponseMessage(incomingMsg.message);
+      }
+
     });
-  }, []);
+  },[]);
 
   const handleNewUserMessage = (data) =>
-    socketRef.current.emit("send-message", {
+    socket.emit("send-message", {
       message: data,
       room: message.room,
       from: message.from,
@@ -153,16 +140,16 @@ const LoggedUserHomePage = ({ history }) => {
     const moveY = e.clientX;
     if (
       shareMouse.isShare &&
-      Math.abs(shareMouse.mouseX - moveX) > 20 &&
-      Math.abs(shareMouse.mouseY - moveY) > 20
+      Math.abs(shareMouse.mouseX - moveX) > 4 &&
+      Math.abs(shareMouse.mouseY - moveY) > 4
     ) {
       setShareMouse({
-        isShare: true,
+        ...shareMouse,
         mouseX: moveX,
         mouseY:moveY,
       });
 
-      socketRef.current.emit("sendMousePoints", {
+      socket.emit("sendMousePoints", {
         user: user.id,
         mouseX: shareMouse.mouseX,
         mouseY: shareMouse.mouseY,
@@ -171,6 +158,10 @@ const LoggedUserHomePage = ({ history }) => {
       });
     }
   };
+
+  const shareHandler = (e) => setShareMouse({...shareMouse, isShare: !shareMouse.isShare});
+
+  console.log(sharedUsers);
 
   return (
     <div className={classes.root} onMouseMove={shareMouseHandler}>
@@ -224,15 +215,16 @@ const LoggedUserHomePage = ({ history }) => {
       </AppBar>
       <Test color={color} />
 
-      <Avatar
-        src={"https://image.flaticon.com/icons/png/512/32/32117.png"}
-        alt={"df"}
+      { shareMouse.isShare ? sharedUsers.map( user => <Avatar
+        key={user.id}
+        src={user.avatar}
+        alt={""}
         style={{
           position: "absolute",
-          top: sharedUsers[0].mouseX,
-          left: sharedUsers[0].mouseY,
+          top: `${user.mouseX}px`,
+          left: `${user.mouseY}px`,
         }}
-      />
+      />) : null }
 
       <div
         style={{
@@ -256,7 +248,7 @@ const LoggedUserHomePage = ({ history }) => {
         display={"inline-block"}
         style={{ backgroundColor: "red" }}
       />
-      <DrawWidget />
+      <DrawWidget shareHandler={shareHandler} />
     </div>
   );
 };

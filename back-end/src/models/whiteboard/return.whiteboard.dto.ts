@@ -1,6 +1,7 @@
 import { Rectangle } from '../rectangle/rectangle.entity'
 import { Circle } from '../circle/circle.entity'
 import { Line } from '../line/line.entity'
+import { TextBox } from '../textBox/textBox.entity'
 
 export class ReturnWhiteboardDTO {
     id: string
@@ -10,4 +11,5 @@ export class ReturnWhiteboardDTO {
     line: Line[]
     circle: Circle[]
     rectangle: Rectangle[]
+    textBoxes: TextBox[]
 }

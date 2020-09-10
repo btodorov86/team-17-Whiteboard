@@ -1,6 +1,6 @@
 import { Length, IsString, IsPositive, IsNumber } from 'class-validator'
 
-export class CreateLineDTO {
+export class CreateTextBoxDTO {
     @Length(1, )
     @IsString()
     color: string

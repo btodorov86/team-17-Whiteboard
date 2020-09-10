@@ -17,10 +17,12 @@ import { AuthService } from './services/auth/auth.service';
 import { Line } from 'src/models/line/line.entity';
 import { ScheduleModule } from '@nestjs/schedule';
 import { WhiteBoardService } from './services/whiteBoard/whiteBoard.service';
+import { TextBoxService } from './services/textBox/textBox.service';
+import { TextBox } from 'src/models/textBox/textBox.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Circle, Rectangle, Line, Whiteboard]),
+        TypeOrmModule.forFeature([User, Circle, Rectangle, Line, Whiteboard, TextBox]),
         ScheduleModule.forRoot(),
         PassportModule,
         JwtModule.register({
@@ -39,6 +41,7 @@ import { WhiteBoardService } from './services/whiteBoard/whiteBoard.service';
         CircleService,
         RectangleService,
         LineService,
+        TextBoxService,
     ],
     exports:[
         UsersService,
@@ -49,6 +52,7 @@ import { WhiteBoardService } from './services/whiteBoard/whiteBoard.service';
         CircleService,
         RectangleService,
         LineService,
+        TextBoxService,
     ],
 })
 export class CoreModule{}

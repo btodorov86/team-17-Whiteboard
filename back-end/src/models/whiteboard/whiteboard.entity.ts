@@ -3,6 +3,7 @@ import { Rectangle } from '../rectangle/rectangle.entity'
 import { Circle } from '../circle/circle.entity'
 import { Line } from '../line/line.entity'
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm'
+import { TextBox } from '../textBox/textBox.entity'
 
 @Entity('whiteboards')
 export class Whiteboard {
@@ -24,5 +25,7 @@ export class Whiteboard {
     circles: Circle[]
     @OneToMany(type => Rectangle, rectangle => rectangle.whiteboard )
     rectangles: Rectangle[]
+    @OneToMany(type => TextBox, textBox => textBox.whiteboard )
+    textBoxes: TextBox[]
 
 }

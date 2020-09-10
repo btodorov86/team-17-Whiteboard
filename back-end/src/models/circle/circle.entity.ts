@@ -17,5 +17,12 @@ export class Circle {
     endX: number;
     @Column()
     endY: number;
+    @Column({type: 'boolean', default: false})
+    isDeleted: boolean
+    @Column()
+    stroke: string
+    @Column()
+    strokeWidth: number
+
 
 }

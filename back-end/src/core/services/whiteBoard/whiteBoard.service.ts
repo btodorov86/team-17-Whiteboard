@@ -8,7 +8,6 @@ import { User } from 'src/models/users/user.entity';
 import { CreateWhiteboardDTO } from 'src/models/whiteboard/create.whiteboard.dto';
 import { ReturnCreatedWhiteboardDTO } from 'src/models/whiteboard/return.created.whiteboard.dto';
 import { UpdateWhiteboardDTO } from 'src/models/whiteboard/update.whiteboard.dto';
-import { AppGateway } from 'src/app.gateway';
 
 @Injectable()
 export class WhiteBoardService{
@@ -19,15 +18,13 @@ export class WhiteBoardService{
         @InjectRepository(User)
         private readonly usersRepo: Repository<User>,
         private readonly transform: TransformService,
-
-        private readonly gtw: AppGateway,
       ) {}
 
 
     async getOne(id: string): Promise<ReturnWhiteboardDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: id, isDeleted: false},
-            relations: ['lines', 'circles', 'rectangles', 'author']
+            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes']
         })
         if(!whiteboard) {
             throw new NotFoundException();
@@ -38,7 +35,7 @@ export class WhiteBoardService{
     async getAllPublic(): Promise<ReturnWhiteboardDTO[]> {
         const whiteboard = await this.whiteboardsRepo.find({
             where: { isPublic: true, isDeleted: false},
-            relations: ['lines', 'circles', 'rectangles', 'author']
+            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes']
         })
 
         if(whiteboard.length === 0) {
@@ -81,23 +78,23 @@ export class WhiteBoardService{
         this.whiteboardsRepo.save(whiteboard)
         return 'Board is deleted'
     }
-    async update(id: string, body: Partial<UpdateWhiteboardDTO>): Promise<ReturnWhiteboardDTO> {
-        const whiteboard = await this.whiteboardsRepo.findOne({
-            where: { id: id, isDeleted: false},
-            relations: ['lines', 'circles', 'rectangles', 'author']
-        })
-        if(!whiteboard) {
-            throw new NotFoundException();
-        }
+    // async update(id: string, body: Partial<UpdateWhiteboardDTO>): Promise<ReturnWhiteboardDTO> {
+    //     const whiteboard = await this.whiteboardsRepo.findOne({
+    //         where: { id: id, isDeleted: false},
+    //         relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes']
+    //     })
+    //     if(!whiteboard) {
+    //         throw new NotFoundException();
+    //     }
 
-        // this.gtw.update()
+    //     // this.gtw.update()
 
-        // body?.name ? whiteboard.name = body.name : null;
-        // body?.circles ? whiteboard.circles.push body.name : null;
-        // body?.name ? whiteboard.name = body.name : null;
-        // body?.name ? whiteboard.name = body.name : null;
+    //     // body?.name ? whiteboard.name = body.name : null;
+    //     // body?.circles ? whiteboard.circles.push body.name : null;
+    //     // body?.name ? whiteboard.name = body.name : null;
+    //     // body?.name ? whiteboard.name = body.name : null;
 
-        return this.transform.toReturnWhiteboardDto(whiteboard)
-    }
+    //     return this.transform.toReturnWhiteboardDto(whiteboard)
+    // }
 
 }

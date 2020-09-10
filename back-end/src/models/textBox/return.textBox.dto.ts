@@ -1,5 +1,5 @@
 
-export class ReturnLineDTO {
+export class ReturnTextBoxDTO {
     id: string
     // whiteboard: string
     color: string

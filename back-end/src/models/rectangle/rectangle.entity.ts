@@ -18,4 +18,10 @@ export class Rectangle {
     endX: number
     @Column()
     endY: number
+    @Column({type: 'boolean', default: false})
+    isDeleted: boolean
+    @Column()
+    stroke: string
+    @Column()
+    strokeWidth: number
 }
