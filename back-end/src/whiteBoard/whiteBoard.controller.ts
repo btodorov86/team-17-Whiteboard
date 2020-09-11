@@ -18,7 +18,7 @@ export class WhiteBoardController {
 
     @Get('public')
     async getAllPublic(): Promise<ReturnWhiteboardDTO[]> {
-        
+
         return await this.WhiteboardService.getAllPublic()
     }
 
@@ -28,8 +28,6 @@ export class WhiteBoardController {
         @Param('id') id: string,
         // @Req() req: Request,
         ): Promise<ReturnWhiteboardDTO> {
-            console.log('from first');
-
             // const user = req.user as User;
         return await this.WhiteboardService.getOne(id)
     }

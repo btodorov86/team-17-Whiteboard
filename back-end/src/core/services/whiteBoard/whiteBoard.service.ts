@@ -5,9 +5,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TransformService } from '../transform/transform.service';
 import { User } from 'src/models/users/user.entity';
-import { CreateWhiteboardDTO } from 'src/models/whiteboard/create.whiteboard.dto';
 import { ReturnCreatedWhiteboardDTO } from 'src/models/whiteboard/return.created.whiteboard.dto';
-import { UpdateWhiteboardDTO } from 'src/models/whiteboard/update.whiteboard.dto';
 
 @Injectable()
 export class WhiteBoardService{

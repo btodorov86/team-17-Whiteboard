@@ -1,10 +1,10 @@
 import { SubscribeMessage, WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io'
 
-@WebSocketGateway()
+@WebSocketGateway({namespace: '/chat'})
 export class AppGateway implements OnGatewayInit{
 
-  // @WebSocketServer() wss: Server;
+  @WebSocketServer() wss: Server;
   async afterInit(server: Server): Promise<void> {
     console.log("Init");
   }
@@ -26,20 +26,21 @@ export class AppGateway implements OnGatewayInit{
   @SubscribeMessage('joinRoom')
   async joinRoom(client: Socket, message: { room: string, userName: string} ): Promise<void> {
     client.join(message.room);
+    console.log(message.room);
     client.emit('joinedToRoom', `Welcome ${message.userName}!`);
-    client.to(message.room).broadcast.emit('joinedToRoom', `${message.userName} has joined`);
+    client.to(message.room).emit('joinedToRoom', `${message.userName} has joined`);
   }
 
-  @SubscribeMessage('leaveRoom')
-  async leaveRoom(client: Socket, message: { room: string, userName: string}): Promise<void> {
-    client.to(message.room).broadcast.emit('leftRoom', `${message.userName} left chat`)
-    client.leave(message.room);
-  }
+  // @SubscribeMessage('leaveRoom')
+  // async leaveRoom(client: Socket, message: { room: string, userName: string}): Promise<void> {
+  //   client.to(message.room).broadcast.emit('leftRoom', `${message.userName} left chat`)
+  //   client.leave(message.room);
+  // }
 
   @SubscribeMessage('send-message')
   async message(client: Socket, message: {message: string, from: string, room: string, avatar: string}): Promise<void> {
-    client.to(message.room).broadcast.emit('come-message', message)
-
+    console.log(message);
+    client.to(message.room).emit('come-message', message)
   }
   // @SubscribeMessage('update')
   // update(client: Socket, message: { room: string, from: string}): void {
@@ -56,11 +57,32 @@ export class AppGateway implements OnGatewayInit{
     room: string,
   }): Promise<void> {
     // console.log(message);
-    client.to(message.room).broadcast.emit('incomingMousePoints', {
-      id: message.user,
+    client.to(message.room).emit('incomingMousePoints', {
+      user: message.user,
       avatar: message.avatar,
       mouseX: message.mouseX,
       mouseY: message.mouseY,
     })
   }
+  @SubscribeMessage('mesg')
+  message1(client: Socket, message: {room: string, msg: string, from: string, avatar: string}): void {
+      console.log(message);
+
+      client.to(message.room).emit('mesg', message)
+
+  }
+  @SubscribeMessage('send')
+  come(client: Socket, message: {room: string, x: string, from: string, y: string}): void {
+    console.log(message);
+
+      client.to(message.room).emit('come', message)
+
+  }
+  // @SubscribeMessage('joinRoom')
+  // async joinRoom(client: Socket, message: string ): Promise<void> {
+  //   client.join(message);
+  //   // client.emit('joinedToRoom', `Welcome ${message.userName}!`);
+  //   // client.to(message.room).broadcast.emit('joinedToRoom', `${message.userName} has joined`);
+  // }
+
 }

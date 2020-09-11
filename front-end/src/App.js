@@ -15,6 +15,8 @@ import LoadingContext from "./Providers/Context/LoadingContext";
 import LoggedUserHomePage from './Components/Page/LoggedUserHome/LoggedUserHome';
 import Home from './Components/Page/Home/Home';
 import Test from './Test';
+import Test12 from './test12';
+import Chat from './test12';
 
 const App = () => {
   const [user, setUser] = useState(getUser(getToken()));
@@ -36,14 +38,15 @@ const App = () => {
             <Switch>
               <Redirect from="/" exact to="/home" />
               <Route path="/home" component={Home} />
+              <Route path="/test12" component={Chat} />
               {/* <Route path="/login" component={Login} /> */}
               <Route path="/chat1" component={Test} />   {/*test*/}
               {/* <Route path="/register" component={Register} /> */}
               <Route path="/loading" component={Loading} />
               <GuardedRouteAuth
                 user={user}
-                path="/profile"
-                exact
+                path="/profile/:id"
+                // exact
                 component={LoggedUserHomePage}
               />
               {/* <GuardedRouteAuth

@@ -13,7 +13,12 @@ import {
   ListItem,
 } from "@material-ui/core";
 import AuthContext from "../../../Providers/Context/AuthContext";
-import { logOutHandler, BASE_URL } from "../../../Constants/Constant";
+import {
+  logOutHandler,
+  BASE_URL,
+  isErrorResponse,
+  exceptionStatus,
+} from "../../../Constants/Constant";
 import { Widget, addResponseMessage } from "react-chat-widget";
 import "react-chat-widget/lib/styles.css";
 import io from "socket.io-client";
@@ -24,11 +29,16 @@ import ProfileMenu from "./ProfileMenu";
 import DrawWidget from "./DrawWidget";
 import "./chat.css";
 import { SketchPicker } from "react-color";
-import pointer from './pointer.jpg'
+import pointer from "./pointer.jpg";
+import LoadingContext from "../../../Providers/Context/LoadingContext";
+import ExceptionContext from "../../../Providers/Context/ExceptionContext";
+import Loading from "../Loading/Loading";
+import SearchWhiteBoards from './SearchWhiteBoards';
 
-const LoggedUserHomePage = ({ history }) => {
+const LoggedUserHomePage = ({ history, match }) => {
   const { user, setUser } = useContext(AuthContext);
-
+  const { loading, setLoading } = useContext(LoadingContext);
+  const { setOpen } = useContext(ExceptionContext);
   const useStyles = makeStyles((theme) => ({
     root: {
       display: "flex",
@@ -51,6 +61,8 @@ const LoggedUserHomePage = ({ history }) => {
     },
   }));
 
+  const socketRef = useRef();
+
   const classes = useStyles();
 
   const [avatar, setAvatar] = useState("");
@@ -61,24 +73,78 @@ const LoggedUserHomePage = ({ history }) => {
     isShare: false,
     mouseX: 0,
     mouseY: 0,
-    room: user.email,
   });
-
+  const [currentWhiteboard, setCurrentWhiteboard] = useState({
+    id: "",
+    author: "",
+    circles: [],
+    rectangles: [],
+    lines: [],
+    textBoxes: [],
+    name: "",
+    isPublic: false,
+  });
   const [message, setMessage] = useState({
     room: user.email,
     from: user.id,
     avatar: user.avatarURL,
   });
-
   const [sharedUsers, setSharedUsers] = useState([]);
+  const [whiteboards, setWhiteboards] = useState([]);
+  const [activeWhiteboards, setActiveWhiteboards] = useState([]);
+  const [isSearchBoard, setIsSearchBoard] = useState(false);
 
-  const socket = io("http://localhost:3000");
+
+  // console.log(match);
+  // console.log(currentWhiteboard);
   useEffect(() => {
+    setLoading(true);
+    fetch(`${BASE_URL}/whiteboards/${match.params.id}`, {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+      .then((r) => r.json())
+      .then((resp) => {
+        isErrorResponse(resp);
+        console.log(resp);
+        setCurrentWhiteboard(resp);
+        setActiveWhiteboards([...activeWhiteboards, resp]);
+      })
+      .catch((err) =>
+        setOpen({
+          value: true,
+          msg: err.message,
+          statusType: exceptionStatus.error,
+        })
+      )
+      .finally(() => setLoading(false));
+  }, [match.params.id]);
 
-    socket.on("incomingMousePoints", (data) => {
-      const user = sharedUsers.find( x => x.id === data.userId);
+  useEffect(() => {
+    socketRef.current = io("http://localhost:3000/chat");
+
+    socketRef.current.emit("joinRoom", {
+      room: message.room,
+      userName: user.userName,
+    });
+
+    socketRef.current.on("come-message", (incomingMsg) => {
+      setAvatar(
+        "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
+      );
+      addResponseMessage(incomingMsg.message);
+    });
+    socketRef.current.on("joinedToRoom", (data) => {
+      addResponseMessage(data);
+    });
+
+    socketRef.current.on("incomingMousePoints", (data) => {
+      // console.log(data);
+      const user = sharedUsers.find((x) => x.id === data.userId);
       if (user) {
         setSharedUsers([
+          ...sharedUsers,
           {
             ...user,
             mouseX: data.mouseX,
@@ -97,33 +163,12 @@ const LoggedUserHomePage = ({ history }) => {
         ]);
       }
     });
-
-    socket.emit("joinRoom", {
-      room: message.room,
-      userName: user.userName,
-    });
-    socket.on("joinedToRoom", (data) => {
-      addResponseMessage(data);
-    });
-    socket.on("leftRoom", (data) => {
-      addResponseMessage(data);
-    });
-    socket.on("come-message", (incomingMsg) => {
-      if (incomingMsg.from !== user.id) {
-        setAvatar(
-          "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
-        );
-        addResponseMessage(incomingMsg.message);
-      }
-
-    });
-  },[]);
+  }, []);
 
   const handleNewUserMessage = (data) =>
-    socket.emit("send-message", {
+    socketRef.current.emit("send-message", {
       message: data,
       room: message.room,
-      from: message.from,
       avatar: message.avatar,
     });
 
@@ -135,36 +180,36 @@ const LoggedUserHomePage = ({ history }) => {
     setAnchorEl(false);
   };
 
-  const shareMouseHandler = (e) => {
-    const moveX = e.clientY;
-    const moveY = e.clientX;
+  const shareMouseHandler = (x, y) => {
     if (
-      shareMouse.isShare &&
-      Math.abs(shareMouse.mouseX - moveX) > 4 &&
-      Math.abs(shareMouse.mouseY - moveY) > 4
+      Math.abs(shareMouse.mouseX - y) > 10 &&
+      Math.abs(shareMouse.mouseY - x) > 10
     ) {
-      setShareMouse({
-        ...shareMouse,
-        mouseX: moveX,
-        mouseY:moveY,
-      });
-
-      socket.emit("sendMousePoints", {
+      setShareMouse({ ...shareMouse, mouseX: y, mouseY: x });
+      socketRef.current.emit("sendMousePoints", {
         user: user.id,
-        mouseX: shareMouse.mouseX,
-        mouseY: shareMouse.mouseY,
+        mouseX: y,
+        mouseY: x,
         avatar: user.avatarURL,
         room: message.room,
       });
     }
   };
 
-  const shareHandler = (e) => setShareMouse({...shareMouse, isShare: !shareMouse.isShare});
-
-  console.log(sharedUsers);
+  const shareHandler = (e) =>
+    setShareMouse({ ...shareMouse, isShare: !shareMouse.isShare });
 
   return (
-    <div className={classes.root} onMouseMove={shareMouseHandler}>
+    <div
+      className={classes.root}
+      onMouseMove={(e) =>
+        shareMouse.isShare ? shareMouseHandler(e.clientX, e.clientY) : null
+      }
+      // onClick={(e) =>
+      //   setShareMouse({ ...shareMouse, isShare: !shareMouse.isShare })
+      // }
+    >
+      {loading ? <Loading /> : null}
       <CssBaseline />
       <AppBar position="absolute" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
@@ -194,7 +239,18 @@ const LoggedUserHomePage = ({ history }) => {
             <IconButton>
               <Before />
             </IconButton>
-            <span style={{ fontSize: "20px" }}>sdfdsfgadf</span>
+            {isSearchBoard ? (
+              <SearchWhiteBoards setIsSearchBoard={setIsSearchBoard} />
+            ) : (
+              <span
+                style={{ fontSize: "20px" }}
+                onDoubleClick={(e) => setIsSearchBoard(true)}
+              >
+                {currentWhiteboard.name}
+                <br />
+                <ListItem style={{fontSize: '10px', justifyContent: "center", color: 'white'}}>{ currentWhiteboard.isPublic ? 'public' : 'private' }</ListItem>
+              </span>
+            )}
             <IconButton>
               <Next />
             </IconButton>
@@ -213,18 +269,22 @@ const LoggedUserHomePage = ({ history }) => {
           </ExitToApp>
         </Toolbar>
       </AppBar>
-      <Test color={color} />
+      <Test color={color} currentWhiteboard={currentWhiteboard} />
 
-      { shareMouse.isShare ? sharedUsers.map( user => <Avatar
-        key={user.id}
-        src={user.avatar}
-        alt={""}
-        style={{
-          position: "absolute",
-          top: `${user.mouseX}px`,
-          left: `${user.mouseY}px`,
-        }}
-      />) : null }
+      {sharedUsers.length !== 0
+        ? sharedUsers.map((user) => (
+            <Avatar
+              key={user.id}
+              src={user.avatar}
+              alt={""}
+              style={{
+                position: "absolute",
+                top: user.mouseX,
+                left: user.mouseY,
+              }}
+            />
+          ))
+        : null}
 
       <div
         style={{
@@ -246,7 +306,6 @@ const LoggedUserHomePage = ({ history }) => {
         profileAvatar={avatar}
         title={"Chat"}
         display={"inline-block"}
-        style={{ backgroundColor: "red" }}
       />
       <DrawWidget shareHandler={shareHandler} />
     </div>
