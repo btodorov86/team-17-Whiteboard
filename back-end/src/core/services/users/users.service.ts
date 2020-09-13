@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDTO } from 'src/models/users/create.user.dto';
 import { ReturnUserDTO } from 'src/models/users/return.user.dto';
 import { User } from 'src/models/users/user.entity';
@@ -51,12 +51,6 @@ export class UsersService {
       password: await bcrypt.hash(user.password, 10),
     };
 
-    // if (user.role) {
-    //     // const role = UserRole[user.role]
-    //     this.validator.checkRoleValue(user.role);
-    //     newUser.role = user.role;
-    // }
-
     return this.transform.toReturnUserDto(
       await this.usersRepo.save(newUser),
       true,
@@ -77,6 +71,36 @@ export class UsersService {
     this.usersRepo.save(user);
 
     return 'User is deleted';
+  }
+  public async update(id: string, currentPassword: string, newPassword: string): Promise<ReturnUserDTO> {
+    const user = await this.usersRepo.findOne({
+      where: { id: id, isDeleted: false },
+    });
+
+    if (!user) {
+      throw new NotFoundException(
+        `User with id: ${id} is not found or has been deleted`,
+      );
+    }
+    const isPasswordValid = bcrypt.compare(currentPassword, user.password)
+    if (!isPasswordValid) {
+      throw new UnauthorizedException("Invalid Password");
+    }
+    if (!/^[a-zA-Z0-9]{6,16}$/.test(newPassword)) {
+      // throw some exception
+    }
+    if (!/\d/.test(newPassword)) {
+      // throw some exception
+    }
+    if (!/[A-Z]/.test(newPassword)) {
+      // throw some exception
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10)
+
+    ;
+
+    return this.transform.toReturnUserDto(await this.usersRepo.save(user));
   }
   // public async unDelete(id: string): Promise<string> {
   //   const user = await this.usersRepo.findOne({

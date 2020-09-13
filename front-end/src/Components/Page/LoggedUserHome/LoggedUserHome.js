@@ -19,9 +19,7 @@ import {
   isErrorResponse,
   exceptionStatus,
 } from "../../../Constants/Constant";
-import { Widget, addResponseMessage } from "react-chat-widget";
 import "react-chat-widget/lib/styles.css";
-import io from "socket.io-client";
 import Test from "../../../Test";
 import Next from "@material-ui/icons/NavigateNext";
 import Before from "@material-ui/icons/NavigateBefore";
@@ -34,6 +32,8 @@ import LoadingContext from "../../../Providers/Context/LoadingContext";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import Loading from "../Loading/Loading";
 import SearchWhiteBoards from './SearchWhiteBoards';
+import CreateBoard from './CreateBoard';
+import ChangePassword from './ChangePassword';
 
 const LoggedUserHomePage = ({ history, match }) => {
   const { user, setUser } = useContext(AuthContext);
@@ -61,11 +61,11 @@ const LoggedUserHomePage = ({ history, match }) => {
     },
   }));
 
-  const socketRef = useRef();
+  // const socketRef = useRef();
 
   const classes = useStyles();
 
-  const [avatar, setAvatar] = useState("");
+  // const [avatar, setAvatar] = useState("");
   const [anchorEl, setAnchorEl] = useState(false);
   const [color, setColor] = useState("black");
 
@@ -84,15 +84,17 @@ const LoggedUserHomePage = ({ history, match }) => {
     name: "",
     isPublic: false,
   });
-  const [message, setMessage] = useState({
-    room: user.email,
-    from: user.id,
-    avatar: user.avatarURL,
-  });
-  const [sharedUsers, setSharedUsers] = useState([]);
+  // const [message, setMessage] = useState({
+  //   room: user.email,
+  //   from: user.id,
+  //   avatar: user.avatarURL,
+  // });
+  // const [sharedUsers, setSharedUsers] = useState([]);
   const [whiteboards, setWhiteboards] = useState([]);
   const [activeWhiteboards, setActiveWhiteboards] = useState([]);
   const [isSearchBoard, setIsSearchBoard] = useState(false);
+  const [isCreateWhiteboard, setIsCreateWhiteboard] = useState(false);
+  const [isChangePassword, setIsChangePassword] = useState(false);
 
 
   // console.log(match);
@@ -121,56 +123,56 @@ const LoggedUserHomePage = ({ history, match }) => {
       .finally(() => setLoading(false));
   }, [match.params.id]);
 
-  useEffect(() => {
-    socketRef.current = io("http://localhost:3000/chat");
+  // useEffect(() => {
+  //   socketRef.current = io("http://localhost:3000/chat");
 
-    socketRef.current.emit("joinRoom", {
-      room: message.room,
-      userName: user.userName,
-    });
+  //   socketRef.current.emit("joinRoom", {
+  //     room: message.room,
+  //     userName: user.userName,
+  //   });
 
-    socketRef.current.on("come-message", (incomingMsg) => {
-      setAvatar(
-        "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
-      );
-      addResponseMessage(incomingMsg.message);
-    });
-    socketRef.current.on("joinedToRoom", (data) => {
-      addResponseMessage(data);
-    });
+  //   socketRef.current.on("come-message", (incomingMsg) => {
+  //     setAvatar(
+  //       "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
+  //     );
+  //     addResponseMessage(incomingMsg.message);
+  //   });
+  //   socketRef.current.on("joinedToRoom", (data) => {
+  //     addResponseMessage(data);
+  //   });
 
-    socketRef.current.on("incomingMousePoints", (data) => {
-      // console.log(data);
-      const user = sharedUsers.find((x) => x.id === data.userId);
-      if (user) {
-        setSharedUsers([
-          ...sharedUsers,
-          {
-            ...user,
-            mouseX: data.mouseX,
-            mouseY: data.mouseY,
-          },
-        ]);
-      } else {
-        setSharedUsers([
-          ...sharedUsers,
-          {
-            id: data.id,
-            avatar: data.avatar,
-            mouseX: data.mouseX,
-            mouseY: data.mouseY,
-          },
-        ]);
-      }
-    });
-  }, []);
+  //   socketRef.current.on("incomingMousePoints", (data) => {
+  //     // console.log(data);
+  //     const user = sharedUsers.find((x) => x.id === data.userId);
+  //     if (user) {
+  //       setSharedUsers([
+  //         ...sharedUsers,
+  //         {
+  //           ...user,
+  //           mouseX: data.mouseX,
+  //           mouseY: data.mouseY,
+  //         },
+  //       ]);
+  //     } else {
+  //       setSharedUsers([
+  //         ...sharedUsers,
+  //         {
+  //           id: data.id,
+  //           avatar: data.avatar,
+  //           mouseX: data.mouseX,
+  //           mouseY: data.mouseY,
+  //         },
+  //       ]);
+  //     }
+  //   });
+  // }, []);
 
-  const handleNewUserMessage = (data) =>
-    socketRef.current.emit("send-message", {
-      message: data,
-      room: message.room,
-      avatar: message.avatar,
-    });
+  // const handleNewUserMessage = (data) =>
+  //   socketRef.current.emit("send-message", {
+  //     message: data,
+  //     room: message.room,
+  //     avatar: message.avatar,
+  //   });
 
   const handleClickProfile = (event) => {
     setAnchorEl(event.currentTarget);
@@ -180,21 +182,21 @@ const LoggedUserHomePage = ({ history, match }) => {
     setAnchorEl(false);
   };
 
-  const shareMouseHandler = (x, y) => {
-    if (
-      Math.abs(shareMouse.mouseX - y) > 10 &&
-      Math.abs(shareMouse.mouseY - x) > 10
-    ) {
-      setShareMouse({ ...shareMouse, mouseX: y, mouseY: x });
-      socketRef.current.emit("sendMousePoints", {
-        user: user.id,
-        mouseX: y,
-        mouseY: x,
-        avatar: user.avatarURL,
-        room: message.room,
-      });
-    }
-  };
+  // const shareMouseHandler = (x, y) => {
+  //   if (
+  //     Math.abs(shareMouse.mouseX - y) > 10 &&
+  //     Math.abs(shareMouse.mouseY - x) > 10
+  //   ) {
+  //     setShareMouse({ ...shareMouse, mouseX: y, mouseY: x });
+  //     socketRef.current.emit("sendMousePoints", {
+  //       user: user.id,
+  //       mouseX: y,
+  //       mouseY: x,
+  //       avatar: user.avatarURL,
+  //       room: message.room,
+  //     });
+  //   }
+  // };
 
   const shareHandler = (e) =>
     setShareMouse({ ...shareMouse, isShare: !shareMouse.isShare });
@@ -202,9 +204,9 @@ const LoggedUserHomePage = ({ history, match }) => {
   return (
     <div
       className={classes.root}
-      onMouseMove={(e) =>
-        shareMouse.isShare ? shareMouseHandler(e.clientX, e.clientY) : null
-      }
+      // onMouseMove={(e) =>
+      //   shareMouse.isShare ? shareMouseHandler(e.clientX, e.clientY) : null
+      // }
       // onClick={(e) =>
       //   setShareMouse({ ...shareMouse, isShare: !shareMouse.isShare })
       // }
@@ -234,7 +236,7 @@ const LoggedUserHomePage = ({ history, match }) => {
             />
           </ListItemAvatar>
           <span style={{ fontSize: "25px" }}>{user.userName}</span>
-          <ProfileMenu anchorEl={anchorEl} handleClose={handleCloseProfile} />
+          <ProfileMenu anchorEl={anchorEl} handleClose={handleCloseProfile} setIsCreateWhiteboard={setIsCreateWhiteboard} setIsChangePassword={setIsChangePassword}  />
           <ListItem style={{ justifyContent: "center" }}>
             <IconButton>
               <Before />
@@ -269,9 +271,9 @@ const LoggedUserHomePage = ({ history, match }) => {
           </ExitToApp>
         </Toolbar>
       </AppBar>
-      <Test color={color} currentWhiteboard={currentWhiteboard} />
+      <Test color={color} currentWhiteboard={currentWhiteboard} isShare={shareMouse.isShare} />
 
-      {sharedUsers.length !== 0
+      {/* {sharedUsers.length !== 0
         ? sharedUsers.map((user) => (
             <Avatar
               key={user.id}
@@ -284,8 +286,7 @@ const LoggedUserHomePage = ({ history, match }) => {
               }}
             />
           ))
-        : null}
-
+        : null} */}
       <div
         style={{
           position: "absolute",
@@ -300,14 +301,16 @@ const LoggedUserHomePage = ({ history, match }) => {
           }}
         />
       </div>
-      <Widget
+      {/* <Widget
         handleNewUserMessage={handleNewUserMessage}
         // showTimeStamp={false}
         profileAvatar={avatar}
         title={"Chat"}
         display={"inline-block"}
-      />
+      /> */}
       <DrawWidget shareHandler={shareHandler} />
+      <CreateBoard isCreateWhiteboard={isCreateWhiteboard} setIsCreateWhiteboard={setIsCreateWhiteboard} />
+      <ChangePassword isChangePassword={isChangePassword} setIsChangePassword={setIsChangePassword} />
     </div>
   );
 };

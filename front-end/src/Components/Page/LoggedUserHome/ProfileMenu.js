@@ -3,7 +3,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import propTypes from 'prop-types';
 
-const ProfileMenu = ({anchorEl, handleClose}) => {
+const ProfileMenu = ({anchorEl, handleClose, setIsCreateWhiteboard, setIsChangePassword}) => {
 
     return (
         <Menu
@@ -14,10 +14,10 @@ const ProfileMenu = ({anchorEl, handleClose}) => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose} style={{ margin: "10px" }}>
+              <MenuItem onClick={(e) => (setIsCreateWhiteboard(true), handleClose())} style={{ margin: "10px" }}>
                 Create board
               </MenuItem>
-              <MenuItem onClick={handleClose} style={{ margin: "10px" }}>
+              <MenuItem onClick={(e) => (setIsChangePassword(true), handleClose())} style={{ margin: "10px" }}>
                 Change password
               </MenuItem>
               <MenuItem onClick={handleClose} style={{ margin: "10px" }}>
@@ -29,11 +29,10 @@ const ProfileMenu = ({anchorEl, handleClose}) => {
 };
 
 ProfileMenu.propTypes = {
-    anchorEl: propTypes.bool.isRequired,
-    handleClose: propTypes.oneOfType([
-        propTypes.bool,
-        propTypes.element,
-    ]).isRequired,
+    anchorEl: propTypes.oneOfType([propTypes.object, propTypes.bool]).isRequired,
+    handleClose: propTypes.func.isRequired,
+    setIsChangePassword: propTypes.func.isRequired,
+    setIsCreateWhiteboard: propTypes.func.isRequired,
 }
 
 export default ProfileMenu

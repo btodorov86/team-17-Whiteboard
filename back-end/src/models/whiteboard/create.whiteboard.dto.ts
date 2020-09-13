@@ -1,6 +1,6 @@
 import { Length, IsString, IsBoolean } from 'class-validator'
 export class CreateWhiteboardDTO {
-    @Length(1, )
+    @Length(2, )
     @IsString()
     name: string
     @IsBoolean()

@@ -58,12 +58,12 @@ export class UsersController {
     // }
 
     @UseGuards(AuthGuard('jwt'))
-    @Put(':id')
+    @Put()
     public async update(
-        @Body(new ValidationPipe({ whitelist: true })) body: Partial<UpdateUserDTO>,
-        @Param('id') id: string,
-        @Req() req: Request,): Promise<any> {
+        @Body(new ValidationPipe({whitelist: true})) body: UpdateUserDTO,
+        @Req() req: Request,): Promise<ReturnUserDTO> {
         const user = req.user as User;
+        return this.userService.update(user.id, body.currentPassword, body.newPassword)
         // validate name and password
         // delete every not needed property from input obj
         // return await this.userService.update(id, body, user.id)

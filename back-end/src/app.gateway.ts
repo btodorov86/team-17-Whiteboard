@@ -26,7 +26,7 @@ export class AppGateway implements OnGatewayInit{
   @SubscribeMessage('joinRoom')
   async joinRoom(client: Socket, message: { room: string, userName: string} ): Promise<void> {
     client.join(message.room);
-    console.log(message.room);
+    // console.log(message.room);
     client.emit('joinedToRoom', `Welcome ${message.userName}!`);
     client.to(message.room).emit('joinedToRoom', `${message.userName} has joined`);
   }
@@ -39,7 +39,7 @@ export class AppGateway implements OnGatewayInit{
 
   @SubscribeMessage('send-message')
   async message(client: Socket, message: {message: string, from: string, room: string, avatar: string}): Promise<void> {
-    console.log(message);
+    // console.log(message);
     client.to(message.room).emit('come-message', message)
   }
   // @SubscribeMessage('update')
@@ -64,20 +64,20 @@ export class AppGateway implements OnGatewayInit{
       mouseY: message.mouseY,
     })
   }
-  @SubscribeMessage('mesg')
-  message1(client: Socket, message: {room: string, msg: string, from: string, avatar: string}): void {
-      console.log(message);
+  // @SubscribeMessage('mesg')
+  // message1(client: Socket, message: {room: string, msg: string, from: string, avatar: string}): void {
+  //     console.log(message);
 
-      client.to(message.room).emit('mesg', message)
+  //     client.to(message.room).emit('mesg', message)
 
-  }
-  @SubscribeMessage('send')
-  come(client: Socket, message: {room: string, x: string, from: string, y: string}): void {
-    console.log(message);
+  // }
+  // @SubscribeMessage('send')
+  // come(client: Socket, message: {room: string, x: string, from: string, y: string}): void {
+  //   console.log(message);
 
-      client.to(message.room).emit('come', message)
+  //     client.to(message.room).emit('come', message)
 
-  }
+  // }
   // @SubscribeMessage('joinRoom')
   // async joinRoom(client: Socket, message: string ): Promise<void> {
   //   client.join(message);

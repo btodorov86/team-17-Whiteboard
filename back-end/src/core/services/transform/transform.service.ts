@@ -7,7 +7,7 @@ import { ReturnCreatedWhiteboardDTO } from 'src/models/whiteboard/return.created
 
 @Injectable()
 export class TransformService {
-  toReturnUserDto(user: User, token = false): Partial<ReturnUserDTO> {
+  toReturnUserDto(user: User, token = false): ReturnUserDTO {
     if (token) {
       return {
         id: user.id,

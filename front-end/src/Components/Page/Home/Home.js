@@ -34,7 +34,6 @@ const Home = () => {
   const { loading, setLoading } = useContext(LoadingContext);
   const { setOpen } = useContext(ExceptionContext);
 
-  console.log(whiteboards);
 
   useEffect(() => {
     setLoading(true);

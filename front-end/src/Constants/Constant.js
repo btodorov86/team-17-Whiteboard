@@ -2,10 +2,13 @@ export const BASE_URL = 'http://localhost:3000';
 
 export const isErrorResponse = (value) => {
 
-    if (value.error) {
-        throw new Error(value.message)
-    }
     if (value?.statusCode >= 400) {
+        if (typeof value.message === 'string') {
+            throw new Error(value.message)
+        }
+        throw new Error(value.message.reduce( (a, b) => a + '\n' + b))
+    }
+    if (value.error) {
         throw new Error(value.message)
     }
     return

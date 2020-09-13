@@ -12,7 +12,7 @@ const GuardedRouteAuth = ({ component: Component, user, ...otherProps }) => (
 
 GuardedRouteAuth.propTypes = {
     component: propTypes.func.isRequired,
-    user: propTypes.bool.isRequired
+    user: propTypes.oneOfType([propTypes.bool, propTypes.object]).isRequired
 }
 
 export default GuardedRouteAuth

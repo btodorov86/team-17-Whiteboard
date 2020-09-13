@@ -1,5 +1,5 @@
 // *https://www.registers.service.gov.uk/registers/country/use-the-api*
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -9,13 +9,15 @@ import {
   isErrorResponse,
 } from "../../../Constants/Constant";
 import { withRouter } from "react-router-dom";
+import ExceptionContext from '../../../Providers/Context/ExceptionContext';
 
 const SearchWhiteboard = ({ setIsSearchBoard, history }) => {
-  const [open, setOpen] = useState(false);
+  const { setOpen } = useContext(ExceptionContext);
+  const [openAutocomplete, setOpenAutocomplete] = useState(false);
   const [options, setOptions] = useState([]);
-  const loading = open && options.length === 0;
+  const loading = openAutocomplete && options.length === 0;
   useEffect(() => {
-    let active = true;
+    // let active = true;
 
     if (!loading) {
       return undefined;
@@ -36,17 +38,26 @@ const SearchWhiteboard = ({ setIsSearchBoard, history }) => {
     //   );
 
     (async () => {
-      const response = await fetch(`${BASE_URL}/whiteboards/public`);
-      const countries = await response.json();
+    fetch(`${BASE_URL}/whiteboards/public`)
+      .then( r => r.json())
+      .then( resp => {
+        isErrorResponse(resp);
+        setOptions(resp)
+      })
+      .catch( err => setOpen({
+        value: true,
+        msg: err.message,
+        statusType: exceptionStatus.error,
+      }))
 
-      if (active) {
-        setOptions(countries);
-      }
+      // if (active) {
+        // setOptions(countries);
+      // }
     })();
 
-    return () => {
-      active = false;
-    };
+    // return () => {
+    //   active = false;
+    // };
   }, [loading]);
 
   // useEffect(() => {
@@ -59,12 +70,12 @@ const SearchWhiteboard = ({ setIsSearchBoard, history }) => {
     <Autocomplete
       id="asynchronous-demo"
       style={{ width: 200 }}
-      open={open}
+      open={openAutocomplete}
       onOpen={() => {
-        setOpen(true);
+        setOpenAutocomplete(true);
       }}
       onClose={() => {
-        setOpen(false);
+        setOpenAutocomplete(false);
       }}
       getOptionSelected={(option, value) => option.name === value.name}
       getOptionLabel={(option) => option.name}
