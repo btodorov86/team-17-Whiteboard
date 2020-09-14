@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import images from "./img1.png";
+import images from "./img11.png";
 import "./home.css";
 import { Modal, makeStyles, Fade } from "@material-ui/core";
 import Login from "../Login/Login";
