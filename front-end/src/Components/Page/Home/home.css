@@ -97,7 +97,7 @@
 }
 
 .phonering-alo-phone.phonering-alo-green.phonering-alo-hover .phonering-alo-ph-circle-fill,.phonering-alo-phone.phonering-alo-green:hover .phonering-alo-ph-circle-fill {
-    background-color:rgba(117,235,80,0.5);
+    background-color:#6fa241;
     background-color:#baf5a7 9;
     opacity:.75!important
 }
@@ -114,7 +114,7 @@
 }
 
 .phonering-alo-phone.phonering-alo-gray .phonering-alo-ph-circle-fill {
-    background-color:rgba(117,235,80,0.5);
+    background-color: #6fa241;
     opacity:.75!important
 }
 
