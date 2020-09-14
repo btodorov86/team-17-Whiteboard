@@ -15,18 +15,21 @@ import {
   exceptionStatus,
 } from "../../../Constants/Constant";
 import { withRouter } from "react-router-dom";
-import AuthContext from "../../../Providers/Context/AuthContext";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
+import propTypes from 'prop-types';
 
-const Register = ({
-  isLoginPage,
-  setIsLoginPage,
-  history,
-  isPasswordChange,
-}) => {
-  const { user } = useContext(AuthContext);
+const Register = ({ isLoginPage, setIsLoginPage }) => {
 
   const { setOpen } = useContext(ExceptionContext);
+  const [registrationPage, setRegistrationPage] = useState(0);
+  const pageNumberNames = [
+    "firstName",
+    "lastName",
+    "userName",
+    "email",
+    "password",
+    "confirmPassword",
+  ];
 
   const [createUser, setCreateUser] = useState({
     firstName: {
@@ -58,116 +61,8 @@ const Register = ({
       isValid: true,
       isTouched: false,
       value: "",
-    }
+    },
   });
-
-  const updateState = (prop, value) => {
-    setCreateUser({
-      ...createUser,
-      [prop]: {
-        isTouched: true,
-        value,
-        isValid: userValidation[prop].reduce((acc, validateFn) => acc && (typeof validateFn(value) === 'boolean'), true)
-      }
-    })
-  }
-
-  const userValidation = {
-    firstName: [
-      (data) => data?.length > 0 || "First name field is empty",
-      (data) => !/[0-9]/.test(data) || "First name can't include digit",
-  ],
-    lastName: [
-      (data) => data?.length > 0 || "Enter Last name",
-      (data) => !/[0-9]/.test(data) || "Last name can't include digit",
-    ],
-    email: [
-      (data) =>
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-          data
-        ) || "Invalid email address",
-    ],
-    userName: [
-      (data) =>
-      /^[a-zA-Z0-9]{6,16}$/.test(data) || "User name must have 6 to 16 characters",
-    ],
-    password: [
-      (data) =>
-        /^[a-zA-Z0-9]{6,16}$/.test(data) || "Password must have 6 to 16 characters",
-      (data) =>
-        /\d/.test(data) || "Password must contain minimum 1 digit",
-      (data) =>
-        /[A-Z]/.test(data) || "Password must contain minimum 1 upper case alphabet",
-    ],
-    confirmPassword: [
-      (data) => createUser.password.value === data || "Password not match",
-    ],
-  };
-
-  const updateHandler = (e) => {
-    e.preventDefault();
-
-    let URL = `${BASE_URL}/users/${user.id}`;
-
-    let updateObj = {
-      firstName: createUser.firstName,
-      lastName: createUser.lastName,
-      password: createUser.password,
-    };
-
-    fetch(URL, {
-      method: "PUT",
-      headers: {
-        Authorization: localStorage.getItem("token"),
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updateObj),
-    })
-      .then((r) => r.json())
-      .then((resp) => {
-        isErrorResponse(resp);
-        history.goBack();
-      })
-      .catch((err) =>
-        setOpen({
-          value: true,
-          msg: err.message,
-          statusType: exceptionStatus.error,
-        })
-      );
-  };
-
-  const signInHandler = (e) => {
-    fetch(`${BASE_URL}/users`, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({
-        firstName: createUser.firstName.value,
-        lastName: createUser.lastName.value,
-        userName: createUser.userName.value,
-        email: createUser.email.value,
-        password: createUser.password.value,
-      }),
-    })
-      .then((r) => r.json())
-      .then((resp) => {
-        if (resp.error) {
-          isErrorResponse(resp);
-        }
-
-        setIsLoginPage(!isLoginPage);
-      })
-      .catch((err) =>
-        setOpen({
-          value: true,
-          msg: err.message,
-          statusType: exceptionStatus.error,
-        })
-      );
-  };
-
   const useStyles = makeStyles((theme) => ({
     paper: {
       marginTop: theme.spacing(8),
@@ -192,53 +87,272 @@ const Register = ({
 
   const classes = useStyles();
 
+  const updateState = (prop, value) => {
+    setCreateUser({
+      ...createUser,
+      [prop]: {
+        isTouched: true,
+        value,
+        isValid: userValidation[prop].reduce(
+          (acc, validateFn) => acc && typeof validateFn(value) === "boolean",
+          true
+        ),
+      },
+    });
+  };
+
+  const userValidation = {
+    firstName: [
+      (data) => data?.length > 0 || "First name field is empty",
+      (data) => !/[0-9]/.test(data) || "First name can't include digit",
+    ],
+    lastName: [
+      (data) => data?.length > 0 || "Enter Last name",
+      (data) => !/[0-9]/.test(data) || "Last name can't include digit",
+    ],
+    email: [
+      (data) =>
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+          data
+        ) || "Invalid email address",
+    ],
+    userName: [
+      (data) =>
+        /^[a-zA-Z0-9]{6,16}$/.test(data) ||
+        "User name must have 6 to 16 characters",
+    ],
+    password: [
+      (data) =>
+        /^[a-zA-Z0-9]{6,16}$/.test(data) ||
+        "Password must have 6 to 16 characters",
+      (data) => /\d/.test(data) || "Password must contain minimum 1 digit",
+      (data) =>
+        /[A-Z]/.test(data) ||
+        "Password must contain minimum 1 upper case alphabet",
+    ],
+    confirmPassword: [
+      (data) => createUser.password.value === data || "Password not match",
+    ],
+  };
+
+  const signInHandler = (e) => {
+    fetch(`${BASE_URL}/users`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        firstName: createUser.firstName.value,
+        lastName: createUser.lastName.value,
+        userName: createUser.userName.value,
+        email: createUser.email.value,
+        password: createUser.password.value,
+      }),
+    })
+      .then((r) => r.json())
+      .then((resp) => {
+          isErrorResponse(resp);
+          setOpen({
+            value: true,
+            msg: 'Successes registration!',
+            statusType: exceptionStatus.success,
+          })
+      })
+      .catch((err) =>
+        setOpen({
+          value: true,
+          msg: err.message,
+          statusType: exceptionStatus.error,
+        })
+      )
+      .finally(() => setIsLoginPage(false))
+  };
+
   const isDisable = () => {
     return !Object.values(createUser).reduce((acc, value) => {
-      return value.isTouched && value.isValid && acc ? true : false
-    }, true)
+      return value.isTouched && value.isValid && acc ? true : false;
+    }, true);
+  };
+
+  const SingleDisable = (fieldName) => {
+    return createUser[fieldName].isValid && createUser[fieldName].isTouched
+      ? false
+      : true;
   };
 
   const renderError = (prop) => {
-    return createUser[prop].isTouched ? userValidation[prop]
-    .map(fn => fn(createUser[prop].value))
-    .filter( x => typeof x === 'string')
-    .map( (err, index) => <p key={index} style={{color: 'red'}}>{err}</p>) : null
+    return createUser[prop].isTouched
+      ? userValidation[prop]
+          .map((fn) => fn(createUser[prop].value))
+          .filter((x) => typeof x === "string")
+          .map((err, index) => (
+            <p key={index} style={{ color: "red" }}>
+              {err}
+            </p>
+          ))
+      : null;
   };
 
-  const toggleEmailAndUsername = isPasswordChange ? null : (
+  const registrationFields = [
+    <Grid item xs={12}>
+      <TextField
+        autoComplete="fname"
+        name="firstName"
+        variant="outlined"
+        required
+        fullWidth
+        id="firstName"
+        label="First Name"
+        autoFocus
+        value={createUser.firstName.value}
+        error={!createUser.firstName.isValid}
+        onChange={(e) => updateState("firstName", e.target.value.trim())}
+      />
+      {renderError("firstName")}
+    </Grid>,
+    <Grid item xs={12}>
+      <TextField
+        variant="outlined"
+        required
+        fullWidth
+        id="lastName"
+        label="Last Name"
+        name="lastName"
+        autoComplete="lname"
+        value={createUser.lastName.value}
+        error={!createUser.lastName.isValid}
+        onChange={(e) => updateState("lastName", e.target.value.trim())}
+      />
+      {renderError("lastName")}
+    </Grid>,
+    <Grid item xs={12}>
+      <TextField
+        variant="outlined"
+        required
+        fullWidth
+        id="username"
+        label="Username"
+        name="username"
+        autoComplete="username"
+        value={createUser.userName.value}
+        error={!createUser.userName.isValid}
+        onChange={(e) => updateState("userName", e.target.value.trim())}
+      />
+      {renderError("userName")}
+    </Grid>,
+    <Grid item xs={12}>
+      <TextField
+        variant="outlined"
+        required
+        fullWidth
+        id="email"
+        label="Email Address"
+        name="email"
+        autoComplete="email"
+        value={createUser.email.value}
+        error={!createUser.email.isValid}
+        onChange={(e) => updateState("email", e.target.value.trim())}
+      />
+      {renderError("email")}
+    </Grid>,
     <>
       <Grid item xs={12}>
         <TextField
           variant="outlined"
           required
           fullWidth
-          id="username"
-          label="Username"
-          name="username"
-          autoComplete="username"
-          value={createUser.userName.value}
-          error={!createUser.userName.isValid}
-          onChange={(e) => updateState('userName', e.target.value.trim())}
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+          value={createUser.password.value}
+          error={!createUser.password.isValid}
+          onChange={(e) => updateState("password", e.target.value.trim())}
         />
-        {renderError('userName')}
+        {renderError("password")}
       </Grid>
       <Grid item xs={12}>
         <TextField
           variant="outlined"
           required
           fullWidth
-          id="email"
-          label="Email Address"
-          name="email"
-          autoComplete="email"
-          value={createUser.email.value}
-          error={!createUser.email.isValid}
-          onChange={(e) => updateState('email', e.target.value.trim())}
+          name="Confirm password"
+          label="Confirm password"
+          type="password"
+          id="confirm password"
+          autoComplete="current-password"
+          value={createUser.confirmPassword.value}
+          error={!createUser.confirmPassword.isValid}
+          onChange={(e) =>
+            updateState("confirmPassword", e.target.value.trim())
+          }
         />
-        {renderError('email')}
       </Grid>
-    </>
-  );
+    </>,
+  ];
+
+  const toggleButtons =
+    registrationFields.length - 1 > registrationPage ? (
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <Button
+            type="button"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={(e) => (e.preventDefault(), backHandler())}
+            disabled={registrationPage === 0}
+          >
+            Back
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            type="button"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={(e) => (e.preventDefault(), nextHandler())}
+            disabled={SingleDisable(pageNumberNames[registrationPage])}
+          >
+            Next
+          </Button>
+        </Grid>
+      </Grid>
+    ) : (
+      <Grid item xs={12}>
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          onClick={signInHandler}
+          disabled={isDisable()}
+        >
+          Sign Up
+        </Button>
+        <Button
+          type="button"
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={(e) => (e.preventDefault(), backHandler())}
+        >
+          Back
+        </Button>
+      </Grid>
+    );
+
+  const nextHandler = () => {
+    setRegistrationPage(registrationPage + 1);
+  };
+  const backHandler = () => {
+    setRegistrationPage(registrationPage - 1);
+  };
 
   return (
     <Container
@@ -257,91 +371,13 @@ const Register = ({
           {/* <LockOutlinedIcon /> */}
         </Avatar>
         <Typography component="h1" variant="h5">
-          {isPasswordChange ? user.userName : "Sign up"}
+          Sign up
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-                value={createUser.firstName.value}
-                error={!createUser.firstName.isValid}
-                onChange={(e) => updateState('firstName', e.target.value.trim())}
-              />
-              {renderError('firstName')}
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
-                value={createUser.lastName.value}
-                error={!createUser.lastName.isValid}
-                onChange={(e) => updateState('lastName', e.target.value.trim())}
-              />
-              {renderError('lastName')}
-            </Grid>
-            {toggleEmailAndUsername}
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={createUser.password.value}
-                error={!createUser.password.isValid}
-                onChange={(e) => updateState('password', e.target.value.trim())}
-              />
-              {renderError('password')}
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                name="Confirm password"
-                label="Confirm password"
-                type="password"
-                id="confirm password"
-                autoComplete="current-password"
-                value={createUser.confirmPassword.value}
-                error={!createUser.confirmPassword.isValid}
-                onChange={(e) => updateState('confirmPassword', e.target.value.trim())}
-              />
-            </Grid>
-            <Grid item xs={12}></Grid>
+            {registrationFields[registrationPage]}
           </Grid>
-          <Button
-            type="button"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={isPasswordChange ? updateHandler : signInHandler}
-            disabled={isDisable()}
-          >
-            {isPasswordChange ? "Update" : "Sign Up"}
-          </Button>
-          {/* <Grid container justify="flex-start">
-              { props.location.pathname.includes('account/password') ? null : <Link href="/login" variant="body2">
-                Forgotten password
-              </Link>}
-          </Grid> */}
+          {toggleButtons}
           <Grid container>
             <Grid item xs></Grid>
             <Grid item>
@@ -373,4 +409,10 @@ const Register = ({
   );
 };
 
-export default withRouter(Register);
+Register.propTypes ={
+  isLoginPage: propTypes.bool.isRequired,
+  setIsLoginPage: propTypes.func.isRequired,
+
+}
+
+export default Register

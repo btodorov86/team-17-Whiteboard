@@ -29,7 +29,6 @@ const Home = () => {
 
   const [openModal, setOpenModal] = useState(false);
   const [isLoginPage, setIsLoginPage] = useState(true);
-  const [isPasswordChange, setIsPasswordChange] = useState(false);
   const [whiteboards, setWhiteboards] = useState([]);
   const { loading, setLoading } = useContext(LoadingContext);
   const { setOpen } = useContext(ExceptionContext);
@@ -49,20 +48,20 @@ const Home = () => {
 
   const phoneRinging = (
     <div
-      class="phonering-alo-phone phonering-alo-green phonering-alo-show"
+      className="phonering-alo-phone phonering-alo-green phonering-alo-show"
       id="phonering-alo-phoneIcon"
       //   onClick={(e) => (e.preventDefault(), setOpen(true))}
     >
-      <div class="phonering-alo-ph-circle"></div>
-      <div class="phonering-alo-ph-circle-fill"></div>
+      <div className="phonering-alo-ph-circle"></div>
+      <div className="phonering-alo-ph-circle-fill"></div>
       <a
-        href
+        href="true"
         style={{ cursor: "pointer" }}
         onClick={(e) => (e.preventDefault(), setOpenModal(true))}
-        class="pps-btn-img"
+        className="pps-btn-img"
         title="Sign in"
       >
-        <div class="phonering-alo-ph-img-circle"></div>
+        <div className="phonering-alo-ph-img-circle"></div>
       </a>
     </div>
   );
@@ -98,7 +97,6 @@ const Home = () => {
               <Register
                 setIsLoginPage={setIsLoginPage}
                 isLoginPage={isLoginPage}
-                isPasswordChange={isPasswordChange}
               />
             )}
           </div>
