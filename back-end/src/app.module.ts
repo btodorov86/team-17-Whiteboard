@@ -9,6 +9,10 @@ import { LineModule } from './lines/lines.module';
 import { RectangleModule } from './rectangles/rectangles.module';
 import { CircleModule } from './circles/circle.module';
 import { TextBoxModule } from './textBox/textBox.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { MailerController } from './mailer/mailer.controller';
+import { ResetPasswordEmailService } from './core/services/mailer/mailer.service';
 
 
 
@@ -22,8 +26,15 @@ import { TextBoxModule } from './textBox/textBox.module';
     RectangleModule,
     CircleModule,
     TextBoxModule,
+    MailerModule.forRoot({
+      transport: 'smtp://alboig2005@gmail.com',
+
+      // defaults: {
+      //   from:'alboig2005@gmail.com',
+      // },
+    }),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, MailerController],
   providers: [AppGateway],
 })
 export class AppModule {}
