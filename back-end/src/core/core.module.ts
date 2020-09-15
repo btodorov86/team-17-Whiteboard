@@ -20,7 +20,6 @@ import { WhiteBoardService } from './services/whiteBoard/whiteBoard.service';
 import { TextBoxService } from './services/textBox/textBox.service';
 import { TextBox } from 'src/models/textBox/textBox.entity';
 import { ResetPasswordEmailService } from "./services/mailer/mailer.service";
-import { MailerService } from "@nestjs-modules/mailer";
 
 @Module({
     imports: [

@@ -10,9 +10,7 @@ import { RectangleModule } from './rectangles/rectangles.module';
 import { CircleModule } from './circles/circle.module';
 import { TextBoxModule } from './textBox/textBox.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { MailerController } from './mailer/mailer.controller';
-import { ResetPasswordEmailService } from './core/services/mailer/mailer.service';
 
 
 

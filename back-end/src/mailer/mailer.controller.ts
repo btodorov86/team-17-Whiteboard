@@ -1,5 +1,4 @@
-import { MailerService } from "@nestjs-modules/mailer";
-import { Body, Controller, Post, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { ResetPasswordEmailService } from "src/core/services/mailer/mailer.service";
 
 @Controller('recover')

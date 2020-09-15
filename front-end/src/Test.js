@@ -9,6 +9,7 @@ import { Widget, addResponseMessage } from "react-chat-widget";
 import DrawWidget from "./Components/Page/LoggedUserHome/DrawWidget";
 import ExceptionContext from "./Providers/Context/ExceptionContext";
 import { exceptionStatus } from "./Constants/Constant";
+import DrawWidget1 from './Components/Page/LoggedUserHome/DrawWidget1';
 // import
 
 const Test = ({ color, stroke1, currentWhiteboard }) => {
@@ -335,7 +336,10 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
         display={"inline-block"}
       />
       {/* <Chat socketRef={socketRef} /> */}
+      <div style={{position: 'fixed'}}>
       <DrawWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+      <DrawWidget1 shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+      </div>
     </>
   );
 };

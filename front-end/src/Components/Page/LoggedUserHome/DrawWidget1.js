@@ -14,11 +14,10 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     transform: 'translateZ(0px)',
     flexGrow: 1,
-    top: 550,
+    top: 620,
     marginLeft: 10,
     width: 60,
     height: 60,
-
   },
   // exampleWrapper: {
   //   position: 'relative',
@@ -43,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawWidget = ({shareHandler, setIsDrawing}) => {
+const DrawWidget1 = ({shareHandler, setIsDrawing}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
@@ -88,7 +87,7 @@ const DrawWidget = ({shareHandler, setIsDrawing}) => {
         <SpeedDial
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
-          icon={<SpeedDialIcon />}
+          icon={<SaveIcon />}
           onClose={handleCloseWidget}
           onOpen={handleOpenWidget}
           open={openWidget}
@@ -107,4 +106,4 @@ const DrawWidget = ({shareHandler, setIsDrawing}) => {
   );
 };
 
-export default DrawWidget
+export default DrawWidget1
