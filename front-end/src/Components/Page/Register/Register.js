@@ -14,7 +14,6 @@ import {
   isErrorResponse,
   exceptionStatus,
 } from "../../../Constants/Constant";
-import { withRouter } from "react-router-dom";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import propTypes from 'prop-types';
 
@@ -302,7 +301,10 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={(e) => (e.preventDefault(), backHandler())}
+            onClick={(e) => {
+              e.preventDefault();
+              backHandler()
+            }}
             disabled={registrationPage === 0}
           >
             Back
@@ -315,7 +317,10 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={(e) => (e.preventDefault(), nextHandler())}
+            onClick={(e) => {
+              e.preventDefault();
+              nextHandler()
+            }}
             disabled={SingleDisable(pageNumberNames[registrationPage])}
           >
             Next
@@ -340,7 +345,10 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
           fullWidth
           variant="contained"
           color="primary"
-          onClick={(e) => (e.preventDefault(), backHandler())}
+          onClick={(e) => {
+            e.preventDefault();
+            backHandler()
+          }}
         >
           Back
         </Button>
@@ -385,9 +393,10 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
                 <Link
                   style={{ cursor: "pointer" }}
                   variant="body2"
-                  onClick={(e) => (
-                    e.preventDefault(), setIsLoginPage(!isLoginPage)
-                  )}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsLoginPage(!isLoginPage);
+                  }}
                 >
                   Already have an account?
                 </Link>

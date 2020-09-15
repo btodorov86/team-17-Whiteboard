@@ -127,8 +127,10 @@ const ChangePassword = ({ isChangePassword, setIsChangePassword }) => {
           statusType: exceptionStatus.error,
         });
       })
-      .finally(() => (setLoading(false),
-      setIsChangePassword(false), setChangePassword({
+      .finally(() => {
+        setLoading(false);
+        setIsChangePassword(false);
+        setChangePassword({
         currentPassword: {
           isValid: true,
           isTouched: false,
@@ -144,7 +146,7 @@ const ChangePassword = ({ isChangePassword, setIsChangePassword }) => {
           isTouched: false,
           value: "",
         },
-      })))
+      })})
   };
 
   const isDisable = () => {

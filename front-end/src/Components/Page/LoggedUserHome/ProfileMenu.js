@@ -14,10 +14,18 @@ const ProfileMenu = ({anchorEl, handleClose, setIsCreateWhiteboard, setIsChangeP
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={(e) => (setIsCreateWhiteboard(true), handleClose())} style={{ margin: "10px" }}>
+              <MenuItem onClick={(e) => {
+                setIsCreateWhiteboard(true);
+                handleClose();
+                }} 
+                style={{ margin: "10px" }}>
                 Create board
               </MenuItem>
-              <MenuItem onClick={(e) => (setIsChangePassword(true), handleClose())} style={{ margin: "10px" }}>
+              <MenuItem onClick={(e) => {
+                setIsChangePassword(true);
+                handleClose()
+                }}
+                style={{ margin: "10px" }}>
                 Change password
               </MenuItem>
               <MenuItem onClick={handleClose} style={{ margin: "10px" }}>

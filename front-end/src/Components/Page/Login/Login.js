@@ -14,7 +14,6 @@ import jwt from 'jwt-decode';
 import AuthContext from '../../../Providers/Context/AuthContext';
 import ExceptionContext from '../../../Providers/Context/ExceptionContext';
 import { withRouter } from 'react-router-dom';
-import nodemailer from 'nodemailer';
 
 const Login = ({ history, setIsLoginPage, isLoginPage }) => {
 
@@ -204,20 +203,29 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
             color="primary"
             // className={location.pathname.includes('password/reset') ? classes.resetPassRightBtn : classes.submit}
             className={isPasswordReset ? classes.resetPassRightBtn : classes.submit}
-            onClick={(e) => (e.preventDefault(), setIsPasswordReset(!isPasswordReset))}
+            onClick={(e) => {
+              e.preventDefault();
+              setIsPasswordReset(!isPasswordReset)
+            }}
             style={{cursor: 'pointer'}}
           >
             Back
           </Button> : null }
           <Grid container>
             <Grid item xs>
-            <Link style={{cursor: 'pointer'}} variant="body2" onClick={(e) => (e.preventDefault(), setIsPasswordReset(!isPasswordReset))}>
+            <Link style={{cursor: 'pointer'}} variant="body2" onClick={(e) => {
+              e.preventDefault();
+              setIsPasswordReset(!isPasswordReset)
+              }}>
                 {/* { location.pathname.includes('password/reset') ? null : "Forgot password?" } */}
                 { isPasswordReset ? null : "Forgot password?" }
                </Link>
             </Grid>
             <Grid item>
-              <Link  style={{cursor: 'pointer'}} variant="body2" onClick={(e) => (e.preventDefault(), setIsLoginPage(!isLoginPage))}>
+              <Link  style={{cursor: 'pointer'}} variant="body2" onClick={(e) => {
+                e.preventDefault();
+                setIsLoginPage(!isLoginPage)
+                }}>
                {/* { location.pathname.includes('password/reset') ? null : "Don't have an account? Sign Up" } */}
                { isPasswordReset ? null : "Don't have an account? Sign Up" }
               </Link>
