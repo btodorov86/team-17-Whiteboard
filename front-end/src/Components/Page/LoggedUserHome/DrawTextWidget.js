@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import SpeedDial from '@material-ui/lab/SpeedDial';
-import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import FileCopyIcon from '@material-ui/icons/FileCopyOutlined';
 import SaveIcon from '@material-ui/icons/Save';
 import PrintIcon from '@material-ui/icons/Print';
 import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-
+import TextFieldsIcon from '@material-ui/icons/TextFields';
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
     transform: 'translateZ(0px)',
     flexGrow: 1,
-    top: 620,
+    top: 570,
     marginLeft: 10,
     width: 60,
     height: 60,
@@ -42,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawWidget1 = ({shareHandler, setIsDrawing}) => {
+const DrawTextWidget = ({shareHandler, setIsDrawing}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
@@ -87,7 +86,7 @@ const DrawWidget1 = ({shareHandler, setIsDrawing}) => {
         <SpeedDial
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
-          icon={<SaveIcon />}
+          icon={<TextFieldsIcon />}
           onClose={handleCloseWidget}
           onOpen={handleOpenWidget}
           open={openWidget}
@@ -106,4 +105,4 @@ const DrawWidget1 = ({shareHandler, setIsDrawing}) => {
   );
 };
 
-export default DrawWidget1
+export default DrawTextWidget

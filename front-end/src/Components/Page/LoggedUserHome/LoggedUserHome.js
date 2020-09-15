@@ -24,7 +24,7 @@ import Test from "../../../Test";
 import Next from "@material-ui/icons/NavigateNext";
 import Before from "@material-ui/icons/NavigateBefore";
 import ProfileMenu from "./ProfileMenu";
-import DrawWidget from "./DrawWidget";
+import DrawWidget from "./DrawEraseWidget";
 import "./chat.css";
 import { SketchPicker } from "react-color";
 import pointer from "./pointer.jpg";
@@ -290,7 +290,7 @@ const LoggedUserHomePage = ({ history, match }) => {
       <div
         style={{
           position: "absolute",
-          marginTop: "60px",
+          marginTop: "40px",
           display: "inline-block",
         }}
       >

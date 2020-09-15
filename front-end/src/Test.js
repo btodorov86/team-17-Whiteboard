@@ -6,10 +6,14 @@ import AuthContext from "./Providers/Context/AuthContext";
 import io from "socket.io-client";
 import { Avatar } from "@material-ui/core";
 import { Widget, addResponseMessage } from "react-chat-widget";
-import DrawWidget from "./Components/Page/LoggedUserHome/DrawWidget";
+import DrawEraseWidget from "./Components/Page/LoggedUserHome/DrawEraseWidget";
 import ExceptionContext from "./Providers/Context/ExceptionContext";
 import { exceptionStatus } from "./Constants/Constant";
-import DrawWidget1 from './Components/Page/LoggedUserHome/DrawWidget1';
+import DrawTextWidget from './Components/Page/LoggedUserHome/DrawTextWidget';
+import DrawRectangleWidget from './Components/Page/LoggedUserHome/DrawRectangleWidget';
+import DrawCircleWidget from './Components/Page/LoggedUserHome/DrawCircleWidget';
+import DrawBrushWidget from './Components/Page/LoggedUserHome/DrawBrushWidget';
+import DrawPencilWidget from './Components/Page/LoggedUserHome/DrawPencilWidget';
 // import
 
 const Test = ({ color, stroke1, currentWhiteboard }) => {
@@ -337,8 +341,13 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       />
       {/* <Chat socketRef={socketRef} /> */}
       <div style={{position: 'fixed'}}>
-      <DrawWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
-      <DrawWidget1 shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+      <DrawEraseWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+      <DrawTextWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+      <DrawRectangleWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+      <DrawCircleWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+      <DrawBrushWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+      <DrawPencilWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+      
       </div>
     </>
   );
