@@ -28,6 +28,7 @@ export class TextBoxService {
         }
 
         const newTextBox = await this.textBoxRepo.save({
+            position: body.position,
             points: body.points,
             color: body.color,
             stroke: body.stroke,

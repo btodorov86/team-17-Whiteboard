@@ -7,6 +7,10 @@ export class TextBox {
     id: string
     @ManyToOne(type => Whiteboard, whiteboard => whiteboard.textBoxes)
     whiteboard: Whiteboard
+    @Column({default: 'textBox'})
+    type: string
+    @Column()
+    position: number;
     @Column()
     color: string
     @Column({type: 'boolean', default: false})

@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawWidget = ({shareHandler}) => {
+const DrawWidget = ({shareHandler, setIsDrawing}) => {
   const classes = useStyles();
   const [direction, setDirection] = useState('up');
   const [openWidget, setOpenWidget] = useState(false);
@@ -52,8 +52,8 @@ const DrawWidget = ({shareHandler}) => {
   const actions = [
     { icon: <FileCopyIcon />, name: 'Copy' },
     { icon: <SaveIcon />, name: 'Save' },
-    { icon: <PrintIcon />, name: 'Print' },
-    { icon: <ShareIcon />, name: 'Share' },
+    { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
+    { icon: <ShareIcon onClick={(e) => setIsDrawing('line')} />, name: 'Share' },
     { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 

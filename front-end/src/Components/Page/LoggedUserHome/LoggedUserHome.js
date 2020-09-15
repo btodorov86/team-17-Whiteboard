@@ -69,21 +69,22 @@ const LoggedUserHomePage = ({ history, match }) => {
   const [anchorEl, setAnchorEl] = useState(false);
   const [color, setColor] = useState("black");
 
-  const [shareMouse, setShareMouse] = useState({
-    isShare: false,
-    mouseX: 0,
-    mouseY: 0,
-  });
-  const [currentWhiteboard, setCurrentWhiteboard] = useState({
-    id: "",
-    author: "",
-    circles: [],
-    rectangles: [],
-    lines: [],
-    textBoxes: [],
-    name: "",
-    isPublic: false,
-  });
+  // const [shareMouse, setShareMouse] = useState({
+  //   isShare: false,
+  //   mouseX: 0,
+  //   mouseY: 0,
+  // });
+  // const [currentWhiteboard, setCurrentWhiteboard] = useState({
+  //   id: "",
+  //   author: "",
+  //   circles: [],
+  //   rectangles: [],
+  //   lines: [],
+  //   textBoxes: [],
+  //   name: "",
+  //   isPublic: false,
+  // });
+  const [currentWhiteboard, setCurrentWhiteboard] = useState(null);
   // const [message, setMessage] = useState({
   //   room: user.email,
   //   from: user.id,
@@ -198,10 +199,7 @@ const LoggedUserHomePage = ({ history, match }) => {
   //   }
   // };
 
-  const shareHandler = (e) =>
-    setShareMouse({ ...shareMouse, isShare: !shareMouse.isShare });
-
-  return (
+  return loading ? <Loading /> : (
     <div
       className={classes.root}
       // onMouseMove={(e) =>
@@ -211,7 +209,7 @@ const LoggedUserHomePage = ({ history, match }) => {
       //   setShareMouse({ ...shareMouse, isShare: !shareMouse.isShare })
       // }
     >
-      {loading ? <Loading /> : null}
+      {/* {loading ? <Loading /> : null} */}
       <CssBaseline />
       <AppBar position="absolute" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
@@ -248,9 +246,9 @@ const LoggedUserHomePage = ({ history, match }) => {
                 style={{ fontSize: "20px" }}
                 onDoubleClick={(e) => setIsSearchBoard(true)}
               >
-                {currentWhiteboard.name}
+                {currentWhiteboard?.name}
                 <br />
-                <ListItem style={{fontSize: '10px', justifyContent: "center", color: 'white'}}>{ currentWhiteboard.isPublic ? 'public' : 'private' }</ListItem>
+                <ListItem style={{fontSize: '10px', justifyContent: "center", color: 'white'}}>{ currentWhiteboard?.isPublic ? 'public' : 'private' }</ListItem>
               </span>
             )}
             <IconButton>
@@ -271,7 +269,7 @@ const LoggedUserHomePage = ({ history, match }) => {
           </ExitToApp>
         </Toolbar>
       </AppBar>
-      <Test color={color} currentWhiteboard={currentWhiteboard} isShare={shareMouse.isShare} />
+      { currentWhiteboard ? <Test color={color} currentWhiteboard={currentWhiteboard} stroke1={5} /> : null }
 
       {/* {sharedUsers.length !== 0
         ? sharedUsers.map((user) => (
@@ -287,6 +285,8 @@ const LoggedUserHomePage = ({ history, match }) => {
             />
           ))
         : null} */}
+      {/* <DrawWidget shareHandler={shareHandler} /> */}
+
       <div
         style={{
           position: "absolute",
@@ -308,7 +308,6 @@ const LoggedUserHomePage = ({ history, match }) => {
         title={"Chat"}
         display={"inline-block"}
       /> */}
-      <DrawWidget shareHandler={shareHandler} />
       <CreateBoard isCreateWhiteboard={isCreateWhiteboard} setIsCreateWhiteboard={setIsCreateWhiteboard} />
       <ChangePassword isChangePassword={isChangePassword} setIsChangePassword={setIsChangePassword} />
     </div>

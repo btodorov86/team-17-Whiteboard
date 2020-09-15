@@ -14,6 +14,7 @@ import jwt from 'jwt-decode';
 import AuthContext from '../../../Providers/Context/AuthContext';
 import ExceptionContext from '../../../Providers/Context/ExceptionContext';
 import { withRouter } from 'react-router-dom';
+import nodemailer from 'nodemailer';
 
 const Login = ({ history, setIsLoginPage, isLoginPage }) => {
 

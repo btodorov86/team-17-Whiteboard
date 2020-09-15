@@ -1,7 +1,8 @@
 
 export class ReturnLineDTO {
     id: string
-    // whiteboard: string
+    position: number
+    type: string
     color: string
     points: string
     stroke: string

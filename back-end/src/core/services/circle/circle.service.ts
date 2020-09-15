@@ -28,6 +28,7 @@ export class CircleService {
         }
 
         const newCircle = await this.circleRepo.save({
+            position: body.position,
             startX: body.startX,
             startY: body.startY,
             endX: body.endX,

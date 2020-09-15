@@ -29,6 +29,7 @@ export class LineService {
         }
 
         const newLine = await this.lineRepo.save({
+            position: body.position,
             points: body.points,
             color: body.color,
             stroke: body.stroke,

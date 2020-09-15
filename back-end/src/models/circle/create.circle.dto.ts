@@ -1,8 +1,11 @@
-import { Length, IsString, IsNumber, IsPositive } from 'class-validator'
+import { Length, IsString, IsNumber, IsPositive, IsNotEmpty } from 'class-validator'
 export class CreateCircleDTO {
     @Length(1,)
     @IsString()
     color: string;
+    @IsNumber()
+    @IsNotEmpty()
+    position: number;
     @IsNumber()
     @IsPositive()
     startX: number;

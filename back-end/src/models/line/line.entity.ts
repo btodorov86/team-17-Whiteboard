@@ -7,6 +7,10 @@ export class Line {
     id: string
     @ManyToOne(type => Whiteboard, whiteboard => whiteboard.lines)
     whiteboard: Whiteboard
+    @Column({default: 'line'})
+    type: string
+    @Column()
+    position: number;
     @Column()
     color: string
     @Column({type: 'boolean', default: false})

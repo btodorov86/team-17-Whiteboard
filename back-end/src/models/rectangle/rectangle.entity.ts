@@ -8,8 +8,12 @@ export class Rectangle {
     id: string
     @ManyToOne(type => Whiteboard, whiteboard => whiteboard.rectangles)
     whiteboard: Whiteboard
+    @Column({default: 'rectangle'})
+    type: string
     @Column()
     color: string
+    @Column()
+    position: number;
     @Column()
     startX: number
     @Column()
