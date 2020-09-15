@@ -13,7 +13,7 @@ export class Rectangle {
     @Column()
     color: string
     @Column()
-    position: number;
+    position: number
     @Column()
     startX: number
     @Column()

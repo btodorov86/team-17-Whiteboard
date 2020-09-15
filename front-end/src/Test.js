@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Stage, Layer, Line, Rect, Circle } from "react-konva";
+import { Stage, Layer, Line, Rect, Circle, Text } from "react-konva";
 import propTypes from "prop-types";
 import { v4 as uuid } from "uuid";
 import AuthContext from "./Providers/Context/AuthContext";
@@ -9,13 +9,19 @@ import { Widget, addResponseMessage } from "react-chat-widget";
 import DrawWidget from "./Components/Page/LoggedUserHome/DrawWidget";
 import ExceptionContext from "./Providers/Context/ExceptionContext";
 import { exceptionStatus } from "./Constants/Constant";
-import DrawWidget1 from './Components/Page/LoggedUserHome/DrawWidget1';
+import DrawWidget1 from "./Components/Page/LoggedUserHome/DrawWidget1";
+import TextBoxKonva from './TextBox';
 // import
 
 const Test = ({ color, stroke1, currentWhiteboard }) => {
   const { user } = useContext(AuthContext);
   const { setOpen } = useContext(ExceptionContext);
   const socketRef = useRef();
+  // const [textInput, setTextInput] = useState({
+  //   isOpen: false,
+  //   top: 200,
+  //   left: 400,
+  // })
 
   const [shape, setShape] = useState({
     line: {
@@ -24,10 +30,9 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       startDrawing: false,
       isDrawing: false,
       stroke: "black",
-      color: color,
       strokeWidth: stroke1,
-      drawingFunc: (obj) => <Line {...obj} />,
-      updateSize: (x, y, prev) => {
+      drawingFunc: (obj) => <Line {...obj} draggable dash={[10]} />,
+      updateSize: (e, x, y, prev) => {
         if (prev.points.length !== 0) {
           if (prev.points.toString().length > 4000) {
             setOpen({
@@ -64,31 +69,33 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
           },
         }));
       },
-      onStartDrawing: (shapeType) => setShape(prev => ({
-        ...prev,
-        [shapeType]: {
-          ...prev[shapeType],
-          startDrawing: true,
-          stroke: color,
-          strokeWidth: stroke1,
-          position: shapes.length + 1,
-
-        },
-      }))
+      onStartDrawing: (shapeType, color, x, y) =>
+        setShape((prev) => ({
+          ...prev,
+          [shapeType]: {
+            ...prev[shapeType],
+            startDrawing: true,
+            stroke: color,
+            strokeWidth: stroke1,
+            position: shapes.length + 1,
+          },
+        })),
     },
     circle: {
       type: "circle",
       startDrawing: false,
       isDrawing: false,
       stroke: "black",
-      color: color,
       strokeWidth: stroke1,
       radius: 0,
-      drawingFunc: (obj) => <Circle {...obj} />,
-      updateSize: (x, y, prev) => {
+      drawingFunc: (obj) => <Circle {...obj} draggable />,
+      updateSize: (e, x, y, prev) => {
+        const differenceX = Math.abs(prev.x - x);
+        const differenceY = Math.abs(prev.y - y);
+        const newRadius = differenceX > differenceY ? differenceX : differenceY;
         setShape({
           ...shape,
-          circle: { ...prev, radius: Math.abs(prev.x - x) },
+          circle: { ...prev, radius: newRadius },
         });
       },
       endDrawing: () => {
@@ -103,19 +110,109 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
           },
         }));
       },
-      onStartDrawing: (shapeType, x, y) => setShape(prev => ({
-        ...prev,
-        [shapeType]: {
-          ...prev[shapeType],
-          startDrawing: true,
-          stroke: color,
-          strokeWidth: stroke1,
-          position: shapes.length + 1,
-          x,
-          y,
-          radius: 10
-        },
-      }))
+      onStartDrawing: (shapeType, color, x, y) =>
+        setShape((prev) => ({
+          ...prev,
+          [shapeType]: {
+            ...prev[shapeType],
+            startDrawing: true,
+            stroke: color,
+            strokeWidth: stroke1,
+            position: shapes.length + 1,
+            x,
+            y,
+            radius: 10,
+          },
+        })),
+    },
+    rectangle: {
+      type: "rectangle",
+      startDrawing: false,
+      isDrawing: false,
+      stroke: "black",
+      strokeWidth: stroke1,
+      height: 0,
+      width: 0,
+      drawingFunc: (obj) => <Rect {...obj} draggable />,
+      updateSize: (e, x, y, prev) => {
+        setShape({
+          ...shape,
+          rectangle: { ...prev, width: x - prev.x, height: y - prev.y },
+        });
+      },
+      endDrawing: () => {
+        setShape((prev) => ({
+          ...shape,
+          rectangle: {
+            ...prev.rectangle,
+            startDrawing: false,
+            x: 0,
+            y: 0,
+            height: 0,
+            width: 0,
+          },
+        }));
+      },
+      onStartDrawing: (shapeType, color, x, y) =>
+        setShape((prev) => ({
+          ...prev,
+          [shapeType]: {
+            ...prev[shapeType],
+            startDrawing: true,
+            stroke: color,
+            strokeWidth: stroke1,
+            position: shapes.length + 1,
+            x,
+            y,
+            height: 10,
+            width: 10,
+          },
+        })),
+    },
+    textBox: {
+      type: "textBox",
+      startDrawing: false,
+      isDrawing: false,
+      text: "",
+      fontSize: 40,
+      fontStyle: "normal",
+      fill: "black",
+      // height: 300,
+      // width: 300,
+      textDecoration: '',
+      drawingFunc: (obj) => <Text {...obj} draggable />,
+      updateSize: (prop, value) => {
+        setShape(prev => ({
+          ...shape,
+          textBox: { ...prev.textBox, [prop]: value },
+        }));
+      },
+      endDrawing: () => {
+        setShape((prev) => ({
+          ...shape,
+          textBox: {
+            ...prev.textBox,
+            startDrawing: false,
+            text: "",
+          },
+        }));
+      },
+      onStartDrawing: (shapeType, color, x, y) =>
+        setShape((prev) => ({
+          ...prev,
+          [shapeType]: {
+            ...prev[shapeType],
+            startDrawing: true,
+            text: "",
+            fontSize: 40,
+            fill: color,
+            position: shapes.length + 1,
+            x,
+            y,
+            // height: 10,
+            // width: 10,
+          },
+        })),
     },
   }); // for add new shape need only to add property obj here !!!
 
@@ -198,10 +295,11 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
     });
   };
 
-  const mouseDown = (x, y) => {
+  const mouseDown = (e, x, y) => {
     const shapeType = Object.keys(shape).find((x) => shape[x].isDrawing);
     if (shapeType) {
-      shape[shapeType].onStartDrawing(shapeType, x, y)
+      shape[shapeType].onStartDrawing(shapeType, color, x, y);
+      // fetch(sgaaeh)
 
       // setShape({
       //   ...shape,
@@ -216,7 +314,8 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       // });
     }
   };
-  const mouseMove = (x, y) => {
+
+  const mouseMove = (e, x, y) => {
     if (shareMouse.isShare) {
       if (
         Math.abs(shareMouse.mouseX - y) > 10 ||
@@ -229,7 +328,10 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       (x) => shape[x].isDrawing && shape[x].startDrawing
     );
     if (shapeType) {
-      shape[shapeType].updateSize(x, y, shape[shapeType]);
+      if (shapeType !== 'textBox') {
+        shape[shapeType].updateSize(e, x, y, shape[shapeType]);
+      }
+
       // setShape({
       //   ...shape,
       //   [shapeType]: {
@@ -244,8 +346,11 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       (x) => shape[x].isDrawing && shape[x].startDrawing
     );
     if (shapeType) {
-      setShapes([...shapes, shape[shapeType]]);
-      shape[shapeType].endDrawing();
+      if (shapeType !== 'textBox') {
+        setShapes([...shapes, shape[shapeType]]);
+        shape[shapeType].endDrawing();
+      }
+
       // setShape({
       //   ...shape,
       //   [shapeType]: {
@@ -258,6 +363,9 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
   };
 
   const setIsDrawing = (prop) => {
+    Object.keys(shape)
+      .filter((y) => y !== prop)
+      .map((x) => (shape[x].isDrawing = false));
     setShape({
       ...shape,
       [prop]: {
@@ -288,8 +396,6 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       : null;
   };
 
-  console.log(shape.circle);
-
   return (
     <>
       {sharedUsers.length !== 0
@@ -308,8 +414,8 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
         : null}
 
       <Stage
-        onMouseDown={(e) => mouseDown(e.evt.offsetX, e.evt.offsetY)}
-        onMouseMove={(e) => mouseMove(e.evt.offsetX, e.evt.offsetY)}
+        onMouseDown={(e) => mouseDown(e, e.evt.offsetX, e.evt.offsetY)}
+        onMouseMove={(e) => mouseMove(e, e.evt.offsetX, e.evt.offsetY)}
         onMouseUp={(e) => mouseUp(e)}
         height={window.innerHeight}
         width={window.innerWidth}
@@ -324,7 +430,23 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
           {/* {shapes.length !== 0
             ? shapes.map((shape) => <Line key={uuid()} {...shape} />)
             : null} */}
-            <Circle x={300} y={400} radius={40} stroke='black' strokeWidth={5} fill={'red'} />
+          {/* <Rect
+            x={300}
+            y={400}
+            height={100}
+            width={100}
+            stroke="black"
+            strokeWidth={5}
+            fill={"red"}
+          />
+          <Text
+            text={"Nice man your are the best"}
+            x={400}
+            y={500}
+            fill={"red"}
+            draggable
+            fontSize={40}
+          /> */}
           {renderSingleDrawingElement()}
         </Layer>
       </Stage>
@@ -335,10 +457,11 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
         title={"Chat"}
         display={"inline-block"}
       />
+      <TextBoxKonva shapeTextBox={shape.textBox} setShapes={setShapes} />
       {/* <Chat socketRef={socketRef} /> */}
-      <div style={{position: 'fixed'}}>
-      <DrawWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
-      <DrawWidget1 shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+      <div style={{ position: "fixed" }}>
+        <DrawWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+        <DrawWidget1 shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
       </div>
     </>
   );
