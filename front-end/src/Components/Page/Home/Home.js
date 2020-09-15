@@ -44,7 +44,7 @@ const Home = () => {
     })
     .catch( err => setOpen({value: true, msg: err.message, statusType: exceptionStatus.error}))
     .finally(() => setLoading(false))
-  }, [])
+  }, [setLoading, setOpen])
 
   const phoneRinging = (
     <div
@@ -57,7 +57,10 @@ const Home = () => {
       <a
         href="true"
         style={{ cursor: "pointer" }}
-        onClick={(e) => (e.preventDefault(), setOpenModal(true))}
+        onClick={(e) => {
+          e.preventDefault();
+          setOpenModal(true);
+        }}
         className="pps-btn-img"
         title="Sign in"
       >

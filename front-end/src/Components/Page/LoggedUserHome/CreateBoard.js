@@ -124,16 +124,16 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
         });
       })
       .finally(
-        () => (
-          setLoading(false),
-          setIsCreateWhiteboard(false),
+        () => {
+          setLoading(false);
+          setIsCreateWhiteboard(false);
           setCreateBoard({
             isValid: true,
             isTouched: false,
             value: "",
             isPublic: true,
           })
-        )
+        }
       );
   };
 
@@ -235,12 +235,14 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
                     fullWidth
                     variant="contained"
                     color="primary"
-                    onClick={(e) => (setIsCreateWhiteboard(false), setCreateBoard({
+                    onClick={(e) => {
+                      setIsCreateWhiteboard(false);
+                      setCreateBoard({
                       isValid: true,
                       isTouched: false,
                       value: "",
                       isPublic: "public",
-                    }))}
+                    })}}
                   >
                     Cancel
                   </Button>

@@ -58,7 +58,7 @@ const SearchWhiteboard = ({ setIsSearchBoard, history }) => {
     // return () => {
     //   active = false;
     // };
-  }, [loading]);
+  }, [loading, setOpen]);
 
   // useEffect(() => {
   //   if (!open) {

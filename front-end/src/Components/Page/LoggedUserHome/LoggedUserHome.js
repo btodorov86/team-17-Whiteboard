@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
@@ -24,10 +24,10 @@ import Test from "../../../Test";
 import Next from "@material-ui/icons/NavigateNext";
 import Before from "@material-ui/icons/NavigateBefore";
 import ProfileMenu from "./ProfileMenu";
-import DrawWidget from "./DrawWidget";
+// import DrawEraseWidget from "./DrawEraseWidget";
 import "./chat.css";
 import { SketchPicker } from "react-color";
-import pointer from "./pointer.jpg";
+// import pointer from "./pointer.jpg";
 import LoadingContext from "../../../Providers/Context/LoadingContext";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import Loading from "../Loading/Loading";
@@ -91,7 +91,7 @@ const LoggedUserHomePage = ({ history, match }) => {
   //   avatar: user.avatarURL,
   // });
   // const [sharedUsers, setSharedUsers] = useState([]);
-  const [whiteboards, setWhiteboards] = useState([]);
+  // const [whiteboards, setWhiteboards] = useState([]);
   const [activeWhiteboards, setActiveWhiteboards] = useState([]);
   const [isSearchBoard, setIsSearchBoard] = useState(false);
   const [isCreateWhiteboard, setIsCreateWhiteboard] = useState(false);
@@ -122,7 +122,7 @@ const LoggedUserHomePage = ({ history, match }) => {
         })
       )
       .finally(() => setLoading(false));
-  }, [match.params.id]);
+  }, [match.params.id, activeWhiteboards, setLoading, setOpen]);
 
   // useEffect(() => {
   //   socketRef.current = io("http://localhost:3000/chat");
@@ -259,9 +259,10 @@ const LoggedUserHomePage = ({ history, match }) => {
           <ExitToApp
             style={{ cursor: "pointer" }}
             color="inherit"
-            onClick={(e) => (
-              e.preventDefault(), logOutHandler(setUser, history)
-            )}
+            onClick={(e) => {
+              e.preventDefault();
+              logOutHandler(setUser, history)
+            }}
           >
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
@@ -290,7 +291,7 @@ const LoggedUserHomePage = ({ history, match }) => {
       <div
         style={{
           position: "absolute",
-          marginTop: "60px",
+          marginTop: "40px",
           display: "inline-block",
         }}
       >
