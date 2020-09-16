@@ -1,27 +1,23 @@
-import { Length, IsString, IsNumber, IsPositive, IsNotEmpty } from 'class-validator'
+import { Length, IsString, IsNumber, IsPositive } from 'class-validator'
 
 export class CreateRectangleDTO {
-    @Length(1,)
-    @IsString()
-    color: string
-    @IsNumber()
-    @IsNotEmpty()
-    position: number;
     @IsNumber()
     @IsPositive()
-    startX: number
+    x: number
     @IsNumber()
     @IsPositive()
-    startY: number
+    y: number
     @IsNumber()
     @IsPositive()
-    endX: number
+    height: number
     @IsNumber()
     @IsPositive()
-    endY: number
+    width: number
     @Length(1,)
     @IsString()
     stroke: string
+    @IsString()
+    fill: string
     @IsNumber()
     @IsPositive()
     strokeWidth: number

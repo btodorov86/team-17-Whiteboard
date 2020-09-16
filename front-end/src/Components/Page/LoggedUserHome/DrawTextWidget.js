@@ -46,11 +46,11 @@ const DrawTextWidget = ({shareHandler, setIsDrawing}) => {
   const [openWidget, setOpenWidget] = useState(false);
 
   const actions = [
-    { icon: <FileCopyIcon />, name: 'Copy' },
-    { icon: <SaveIcon />, name: 'Save' },
-    { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
-    { icon: <ShareIcon onClick={(e) => setIsDrawing('line')} />, name: 'Share' },
-    { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
+    // { icon: <FileCopyIcon />, name: 'Copy' },
+    // { icon: <SaveIcon />, name: 'Save' },
+    // { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
+    { icon: <TextFieldsIcon onClick={(e) => setIsDrawing('textBox')} />, name: 'Abc..' },
+    // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 
   const handleCloseWidget = () => {

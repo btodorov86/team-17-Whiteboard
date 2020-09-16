@@ -1,19 +1,21 @@
 import { Length, IsString, IsPositive, IsNumber, IsNotEmpty } from 'class-validator'
 
 export class CreateTextBoxDTO {
-    @Length(1, )
-    @IsString()
-    color: string
     @IsNumber()
-    @IsNotEmpty()
-    position: number;
-    @Length(3, )
-    @IsString()
-    points: string
-    @Length(1, )
-    @IsString()
-    stroke: string
+    x: number
     @IsNumber()
-    @IsPositive()
-    strokeWidth: number
+    y: number;
+    @IsString()
+    @Length(1,)
+    fill: string
+    @IsString()
+    @Length(1,)
+    text: string
+    @IsString()
+    @Length(1,)
+    fontStyle: string
+    @IsString()
+    textDecoration: string
+    @IsNumber()
+    fontSize: number
 }

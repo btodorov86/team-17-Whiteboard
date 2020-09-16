@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Whiteboard } from 'src/models/whiteboard/whiteboard.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReturnLineDTO } from 'src/models/line/return.line.dto';
+import { TransformService } from '../transform/transform.service';
 
 @Injectable()
 export class LineService {
@@ -14,6 +15,7 @@ export class LineService {
         private readonly whiteboardsRepo: Repository<Whiteboard>,
         @InjectRepository(Line)
         private readonly lineRepo: Repository<Line>,
+        private readonly transformService: TransformService,
     ) {}
 
 
@@ -29,9 +31,8 @@ export class LineService {
         }
 
         const newLine = await this.lineRepo.save({
-            position: body.position,
+            itemPosition: whiteboard.lines.length + 1,
             points: body.points,
-            color: body.color,
             stroke: body.stroke,
             strokeWidth: Number(body.strokeWidth),
         });
@@ -40,7 +41,7 @@ export class LineService {
 
         await this.whiteboardsRepo.save(whiteboard);
 
-        return newLine
+        return this.transformService.toReturnLineDto(newLine)
 
 
     }
@@ -60,7 +61,9 @@ export class LineService {
         if (!line) {
             throw new NotFoundException();
         }
-        return await this.lineRepo.save({...line, ...body, strokeWidth: Number(body.strokeWidth)});
+
+        const returnLine = await this.lineRepo.save({...line, ...body, strokeWidth: Number(body.strokeWidth)})
+        return this.transformService.toReturnLineDto(returnLine);
 
     }
     async delete(lineId: string): Promise<string> {

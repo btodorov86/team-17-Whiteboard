@@ -1,12 +1,11 @@
 export class ReturnCircleDTO {
     id: string
-    color: string
     type: string
-    position: number
-    startX: number
-    startY: number
-    endX: number
-    endY: number
+    itemPosition: number
+    x: number
+    y: number
+    radius: number
     stroke: string
+    fill: string
     strokeWidth: number
 }

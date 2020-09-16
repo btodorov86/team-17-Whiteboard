@@ -8,16 +8,17 @@ import { Avatar } from "@material-ui/core";
 import { Widget, addResponseMessage } from "react-chat-widget";
 import DrawEraseWidget from "./Components/Page/LoggedUserHome/DrawEraseWidget";
 import ExceptionContext from "./Providers/Context/ExceptionContext";
-import { exceptionStatus } from "./Constants/Constant";
+import { BASE_URL, exceptionStatus, isErrorResponse } from "./Constants/Constant";
 import DrawTextWidget from './Components/Page/LoggedUserHome/DrawTextWidget';
 import DrawRectangleWidget from './Components/Page/LoggedUserHome/DrawRectangleWidget';
 import DrawCircleWidget from './Components/Page/LoggedUserHome/DrawCircleWidget';
 import DrawBrushWidget from './Components/Page/LoggedUserHome/DrawBrushWidget';
 import DrawPencilWidget from './Components/Page/LoggedUserHome/DrawPencilWidget';
 import TextBoxKonva from './TextBox';
+import { withRouter } from 'react-router-dom';
 // import
 
-const Test = ({ color, stroke1, currentWhiteboard }) => {
+const Test = ({ color, currentWhiteboard, match }) => {
   const { user } = useContext(AuthContext);
   const { setOpen } = useContext(ExceptionContext);
   const socketRef = useRef();
@@ -34,8 +35,8 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       startDrawing: false,
       isDrawing: false,
       stroke: "black",
-      strokeWidth: stroke1,
-      drawingFunc: (obj) => <Line {...obj} draggable dash={[10]} />,
+      strokeWidth: 2,
+      drawingFunc: (obj) => <Line {...obj} draggable />,
       updateSize: (e, x, y, prev) => {
         if (prev.points.length !== 0) {
           if (prev.points.toString().length > 4000) {
@@ -63,8 +64,25 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
           });
         }
       },
-      endDrawing: () => {
-        setShape((prev) => ({
+      endDrawing: (prop) => {
+        const sendObj = {
+          points: prop.points.join(','),
+          stroke: prop.stroke,
+          strokeWidth: prop.strokeWidth,
+        }
+        fetch(`${BASE_URL}/whiteboards/${match.params.id}/lines`, {
+          method: 'POST',
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(sendObj)
+        })
+        .then( r => r.json())
+        .then( resp => {
+          isErrorResponse(resp);
+          setShapes((prev) => [...prev, resp]);
+          setShape((prev) => ({
           ...shape,
           line: {
             ...prev.line,
@@ -72,6 +90,20 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
             points: [],
           },
         }));
+        })
+        .catch( err => setOpen({
+          value: true,
+          msg: err.message,
+          statusType: exceptionStatus.error,
+        }))
+        // setShape((prev) => ({
+        //   ...shape,
+        //   line: {
+        //     ...prev.line,
+        //     startDrawing: false,
+        //     points: [],
+        //   },
+        // }));
       },
       onStartDrawing: (shapeType, color, x, y) =>
         setShape((prev) => ({
@@ -80,8 +112,6 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
             ...prev[shapeType],
             startDrawing: true,
             stroke: color,
-            strokeWidth: stroke1,
-            position: shapes.length + 1,
           },
         })),
     },
@@ -90,7 +120,8 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       startDrawing: false,
       isDrawing: false,
       stroke: "black",
-      strokeWidth: stroke1,
+      fill: "",
+      strokeWidth: 1,
       radius: 0,
       drawingFunc: (obj) => <Circle {...obj} draggable />,
       updateSize: (e, x, y, prev) => {
@@ -102,8 +133,28 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
           circle: { ...prev, radius: newRadius },
         });
       },
-      endDrawing: () => {
-        setShape((prev) => ({
+      endDrawing: (prop) => {
+        const sendObj = {
+          x: prop.x,
+          y: prop.y,
+          fill: prop.fill,
+          radius: prop.radius,
+          stroke: prop.stroke,
+          strokeWidth: prop.strokeWidth,
+        }
+        fetch(`${BASE_URL}/whiteboards/${match.params.id}/circles`, {
+          method: 'POST',
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(sendObj)
+        })
+        .then( r => r.json())
+        .then( resp => {
+          isErrorResponse(resp);
+          setShapes((prev) => [...prev, resp]);
+          setShape((prev) => ({
           ...shape,
           circle: {
             ...prev.circle,
@@ -113,6 +164,13 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
             radius: 0,
           },
         }));
+        })
+        .catch( err => setOpen({
+          value: true,
+          msg: err.message,
+          statusType: exceptionStatus.error,
+        }))
+
       },
       onStartDrawing: (shapeType, color, x, y) =>
         setShape((prev) => ({
@@ -121,8 +179,7 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
             ...prev[shapeType],
             startDrawing: true,
             stroke: color,
-            strokeWidth: stroke1,
-            position: shapes.length + 1,
+            fill: (prev[shapeType].fill.length !== 0 ? color : ""),
             x,
             y,
             radius: 10,
@@ -134,7 +191,8 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       startDrawing: false,
       isDrawing: false,
       stroke: "black",
-      strokeWidth: stroke1,
+      strokeWidth: 1,
+      fill: "",
       height: 0,
       width: 0,
       drawingFunc: (obj) => <Rect {...obj} draggable />,
@@ -144,8 +202,31 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
           rectangle: { ...prev, width: x - prev.x, height: y - prev.y },
         });
       },
-      endDrawing: () => {
-        setShape((prev) => ({
+      endDrawing: (prop) => {
+        const sendObj = {
+          x: prop.x,
+          y: prop.y,
+          fill: prop.fill,
+          height: prop.height,
+          width: prop.width,
+          stroke: prop.stroke,
+          strokeWidth: prop.strokeWidth,
+        }
+        fetch(`${BASE_URL}/whiteboards/${match.params.id}/rectangles`, {
+          method: 'POST',
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(sendObj)
+        })
+        .then( r => r.json())
+        .then( resp => {
+          isErrorResponse(resp);
+          console.log(shapes.length);
+          setShapes((prev) => [...prev, resp]);
+          console.log(shapes.length);
+          setShape((prev) => ({
           ...shape,
           rectangle: {
             ...prev.rectangle,
@@ -156,6 +237,13 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
             width: 0,
           },
         }));
+        })
+        .catch( err => setOpen({
+          value: true,
+          msg: err.message,
+          statusType: exceptionStatus.error,
+        }))
+
       },
       onStartDrawing: (shapeType, color, x, y) =>
         setShape((prev) => ({
@@ -164,8 +252,7 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
             ...prev[shapeType],
             startDrawing: true,
             stroke: color,
-            strokeWidth: stroke1,
-            position: shapes.length + 1,
+            fill: (prev[shapeType].fill.length !== 0 ? color : ""),
             x,
             y,
             height: 10,
@@ -178,7 +265,7 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       startDrawing: false,
       isDrawing: false,
       text: "",
-      fontSize: 40,
+      fontSize: 20,
       fontStyle: "normal",
       fill: "black",
       // height: 300,
@@ -191,8 +278,29 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
           textBox: { ...prev.textBox, [prop]: value },
         }));
       },
-      endDrawing: () => {
-        setShape((prev) => ({
+      endDrawing: (prop) => {
+        const sendObj = {
+          x: prop.x,
+          y: prop.y,
+          fill: prop.fill,
+          text: prop.text,
+          fontStyle: prop.fontStyle,
+          fontSize: prop.fontSize,
+          textDecoration: prop.textDecoration,
+        }
+        fetch(`${BASE_URL}/whiteboards/${match.params.id}/texts`, {
+          method: 'POST',
+          headers: {
+            Authorization: localStorage.getItem("token"),
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(sendObj)
+        })
+        .then( r => r.json())
+        .then( resp => {
+          isErrorResponse(resp);
+          setShapes((prev) => [...prev, resp]);
+          setShape((prev) => ({
           ...shape,
           textBox: {
             ...prev.textBox,
@@ -200,6 +308,13 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
             text: "",
           },
         }));
+        })
+        .catch( err => setOpen({
+          value: true,
+          msg: err.message,
+          statusType: exceptionStatus.error,
+        }))
+
       },
       onStartDrawing: (shapeType, color, x, y) =>
         setShape((prev) => ({
@@ -210,7 +325,6 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
             text: "",
             fontSize: 40,
             fill: color,
-            position: shapes.length + 1,
             x,
             y,
             // height: 10,
@@ -220,25 +334,20 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
     },
   }); // for add new shape need only to add property obj here !!!
 
-  // const [shapes, setShapes] = useState(Object.keys(currentWhiteboard).reduce((acc, value) => {
-  //   if (typeof currentWhiteboard[value] === 'object') {
-  //     return [...acc, ...currentWhiteboard[value]]
-  //   }
-  //   return acc
-  // }, []));
-  const [shapes, setShapes] = useState(
-    Object.keys(currentWhiteboard).reduce((acc, value) => {
-      if (value === "lines") {
-        return [...acc, ...currentWhiteboard[value]];
-      }
-      return acc;
-    }, [])
-  );
-  const [message, setMessage] = useState({
-    room: user.email,
-    from: user.id,
-    avatar: user.avatarURL,
-  });
+  const [shapes, setShapes] = useState(Object.keys(currentWhiteboard).reduce((acc, value) => {
+    if (typeof currentWhiteboard[value] === 'object') {
+      return [...acc, ...currentWhiteboard[value]]
+    }
+    return acc
+  }, []));
+  // const [shapes, setShapes] = useState(
+  //   Object.keys(currentWhiteboard).reduce((acc, value) => {
+  //     if (value === "circle") {
+  //       return [...acc, ...currentWhiteboard[value]];
+  //     }
+  //     return acc;
+  //   }, [])
+  // );
   const [avatar, setAvatar] = useState("");
   const [sharedUsers, setSharedUsers] = useState([]);
   const [shareMouse, setShareMouse] = useState({
@@ -260,10 +369,12 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       addResponseMessage(data);
     });
 
-    socketRef.current.emit("joinRoom", {
-      room: message.room,
-      userName: user.userName,
-    });
+    if (currentWhiteboard) {
+      socketRef.current.emit("joinRoom", {
+        room: currentWhiteboard.id,
+        userName: user.userName,
+      });
+    }
     socketRef.current.on("incomingMousePoints", (data) => {
       const user = sharedUsers.find((x) => x.id === data.userId);
       if (user) {
@@ -288,6 +399,18 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       }
     });
   }, []);
+
+  const updateShapeProp = (shape, prop) => {
+    setShape(prev => ({
+      ...prev,                                    // update funk with setIsDrawing funk
+      [shape]: {
+        ...prev[shape],
+        ...prop,
+        // [prop]: value,
+      }
+    }))
+  }
+
   const shareMouseHandler = (x, y) => {
     setShareMouse({ isShare: true, mouseX: y, mouseY: x });
     socketRef.current.emit("sendMousePoints", {
@@ -295,7 +418,7 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       mouseX: y,
       mouseY: x,
       avatar: user.avatarURL,
-      room: message.room,
+      room: currentWhiteboard.id,
     });
   };
 
@@ -351,8 +474,8 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
     );
     if (shapeType) {
       if (shapeType !== 'textBox') {
-        setShapes([...shapes, shape[shapeType]]);
-        shape[shapeType].endDrawing();
+        // setShapes([...shapes, shape[shapeType]]);
+        shape[shapeType].endDrawing(shape[shapeType]);
       }
 
       // setShape({
@@ -382,8 +505,8 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
   const handleNewUserMessage = (data) =>
     socketRef.current.emit("send-message", {
       message: data,
-      room: message.room,
-      avatar: message.avatar,
+      room: currentWhiteboard.id,
+      avatar: user.avatar,
     });
 
   // const drawingLine = (obj) => <Line {...obj} />
@@ -399,6 +522,8 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       ? shape[shapeType].drawingFunc(shape[shapeType])
       : null;
   };
+
+  console.log(shape.line.strokeWidth);
 
   return (
     <>
@@ -427,10 +552,24 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       >
         <Layer>
           {shapes.length !== 0
-            ? shapes.map((x) =>
-                shape[x.type].drawingFunc({ ...x, key: uuid() })
-              )
+            ? shapes.map((x) => shape[x.type].drawingFunc(x))
             : null}
+            {/* <Circle position={3}
+            radius={100}
+            stroke="black"
+            fill="red"
+            strokeWidth={5}
+            type="circle"
+            x={372}
+            y={436} /> */}
+            {/* {shape['circle'].drawingFunc({position:3,
+            radius:10,
+            stroke:"black",
+            strokeWidth:5,
+            type:"circle",
+            x:372,
+            y:436},)} */}
+
           {/* {shapes.length !== 0
             ? shapes.map((shape) => <Line key={uuid()} {...shape} />)
             : null} */}
@@ -464,12 +603,12 @@ const Test = ({ color, stroke1, currentWhiteboard }) => {
       <TextBoxKonva shapeTextBox={shape.textBox} setShapes={setShapes} />
       {/* <Chat socketRef={socketRef} /> */}
       <div style={{position: 'fixed'}}>
-      <DrawEraseWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
-      <DrawTextWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
-      <DrawRectangleWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
-      <DrawCircleWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
-      <DrawBrushWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
-      <DrawPencilWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} />
+      <DrawEraseWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
+      <DrawTextWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
+      <DrawRectangleWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
+      <DrawCircleWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
+      <DrawBrushWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
+      <DrawPencilWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
 
       </div>
     </>
@@ -482,4 +621,4 @@ Test.propTypes = {
   // shareMouse: propTypes.object.isRequired,
 };
 
-export default Test;
+export default withRouter(Test);

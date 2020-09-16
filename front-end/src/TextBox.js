@@ -45,8 +45,6 @@ const TextBoxKonva = ({ shapeTextBox, setShapes }) => {
 
   const classes = useStyles();
 
-  console.log(shapeTextBox.text);
-
   return (
     // <div className={classes.root}>
     <div hidden={!shapeTextBox.startDrawing}>
@@ -97,8 +95,7 @@ const TextBoxKonva = ({ shapeTextBox, setShapes }) => {
           onChange={(e) => shapeTextBox.updateSize("text", e.target.value)}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
-              setShapes((prev) => [...prev, shapeTextBox]);
-              shapeTextBox.endDrawing();
+              shapeTextBox.endDrawing(shapeTextBox);
             }
           }}
         />

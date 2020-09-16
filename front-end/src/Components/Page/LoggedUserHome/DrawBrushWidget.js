@@ -43,16 +43,19 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawBrushWidget = ({shareHandler, setIsDrawing}) => {
+const DrawBrushWidget = ({shareHandler, setIsDrawing, updateShapeProp}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
   const actions = [
-    { icon: <FileCopyIcon />, name: 'Copy' },
-    { icon: <SaveIcon />, name: 'Save' },
-    { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
-    { icon: <ShareIcon onClick={(e) => setIsDrawing('line')} />, name: 'Share' },
-    { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
+    // { icon: <FileCopyIcon />, name: 'Copy' },
+    // { icon: <SaveIcon />, name: 'Save' },
+    // { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
+    { icon: <BrushIcon onClick={(e) => updateShapeProp('line', {
+      isDrawing: true,
+      strokeWidth: 7,
+    }) } />, name: 'Draw' },
+    // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 
   const handleCloseWidget = () => {

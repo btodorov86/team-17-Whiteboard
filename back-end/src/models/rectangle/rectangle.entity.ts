@@ -11,21 +11,21 @@ export class Rectangle {
     @Column({default: 'rectangle'})
     type: string
     @Column()
-    color: string
+    itemPosition: number
     @Column()
-    position: number
+    x: number
     @Column()
-    startX: number
+    y: number
     @Column()
-    startY: number
+    height: number
     @Column()
-    endX: number
-    @Column()
-    endY: number
+    width: number
     @Column({type: 'boolean', default: false})
     isDeleted: boolean
     @Column()
     stroke: string
+    @Column()
+    fill: string
     @Column()
     strokeWidth: number
 }

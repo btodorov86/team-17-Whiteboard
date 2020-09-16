@@ -1,13 +1,13 @@
 
 export class ReturnRectangleDTO {
     id: string
-    color: string
     type:string
-    position: number
-    startX: number
-    startY: number
-    endX: number
-    endY: number
+    itemPosition: number
+    x: number
+    y: number
+    height: number
+    width: number
     stroke: string
+    fill: string
     strokeWidth: number
 }

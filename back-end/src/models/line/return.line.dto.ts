@@ -1,10 +1,9 @@
 
 export class ReturnLineDTO {
     id: string
-    position: number
+    itemPosition: number
     type: string
-    color: string
-    points: string
+    points: number[]
     stroke: string
     strokeWidth: number
 }

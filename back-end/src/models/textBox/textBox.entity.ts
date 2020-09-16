@@ -10,15 +10,21 @@ export class TextBox {
     @Column({default: 'textBox'})
     type: string
     @Column()
-    position: number;
+    itemPosition: number
     @Column()
-    color: string
+    x: number;
+    @Column()
+    y: number;
+    @Column()
+    fill: string
     @Column({type: 'boolean', default: false})
     isDeleted: boolean
-    @Column({length: 5000})
-    points: string
     @Column()
-    stroke: string
+    text: string
     @Column()
-    strokeWidth: number
+    fontStyle: string
+    @Column()
+    textDecoration: string
+    @Column()
+    fontSize: number
 }

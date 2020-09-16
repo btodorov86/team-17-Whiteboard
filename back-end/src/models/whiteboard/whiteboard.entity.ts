@@ -2,7 +2,7 @@ import { User } from '../users/user.entity'
 import { Rectangle } from '../rectangle/rectangle.entity'
 import { Circle } from '../circle/circle.entity'
 import { Line } from '../line/line.entity'
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, ManyToMany } from 'typeorm'
 import { TextBox } from '../textBox/textBox.entity'
 
 @Entity('whiteboards')
@@ -27,5 +27,7 @@ export class Whiteboard {
     rectangles: Rectangle[]
     @OneToMany(type => TextBox, textBox => textBox.whiteboard )
     textBoxes: TextBox[]
+    @ManyToMany(type => User, user => user.canUpdate)
+    invitedUsers: User[]
 
 }

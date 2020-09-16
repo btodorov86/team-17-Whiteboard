@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, OneToOne, Column, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Whiteboard } from '../whiteboard/whiteboard.entity';
 
 @Entity('lines')
@@ -10,9 +10,7 @@ export class Line {
     @Column({default: 'line'})
     type: string
     @Column()
-    position: number;
-    @Column()
-    color: string
+    itemPosition: number;
     @Column({type: 'boolean', default: false})
     isDeleted: boolean
     @Column({length: 5000})

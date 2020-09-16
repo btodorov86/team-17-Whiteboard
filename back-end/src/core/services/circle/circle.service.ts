@@ -28,13 +28,12 @@ export class CircleService {
         }
 
         const newCircle = await this.circleRepo.save({
-            position: body.position,
-            startX: body.startX,
-            startY: body.startY,
-            endX: body.endX,
-            endY: body.endY,
-            color: body.color,
+            itemPosition: whiteboard.circles.length + 1,
+            x: body.x,
+            y: body.y,
+            radius: body.radius,
             stroke: body.stroke,
+            fill: body.fill,
             strokeWidth: Number(body.strokeWidth),
         });
 

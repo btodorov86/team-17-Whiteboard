@@ -1,10 +1,13 @@
-
 export class ReturnTextBoxDTO {
-    id: string
-    position: number
-    type: string
-    color: string
-    points: string
-    stroke: string
-    strokeWidth: number
+  id: string;
+  type: string;
+  itemPosition: number;
+  x: number;
+  y: number;
+  fill: string;
+  isDeleted: boolean;
+  text: string;
+  fontStyle: string;
+  textDecoration: string;
+  fontSize: number;
 }

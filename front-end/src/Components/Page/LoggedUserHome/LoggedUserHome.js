@@ -110,7 +110,6 @@ const LoggedUserHomePage = ({ history, match }) => {
       .then((r) => r.json())
       .then((resp) => {
         isErrorResponse(resp);
-        console.log(resp);
         setCurrentWhiteboard(resp);
         setActiveWhiteboards([...activeWhiteboards, resp]);
       })
@@ -122,7 +121,7 @@ const LoggedUserHomePage = ({ history, match }) => {
         })
       )
       .finally(() => setLoading(false));
-  }, [match.params.id, activeWhiteboards, setLoading, setOpen]);
+  }, [match.params.id]);
 
   // useEffect(() => {
   //   socketRef.current = io("http://localhost:3000/chat");

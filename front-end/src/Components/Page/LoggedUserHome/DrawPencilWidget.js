@@ -9,6 +9,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import TextFieldIcon from '@material-ui/icons/TextFields';
 import CreateIcon from '@material-ui/icons/Create';
+// import PencileIcon from '@material-ui/icons/P';
 
 
 
@@ -21,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 10,
     width: 60,
     height: 60,
-
   },
   // exampleWrapper: {
   //   position: 'relative',
@@ -46,18 +46,21 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawPencilWidget = ({shareHandler, setIsDrawing}) => {
+const DrawPencilWidget = ({shareHandler, setIsDrawing, updateShapeProp}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
   const actions = [
     // { icon: <TextFieldIcon onClick={(e) => setTextInput(prev => ({...prev, isOpen: !prev.isOpen }))} />, name: 'Copy' },
-    { icon: <TextFieldIcon onClick={(e) => setIsDrawing('textBox')} />, name: 'Text' },
-    { icon: <FileCopyIcon onClick={(e) => setIsDrawing('textBox')} />, name: 'Copy' },
-    { icon: <SaveIcon onClick={(e) => setIsDrawing('rectangle')} />, name: 'Save' },
-    { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
-    { icon: <ShareIcon onClick={(e) => setIsDrawing('line')} />, name: 'Share' },
-    { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
+    // { icon: <TextFieldIcon onClick={(e) => setIsDrawing('textBox')} />, name: 'Text' },
+    // { icon: <FileCopyIcon onClick={(e) => setIsDrawing('textBox')} />, name: 'Copy' },
+    // { icon: <SaveIcon onClick={(e) => setIsDrawing('rectangle')} />, name: 'rectangle' },
+    // { icon: <PrintIcon onClick={(e) => updateShapeProp('line', {stroke:strokeWidth: 2})} />, name: 'strokeWidth' },
+    { icon: <CreateIcon onClick={(e) => updateShapeProp('line', {
+      isDrawing: true,
+      strokeWidth: 2,
+    })} />, name: 'Draw' },
+    // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 
   const handleCloseWidget = () => {

@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, Column, Entity, OneToMany } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity, OneToMany, ManyToMany, JoinColumn, JoinTable } from 'typeorm';
 import { Whiteboard } from '../whiteboard/whiteboard.entity';
 
 @Entity('users')
@@ -23,4 +23,7 @@ export class User {
     token: string
     @Column({ default: 'avatar.png'})
     avatarURL: string
+    @JoinTable()
+    @ManyToMany(type => Whiteboard, whiteboard => whiteboard.invitedUsers)
+    canUpdate: Whiteboard[]
 }

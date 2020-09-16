@@ -1,26 +1,19 @@
 import { Length, IsString, IsNumber, IsPositive, IsNotEmpty } from 'class-validator'
 export class CreateCircleDTO {
-    @Length(1,)
-    @IsString()
-    color: string;
-    @IsNumber()
-    @IsNotEmpty()
-    position: number;
     @IsNumber()
     @IsPositive()
-    startX: number;
+    x: number;
     @IsNumber()
     @IsPositive()
-    startY: number;
+    y: number;
     @IsNumber()
     @IsPositive()
-    endX: number;
-    @IsNumber()
-    @IsPositive()
-    endY: number;
+    radius: number;
     @Length(1,)
     @IsString()
     stroke: string
+    @IsString()
+    fill: string
     @IsNumber()
     @IsPositive()
     strokeWidth: number

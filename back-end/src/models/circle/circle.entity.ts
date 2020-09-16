@@ -10,21 +10,19 @@ export class Circle {
     @Column({default: 'circle'})
     type: string
     @Column()
-    color: string;
+    x: number;
     @Column()
-    startX: number;
+    y: number;
     @Column()
-    position: number;
+    itemPosition: number;
     @Column()
-    startY: number;
-    @Column()
-    endX: number;
-    @Column()
-    endY: number;
+    radius: number;
     @Column({type: 'boolean', default: false})
     isDeleted: boolean
     @Column()
     stroke: string
+    @Column()
+    fill: string
     @Column()
     strokeWidth: number
 

@@ -9,56 +9,74 @@ import {
   isErrorResponse,
 } from "../../../Constants/Constant";
 import { withRouter } from "react-router-dom";
-import ExceptionContext from '../../../Providers/Context/ExceptionContext';
+import ExceptionContext from "../../../Providers/Context/ExceptionContext";
+import AuthContext from "../../../Providers/Context/AuthContext";
 
 const SearchWhiteboard = ({ setIsSearchBoard, history }) => {
+  const { user } = useContext(AuthContext);
   const { setOpen } = useContext(ExceptionContext);
   const [openAutocomplete, setOpenAutocomplete] = useState(false);
   const [options, setOptions] = useState([]);
   const loading = openAutocomplete && options.length === 0;
   useEffect(() => {
-    // let active = true;
 
     if (!loading) {
       return undefined;
     }
 
-    // fetch(`${BASE_URL}/whiteboards/public`)
-    //   .then((r) => r.json())
-    //   .then((resp) => {
-    //     isErrorResponse(resp);
-    //     setOptions(resp);
-    //   })
-    //   .catch((err) =>
-    //     setOpen({
-    //       value: true,
-    //       msg: err.message,
-    //       statusType: exceptionStatus.error,
-    //     })
-    //   );
-
-    (async () => {
     fetch(`${BASE_URL}/whiteboards/public`)
-      .then( r => r.json())
-      .then( resp => {
+      .then((r) => r.json())
+      .then((resp) => {
         isErrorResponse(resp);
-        setOptions(resp)
+        setOptions(resp);
+        if (user) {
+          fetch(`${BASE_URL}/whiteboards/private`, {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          })
+            .then((re) => re.json())
+            .then((secondResp) => {
+              isErrorResponse(secondResp);
+              setOptions((prev) => [...prev, ...secondResp]);
+            })
+            .catch((err) =>
+              setOpen({
+                value: true,
+                msg: err.message,
+                statusType: exceptionStatus.error,
+              })
+            );
+        }
       })
-      .catch( err => setOpen({
-        value: true,
-        msg: err.message,
-        statusType: exceptionStatus.error,
-      }))
+      .catch((err) =>
+        setOpen({
+          value: true,
+          msg: err.message,
+          statusType: exceptionStatus.error,
+        })
+      );
 
-      // if (active) {
-        // setOptions(countries);
-      // }
-    })();
+    // fetch(`${BASE_URL}/whiteboards/public`)
+    //   .then( r => r.json())
+    //   .then( resp => {
+    //     isErrorResponse(resp);
+    //     setOptions(resp)
+    //   })
+    //   .catch( err => setOpen({
+    //     value: true,
+    //     msg: err.message,
+    //     statusType: exceptionStatus.error,
+    //   }))
+
+    // if (active) {
+    // setOptions(countries);
+    // }
 
     // return () => {
     //   active = false;
     // };
-  }, [loading, setOpen]);
+  }, [loading, setOpen, user]);
 
   // useEffect(() => {
   //   if (!open) {
@@ -85,17 +103,17 @@ const SearchWhiteboard = ({ setIsSearchBoard, history }) => {
         <TextField
           {...params}
           onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                const whiteboard = options.find((x) => x.name === e.target.value);
-                if (whiteboard) {
-                  history.push(whiteboard.id)
-                }
-                setIsSearchBoard(false)
+            if (e.key === "Enter") {
+              const whiteboard = options.find((x) => x.name === e.target.value);
+              if (whiteboard) {
+                history.push(whiteboard.id);
               }
-            }}
+              setIsSearchBoard(false);
+            }
+          }}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
-              setIsSearchBoard(false)
+              setIsSearchBoard(false);
             }
           }}
           label="Whiteboard"

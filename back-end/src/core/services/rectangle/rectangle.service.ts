@@ -28,13 +28,13 @@ export class RectangleService {
         }
 
         const newRectangle = await this.rectangleRepo.save({
-            position: body.position,
-            startX: body.startX,
-            startY: body.startY,
-            endX: body.endX,
-            endY: body.endY,
-            color: body.color,
+            itemPosition: whiteboard.rectangles.length + 1,
+            x: body.x,
+            y: body.y,
+            height: body.height,
+            width: body.width,
             stroke: body.stroke,
+            fill: body.fill,
             strokeWidth: Number(body.strokeWidth),
         });
 
