@@ -15,7 +15,6 @@ import LoadingContext from "./Providers/Context/LoadingContext";
 import LoggedUserHomePage from './Components/Page/LoggedUserHome/LoggedUserHome';
 import Home from './Components/Page/Home/Home';
 import Test from './Test';
-import Test12 from './test12';
 import Chat from './test12';
 
 const App = () => {
@@ -28,6 +27,8 @@ const App = () => {
   });
   const [loading, setLoading] = useState(false);
 
+  console.log(user);
+
   return (
     <BrowserRouter>
       <LoadingContext.Provider value={{ loading, setLoading }}>
@@ -39,6 +40,7 @@ const App = () => {
               <Redirect from="/" exact to="/home" />
               <Route path="/home" component={Home} />
               <Route path="/test12" component={Chat} />
+              {/* <Route path="/profile" component={LoggedUserHomePage} /> */}
               {/* <Route path="/login" component={Login} /> */}
               <Route path="/chat1" component={Test} />   {/*test*/}
               {/* <Route path="/register" component={Register} /> */}

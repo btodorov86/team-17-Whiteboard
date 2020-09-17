@@ -85,22 +85,22 @@ export class WhiteBoardService{
 
         return this.transform.toReturnCreatedWhiteboardDto(whiteboard, user)
     }
-    async delete(id: string, userId: string): Promise<string> {
+    async delete(id: string): Promise<string> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: id, isDeleted: false},
-            relations: ['author']
         })
         if(!whiteboard) {
             throw new NotFoundException();
         }
-        if (whiteboard.author.id !== userId) {
-            throw new UnauthorizedException()
-        }
+        console.log(whiteboard);
+
         whiteboard.isDeleted = true;
-        this.whiteboardsRepo.save(whiteboard)
+        await this.whiteboardsRepo.save(whiteboard)
         return 'Board is deleted'
     }
     async update(id: string, body: Partial<UpdateWhiteboardDTO>, whiteboardId: string): Promise<SimpleReturnWhiteboardDTO> {
+        console.log(id, body);
+
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: whiteboardId, isDeleted: false},
             relations: ['invitedUsers', 'author']
@@ -118,8 +118,9 @@ export class WhiteBoardService{
             whiteboard.invitedUsers.push(invitedUser);
         }
 
-        body?.name ? whiteboard.name = body.name : null;
+        body?.name ? whiteboard.name = body.name : null;   // fix update obj
         body?.isPublic ? whiteboard.isPublic = body.isPublic : null;
+        console.log(whiteboard);
 
         return this.transform.toSimpleReturnWhiteboardDto(await this.whiteboardsRepo.save(whiteboard), whiteboard.author)
     }

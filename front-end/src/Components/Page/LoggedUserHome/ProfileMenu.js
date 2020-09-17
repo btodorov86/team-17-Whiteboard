@@ -1,46 +1,91 @@
-import React from "react";
+import React, { useContext } from "react";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import propTypes from 'prop-types';
+import propTypes from "prop-types";
+import AuthContext from "../../../Providers/Context/AuthContext";
 
-const ProfileMenu = ({anchorEl, handleClose, setIsCreateWhiteboard, setIsChangePassword}) => {
+const ProfileMenu = ({
+  anchorEl,
+  handleClose,
+  setIsCreateWhiteboard,
+  setIsChangePassword,
+  setIsDeleteBoard,
+  setIsUpdateBoard,
+}) => {
+  const { user } = useContext(AuthContext);
 
-    return (
-        <Menu
-              style={{ top: "-4px" }}
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={(e) => {
-                setIsCreateWhiteboard(true);
-                handleClose();
-                }} 
-                style={{ margin: "10px" }}>
-                Create board
-              </MenuItem>
-              <MenuItem onClick={(e) => {
-                setIsChangePassword(true);
-                handleClose()
-                }}
-                style={{ margin: "10px" }}>
-                Change password
-              </MenuItem>
-              <MenuItem onClick={handleClose} style={{ margin: "10px" }}>
-                Update avatar
-              </MenuItem>
-            </Menu>
-    )
+  const toggleChangePassword = user ? (
+    <MenuItem
+      onClick={(e) => {
+        setIsChangePassword(true);
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
+      Change password
+    </MenuItem>
+  ) : null;
 
+  const toggleUpdateAvatar = user ? (
+    <MenuItem onClick={handleClose} style={{ margin: "10px" }}>
+      Update avatar
+    </MenuItem>
+  ) : null;
+
+  const toggleUpdateWhiteboard = user ? (
+    <MenuItem
+        onClick={(e) => {
+          setIsUpdateBoard(true);
+          handleClose();
+        }}
+        style={{ margin: "10px" }}
+      >
+        Update board
+      </MenuItem>
+  ) : null
+  const toggleDeleteWhiteboard = user ? (
+    <MenuItem
+        onClick={(e) => {
+          setIsDeleteBoard(true);
+          handleClose();
+        }}
+        style={{ margin: "10px" }}
+      >
+        Delete board
+      </MenuItem>
+  ) : null
+
+  return (
+    <Menu
+      style={{ top: "-4px" }}
+      id="simple-menu"
+      anchorEl={anchorEl}
+      keepMounted
+      open={Boolean(anchorEl)}
+      onClose={handleClose}
+    >
+      <MenuItem
+        onClick={(e) => {
+          setIsCreateWhiteboard(true);
+          handleClose();
+        }}
+        style={{ margin: "10px" }}
+      >
+        Create board
+      </MenuItem>
+      {toggleDeleteWhiteboard}
+      {toggleUpdateWhiteboard}
+      {toggleChangePassword}
+      {toggleUpdateAvatar}
+    </Menu>
+  );
 };
 
 ProfileMenu.propTypes = {
-    anchorEl: propTypes.oneOfType([propTypes.object, propTypes.bool]).isRequired,
-    handleClose: propTypes.func.isRequired,
-    setIsChangePassword: propTypes.func.isRequired,
-    setIsCreateWhiteboard: propTypes.func.isRequired,
-}
+  anchorEl: propTypes.oneOfType([propTypes.object, propTypes.bool]).isRequired,
+  handleClose: propTypes.func.isRequired,
+  setIsChangePassword: propTypes.func.isRequired,
+  setIsCreateWhiteboard: propTypes.func.isRequired,
+};
 
-export default ProfileMenu
+export default ProfileMenu;

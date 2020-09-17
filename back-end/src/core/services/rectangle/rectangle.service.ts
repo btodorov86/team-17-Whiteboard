@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Whiteboard } from 'src/models/whiteboard/whiteboard.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,14 +17,17 @@ export class RectangleService {
     ) {}
 
 
-    async create(whiteboardId: string, body: CreateRectangleDTO): Promise<ReturnRectangleDTO> {
+    async create(whiteboardId: string, body: CreateRectangleDTO, userId: string): Promise<ReturnRectangleDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: whiteboardId, isDeleted: false},
-            relations: ['rectangles']
+            relations: ['rectangles', 'invitedUsers', 'author']
         })
 
         if (!whiteboard) {
             throw new NotFoundException();
+        }
+        if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+            throw new UnauthorizedException();
         }
 
         const newRectangle = await this.rectangleRepo.save({
@@ -46,13 +49,16 @@ export class RectangleService {
 
 
     }
-    async update(whiteboardId: string, body: Partial<CreateRectangleDTO>, rectangleId: string): Promise<ReturnRectangleDTO> {
+    async update(whiteboardId: string, body: Partial<CreateRectangleDTO>, rectangleId: string, userId: string): Promise<ReturnRectangleDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: whiteboardId, isDeleted: false},
-            relations: ['rectangles']
+            relations: ['rectangles', 'invitedUsers', 'author']
         })
         if (!whiteboard) {
             throw new NotFoundException();
+        }
+        if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+            throw new UnauthorizedException();
         }
 
         const rectangle = await this.rectangleRepo.findOne({

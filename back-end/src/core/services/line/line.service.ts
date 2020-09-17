@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateLineDTO } from 'src/models/line/create.line.dto';
 import { Line } from 'src/models/line/line.entity';
 import { Repository } from 'typeorm';
@@ -19,15 +19,18 @@ export class LineService {
     ) {}
 
 
-    async create(whiteboardId: string, body: CreateLineDTO): Promise<ReturnLineDTO> {
+    async create(whiteboardId: string, body: CreateLineDTO, userId: string): Promise<ReturnLineDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: whiteboardId, isDeleted: false},
-            relations: ['lines']
+            relations: ['lines', 'invitedUsers', 'author']
         })
         console.log(whiteboard);
 
         if (!whiteboard) {
             throw new NotFoundException();
+        }
+        if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+            throw new UnauthorizedException();
         }
 
         const newLine = await this.lineRepo.save({
@@ -45,13 +48,16 @@ export class LineService {
 
 
     }
-    async update(whiteboardId: string, body: Partial<CreateLineDTO>, lineId: string): Promise<ReturnLineDTO> {
+    async update(whiteboardId: string, body: Partial<CreateLineDTO>, lineId: string, userId: string): Promise<ReturnLineDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: whiteboardId, isDeleted: false},
-            relations: ['lines']
+            relations: ['lines', 'invitedUsers', 'author']
         })
         if (!whiteboard) {
             throw new NotFoundException();
+        }
+        if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+            throw new UnauthorizedException();
         }
 
         const line = await this.lineRepo.findOne({

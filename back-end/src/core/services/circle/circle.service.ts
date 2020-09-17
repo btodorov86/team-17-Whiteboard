@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Whiteboard } from 'src/models/whiteboard/whiteboard.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,14 +17,17 @@ export class CircleService {
     ) {}
 
 
-    async create(whiteboardId: string, body: CreateCircleDTO): Promise<ReturnCircleDTO> {
+    async create(whiteboardId: string, body: CreateCircleDTO, userId: string): Promise<ReturnCircleDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: whiteboardId, isDeleted: false},
-            relations: ['circles']
+            relations: ['circles', 'invitedUsers', 'author']
         })
 
         if (!whiteboard) {
             throw new NotFoundException();
+        }
+        if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+            throw new UnauthorizedException();
         }
 
         const newCircle = await this.circleRepo.save({
@@ -45,13 +48,16 @@ export class CircleService {
 
 
     }
-    async update(whiteboardId: string, body: Partial<CreateCircleDTO>, circleId: string): Promise<ReturnCircleDTO> {
+    async update(whiteboardId: string, body: Partial<CreateCircleDTO>, circleId: string, userId: string): Promise<ReturnCircleDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: whiteboardId, isDeleted: false},
-            relations: ['circles']
+            relations: ['circles', 'invitedUsers', 'author']
         })
         if (!whiteboard) {
             throw new NotFoundException();
+        }
+        if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+            throw new UnauthorizedException();
         }
 
         const Circle = await this.circleRepo.findOne({

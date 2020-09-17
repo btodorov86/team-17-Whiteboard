@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Whiteboard } from 'src/models/whiteboard/whiteboard.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,15 +18,19 @@ export class TextBoxService {
   async create(
     whiteboardId: string,
     body: CreateTextBoxDTO,
+    userId: string,
   ): Promise<ReturnTextBoxDTO> {
     const whiteboard = await this.whiteboardsRepo.findOne({
       where: { id: whiteboardId, isDeleted: false },
-      relations: ['textBoxes'],
+      relations: ['textBoxes', 'invitedUsers', 'author'],
     });
 
     if (!whiteboard) {
       throw new NotFoundException();
     }
+    if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+      throw new UnauthorizedException();
+  }
 
     const newTextBox = await this.textBoxRepo.save({
       itemPosition: whiteboard.textBoxes.length + 1,
@@ -49,14 +53,18 @@ export class TextBoxService {
     whiteboardId: string,
     body: Partial<CreateTextBoxDTO>,
     TextBoxId: string,
+    userId: string,
   ): Promise<ReturnTextBoxDTO> {
     const whiteboard = await this.whiteboardsRepo.findOne({
       where: { id: whiteboardId, isDeleted: false },
-      relations: ['textBoxes'],
+      relations: ['textBoxes', 'invitedUsers', 'author'],
     });
     if (!whiteboard) {
       throw new NotFoundException();
     }
+    if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+      throw new UnauthorizedException();
+  }
 
     const TextBox = await this.textBoxRepo.findOne({
       where: { id: TextBoxId, isDeleted: false },

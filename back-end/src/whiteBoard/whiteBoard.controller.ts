@@ -59,7 +59,9 @@ export class WhiteBoardController {
         @Req() req: Request,
         ): Promise<string> {
             const user = req.user as User;
-        return await this.whiteboardService.delete(id, user.id)
+            console.log(id);
+
+        return await this.whiteboardService.delete(id)
     }
 
     @UseGuards(AuthGuard('jwt')) // For test !!!!!!!!!!!!!!

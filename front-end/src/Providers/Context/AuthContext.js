@@ -15,7 +15,7 @@ export const getUser = token => {
 
 const AuthContext = createContext({
     user: null,
-    // isLogged: false,
+    isLogged: false,
     setUser: () => {}
 });
 

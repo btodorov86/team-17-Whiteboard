@@ -21,8 +21,14 @@ import {
 import LoadingContext from "../../../Providers/Context/LoadingContext";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import Loading from "../Loading/Loading";
+import { withRouter } from 'react-router-dom';
 
-const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
+const UpdateBoard = ({
+  isUpdateBoard,
+  setIsUpdateBoard,
+  currentWhiteboard,
+  match,
+}) => {
   const useStyles = makeStyles((theme) => ({
     modal: {
       display: "flex",
@@ -54,34 +60,38 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
 
   const { loading, setLoading } = useContext(LoadingContext);
   const { setOpen } = useContext(ExceptionContext);
-  const [createBoard, setCreateBoard] = useState({
-    isValid: true,
-    isTouched: false,
-    value: "",
-    isPublic: "public",
+  const [updateBoard, setUpdateBoard] = useState({
+    name: {
+      isValid: true,
+      isTouched: false,
+      value: currentWhiteboard?.name,
+    },
+    isPublic: currentWhiteboard?.isPublic ? "public" : "private",
   });
   const updateState = (prop, value) => {
-    setCreateBoard({
-      isTouched: true,
-      value,
-      isPublic: createBoard.isPublic,
-      isValid: userValidation[prop].reduce(
-        (acc, validateFn) => acc && typeof validateFn(value) === "boolean",
-        true
-      ),
-    });
+    setUpdateBoard((prev) => ({
+      isPublic: updateBoard.isPublic,
+      [prop]: {
+        isTouched: true,
+        value,
+        isValid: userValidation[prop].reduce(
+          (acc, validateFn) => acc && typeof validateFn(value) === "boolean",
+          true
+        ),
+      },
+    }));
   };
 
   const userValidation = {
-    boardName: [
+    name: [
       (data) => data?.length >= 2 || "Board name field must be 2 or more chars",
     ],
   };
 
   const renderError = (prop) => {
-    return createBoard.isTouched
+    return updateBoard.isTouched
       ? userValidation[prop]
-          .map((fn) => fn(createBoard.value))
+          .map((fn) => fn(updateBoard.value))
           .filter((x) => typeof x === "string")
           .map((err, index) => (
             <p key={index} style={{ color: "red" }}>
@@ -91,15 +101,15 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
       : null;
   };
 
-  const create = () => {
+  const updateBoardFunc = () => {
     setLoading(true);
     const sendObj = {
-      name: createBoard.value,
-      isPublic: createBoard.isPublic === 'public' ? true : false,
+      name: updateBoard.name.value,
+      isPublic: updateBoard.isPublic === "public" ? true : false,
     };
     console.log(sendObj);
-    fetch(`${BASE_URL}/whiteboards`, {
-      method: "POST",
+    fetch(`${BASE_URL}/whiteboards/${match.params.id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
         Authorization: localStorage.getItem("token"),
@@ -112,7 +122,7 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
         isErrorResponse(resp);
         setOpen({
           value: true,
-          msg: `${resp.name} is created!`,
+          msg: `${resp.name} is updated!`,
           statusType: exceptionStatus.success,
         });
       })
@@ -123,18 +133,18 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
           statusType: exceptionStatus.error,
         });
       })
-      .finally(
-        () => {
-          setLoading(false);
-          setIsCreateWhiteboard(false);
-          setCreateBoard({
+      .finally(() => {
+        setLoading(false);
+        setIsUpdateBoard(false);
+        setUpdateBoard({
+          name: {
             isValid: true,
             isTouched: false,
             value: "",
-            isPublic: true,
-          })
-        }
-      );
+          },
+          isPublic: currentWhiteboard?.isPublic,
+        });
+      });
   };
 
   // const handleChangeIsPublic = (value) => {
@@ -146,50 +156,51 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
 
   const handleChange = (event) => {
     const name = event.target.name;
-    setCreateBoard({
-      ...createBoard,
-      [name]: event.target.value
+    setUpdateBoard({
+      ...updateBoard,
+      [name]: event.target.value,
     });
   };
 
+  console.log(updateBoard);
 
   return (
     <Modal
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
       className={classes.modal}
-      open={isCreateWhiteboard}
-      onClose={(e) => setIsCreateWhiteboard(false)}
+      open={isUpdateBoard}
+      onClose={(e) => setIsUpdateBoard(false)}
       //   closeAfterTransition
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 500,
       }}
     >
-      <Fade in={isCreateWhiteboard}>
+      <Fade in={isUpdateBoard}>
         <div className={classes.paper}>
           {loading ? <Loading /> : null}
           <Container component="main" maxWidth="xl">
             <Typography component="h1" variant="h5" align="center">
-              Create Whiteboard
+              {currentWhiteboard?.name}
             </Typography>
             <form className={classes.form} noValidate>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
-                    name="createBoard"
+                    name="updateBoard"
                     variant="outlined"
                     required
                     fullWidth
-                    id="createBoard"
-                    label="Create Whiteboard"
+                    id="updateBoard"
+                    label="Update Whiteboard name"
                     autoFocus
-                    value={createBoard.value}
-                    error={!createBoard.isValid}
+                    value={updateBoard.name.value}
+                    error={!updateBoard.name.isValid}
                     // onKeyPress={(e) =>  e.key === 'Enter' ? e.defaultPrevented() : null }
-                    onChange={(e) => updateState("boardName", e.target.value)}
+                    onChange={(e) => updateState("name", e.target.value)}
                   />
-                  {renderError("boardName")}
+                  {renderError("name")}
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl
@@ -198,23 +209,23 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
                     fullWidth
                   >
                     <InputLabel htmlFor="outlined-age-native-simple">
-                      {createBoard.isPublic === "public" ? "Public" : "Private"}
+                      {updateBoard.isPublic === "public" ? "Public" : "Private"}
                     </InputLabel>
                     <Select
                       native
                       fullWidth
-                      placeholder={createBoard.isPublic ? 'Public' : 'Private'}
+                      placeholder={updateBoard.isPublic ? "Public" : "Private"}
                       variant="outlined"
-                      value={createBoard.isPublic}
+                      value={updateBoard.isPublic}
                       onChange={handleChange}
                       label="Visible"
-                        inputProps={{
-                          name: "isPublic",
-                          id: "outlined-public",
-                        }}
+                      inputProps={{
+                        name: "isPublic",
+                        id: "outlined-public",
+                      }}
                     >
-                      <option value={'public'}>Public</option>
-                      <option value={'private'}>Private</option>
+                      <option value={"public"}>Public</option>
+                      <option value={"private"}>Private</option>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -225,10 +236,10 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
                     variant="contained"
                     color="primary"
                     className={classes.submit}
-                    onClick={(e) => create()}
-                    disabled={!createBoard.isValid || !createBoard.isTouched}
+                    onClick={(e) => updateBoardFunc()}
+                    disabled={!updateBoard.name.isValid || !updateBoard.name.isTouched}
                   >
-                    Create
+                    Update
                   </Button>
                   <Button
                     type="button"
@@ -236,13 +247,16 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
                     variant="contained"
                     color="primary"
                     onClick={(e) => {
-                      setIsCreateWhiteboard(false);
-                      setCreateBoard({
-                      isValid: true,
-                      isTouched: false,
-                      value: "",
-                      isPublic: "public",
-                    })}}
+                      setIsUpdateBoard(false);
+                      setUpdateBoard({
+                        name: {
+                          isValid: true,
+                          isTouched: false,
+                          value: currentWhiteboard?.name,
+                        },
+                        isPublic: currentWhiteboard?.isPublic,
+                      });
+                    }}
                   >
                     Cancel
                   </Button>
@@ -255,4 +269,4 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
     </Modal>
   );
 };
-export default CreateBoard;
+export default withRouter(UpdateBoard);

@@ -32,9 +32,12 @@ import { SketchPicker } from "react-color";
 import LoadingContext from "../../../Providers/Context/LoadingContext";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import Loading from "../Loading/Loading";
-import SearchWhiteBoards from './SearchWhiteBoards';
-import CreateBoard from './CreateBoard';
-import ChangePassword from './ChangePassword';
+import SearchWhiteBoards from "./SearchWhiteBoards";
+import CreateBoard from "./CreateBoard";
+import ChangePassword from "./ChangePassword";
+import ColorPalette from './ColorPalette';
+import DeleteBoard from './DeleteBoard';
+import UpdateBoard from './UpdateBoard';
 
 const LoggedUserHomePage = ({ history, match }) => {
   const { user, setUser } = useContext(AuthContext);
@@ -97,7 +100,8 @@ const LoggedUserHomePage = ({ history, match }) => {
   const [isSearchBoard, setIsSearchBoard] = useState(false);
   const [isCreateWhiteboard, setIsCreateWhiteboard] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
-
+  const [isDeleteBoard, setIsDeleteBoard] = useState(false);
+  const [isUpdateBoard, setIsUpdateBoard] = useState(false);
 
   // console.log(match);
   // console.log(currentWhiteboard);
@@ -199,7 +203,24 @@ const LoggedUserHomePage = ({ history, match }) => {
   //   }
   // };
 
-  return loading ? <Loading /> : (
+  const showDrawingPage = currentWhiteboard ? (
+    <Test color={color} currentWhiteboard={currentWhiteboard} stroke1={5} />
+  ) : null;
+  const toggleSketchPicker = match.params.id ? <ColorPalette color={color} setColor={setColor} /> : null;
+
+  const toggleChangePassword = user ? (
+    <ChangePassword
+      isChangePassword={isChangePassword}
+      setIsChangePassword={setIsChangePassword}
+    />
+  ) : null;
+
+  const toggleIsDeleteBoard = user ? <DeleteBoard isDeleteBoard={isDeleteBoard} setIsDeleteBoard={setIsDeleteBoard} /> : null
+  const toggleIsUpdateBoard = user ? <UpdateBoard isUpdateBoard={isUpdateBoard} setIsUpdateBoard={setIsUpdateBoard} currentWhiteboard={currentWhiteboard} /> : null
+
+  return loading ? (
+    <Loading />
+  ) : (
     <div
       className={classes.root}
       // onMouseMove={(e) =>
@@ -225,7 +246,13 @@ const LoggedUserHomePage = ({ history, match }) => {
             >
               <MenuIcon />
             </IconButton> */}
-          <Button style={{border: '2px solid red', borderRadius: '50%', boxShadow: '6px 6px 3px darkblue'}}>
+          <Button
+            style={{
+              border: "2px solid red",
+              borderRadius: "50%",
+              boxShadow: "6px 6px 3px darkblue",
+            }}
+          >
             <Avatar
               src={`${BASE_URL}/${user.avatarURL}`}
               alt={user.userName}
@@ -233,8 +260,17 @@ const LoggedUserHomePage = ({ history, match }) => {
               onClick={handleClickProfile}
             />
           </Button>
-          <span style={{ fontSize: "25px", paddingLeft: '10px' }}>{user.userName}</span>
-          <ProfileMenu anchorEl={anchorEl} handleClose={handleCloseProfile} setIsCreateWhiteboard={setIsCreateWhiteboard} setIsChangePassword={setIsChangePassword}  />
+          <span style={{ fontSize: "25px", paddingLeft: "10px" }}>
+            {user.userName}
+          </span>
+          <ProfileMenu
+            anchorEl={anchorEl}
+            handleClose={handleCloseProfile}
+            setIsCreateWhiteboard={setIsCreateWhiteboard}
+            setIsChangePassword={setIsChangePassword}
+            setIsDeleteBoard={setIsDeleteBoard}
+            setIsUpdateBoard={setIsUpdateBoard}
+          />
           <ListItem style={{ justifyContent: "center" }}>
             <IconButton>
               <Before />
@@ -243,11 +279,29 @@ const LoggedUserHomePage = ({ history, match }) => {
               <SearchWhiteBoards setIsSearchBoard={setIsSearchBoard} />
             ) : (
               <Button
-                style={{border: '1px solid black', backgroundColor: 'red', boxShadow: '6px 6px 3px darkblue' }}
+                style={{
+                  border: "1px solid black",
+                  backgroundColor: "red",
+                  boxShadow: "6px 6px 3px darkblue",
+                }}
                 onClick={(e) => setIsSearchBoard(true)}
               >
-                <ListItem style={{fontSize: '20px', justifyContent: "center"}}>{ currentWhiteboard?.name }</ListItem>
-                <ListItem style={{fontSize: '10px', justifyContent: "center", color: 'white'}}>{ currentWhiteboard?.isPublic ? 'public' : 'private' }</ListItem>
+                <span
+                  style={{ paddingLeft: '10px', paddingRight: '10px', fontSize: "25px", justifyContent: "center" }}
+                >
+                  {currentWhiteboard?.name}
+                </span>
+                <span
+                  style={{
+                    paddingLeft: '10px',
+                    paddingRight: '10px',
+                    fontSize: "10px",
+                    justifyContent: "center",
+                    color: "white",
+                  }}
+                >
+                  {currentWhiteboard?.isPublic ? "public" : "private"}
+                </span>
               </Button>
             )}
             <IconButton>
@@ -256,59 +310,29 @@ const LoggedUserHomePage = ({ history, match }) => {
           </ListItem>
           <span style={{ paddingRight: "10px", fontSize: "20px" }}>Logout</span>
           <ExitToApp
-            style={{ cursor: "pointer", boxShadow: '4px 4px 2px darkblue', border: '1px solid black', borderRadius: '5px' }}
+            style={{
+              cursor: "pointer",
+              boxShadow: "4px 4px 2px darkblue",
+              border: "1px solid black",
+              borderRadius: "5px",
+            }}
             color="inherit"
             onClick={(e) => {
               e.preventDefault();
-              logOutHandler(setUser, history)
+              logOutHandler(setUser, history);
             }}
           />
-            {/* <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge> */}
         </Toolbar>
       </AppBar>
-      { currentWhiteboard ? <Test color={color} currentWhiteboard={currentWhiteboard} stroke1={5} /> : null }
-
-      {/* {sharedUsers.length !== 0
-        ? sharedUsers.map((user) => (
-            <Avatar
-              key={user.id}
-              src={user.avatar}
-              alt={""}
-              style={{
-                position: "absolute",
-                top: user.mouseX,
-                left: user.mouseY,
-              }}
-            />
-          ))
-        : null} */}
-      {/* <DrawWidget shareHandler={shareHandler} /> */}
-
-      <div
-        style={{
-          position: "absolute",
-          marginTop: "40px",
-          display: "inline-block",
-        }}
-      >
-        <SketchPicker
-          color={color}
-          onChange={(color) => {
-            setColor(color.hex);
-          }}
-        />
-      </div>
-      {/* <Widget
-        handleNewUserMessage={handleNewUserMessage}
-        // showTimeStamp={false}
-        profileAvatar={avatar}
-        title={"Chat"}
-        display={"inline-block"}
-      /> */}
-      <CreateBoard isCreateWhiteboard={isCreateWhiteboard} setIsCreateWhiteboard={setIsCreateWhiteboard} />
-      <ChangePassword isChangePassword={isChangePassword} setIsChangePassword={setIsChangePassword} />
+      {toggleIsDeleteBoard}
+      {showDrawingPage}
+      {toggleSketchPicker}
+      {toggleIsUpdateBoard}
+      <CreateBoard
+        isCreateWhiteboard={isCreateWhiteboard}
+        setIsCreateWhiteboard={setIsCreateWhiteboard}
+      />
+      {toggleChangePassword}
     </div>
   );
 };

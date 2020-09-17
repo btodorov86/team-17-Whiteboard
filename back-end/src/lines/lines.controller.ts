@@ -1,7 +1,11 @@
-import { Controller, Post, Body, Param, Put, Delete, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, Delete, ValidationPipe, UseGuards, Req } from '@nestjs/common';
 import { CreateLineDTO } from 'src/models/line/create.line.dto';
 import { ReturnLineDTO } from 'src/models/line/return.line.dto';
 import { LineService } from 'src/core/services/line/line.service';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
+import { User } from 'src/models/users/user.entity';
+
 
 @Controller('whiteboards/:id/lines')
 
@@ -11,24 +15,27 @@ export class LinesController {
         private readonly lineService: LineService
     ) {}
 
-
+    @UseGuards(AuthGuard('jwt'))
     @Post()
     async create(
         @Body(new ValidationPipe({whitelist: true})) body: CreateLineDTO,
+        @Req() req: Request,
         @Param('id') id: string
         ): Promise<ReturnLineDTO> {
-            console.log('11111');
-
-        return await this.lineService.create(id, body)
+            const user = req.user as User;
+        return await this.lineService.create(id, body, user.id)
     }
 
+    @UseGuards(AuthGuard('jwt'))
     @Put(':lineId')
     async update(
         @Param('id') id: string,
+        @Req() req: Request,
         @Body(new ValidationPipe({whitelist: true})) body: Partial<CreateLineDTO>,
         @Param('lineId') lineId: string,
         ): Promise<ReturnLineDTO> {
-        return await this.lineService.update(id, body, lineId)
+            const user = req.user as User;
+        return await this.lineService.update(id, body, lineId, user.id)
     }
 
     @Delete(':lineId')
