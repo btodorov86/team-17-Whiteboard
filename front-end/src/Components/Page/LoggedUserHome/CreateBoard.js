@@ -232,7 +232,7 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
                   </Button>
                   <Button
                     type="button"
-                    fullWidth
+                    // fullWidth
                     variant="contained"
                     color="primary"
                     onClick={(e) => {

@@ -11,6 +11,7 @@ import {
   Avatar,
   IconButton,
   ListItem,
+  Button,
 } from "@material-ui/core";
 import AuthContext from "../../../Providers/Context/AuthContext";
 import {
@@ -224,15 +225,15 @@ const LoggedUserHomePage = ({ history, match }) => {
             >
               <MenuIcon />
             </IconButton> */}
-          <ListItemAvatar>
+          <Button style={{border: '2px solid red', borderRadius: '50%', boxShadow: '6px 6px 3px darkblue'}}>
             <Avatar
               src={`${BASE_URL}/${user.avatarURL}`}
               alt={user.userName}
               style={{ cursor: "pointer" }}
               onClick={handleClickProfile}
             />
-          </ListItemAvatar>
-          <span style={{ fontSize: "25px" }}>{user.userName}</span>
+          </Button>
+          <span style={{ fontSize: "25px", paddingLeft: '10px' }}>{user.userName}</span>
           <ProfileMenu anchorEl={anchorEl} handleClose={handleCloseProfile} setIsCreateWhiteboard={setIsCreateWhiteboard} setIsChangePassword={setIsChangePassword}  />
           <ListItem style={{ justifyContent: "center" }}>
             <IconButton>
@@ -241,14 +242,13 @@ const LoggedUserHomePage = ({ history, match }) => {
             {isSearchBoard ? (
               <SearchWhiteBoards setIsSearchBoard={setIsSearchBoard} />
             ) : (
-              <span
-                style={{ fontSize: "20px" }}
-                onDoubleClick={(e) => setIsSearchBoard(true)}
+              <Button
+                style={{border: '1px solid black', backgroundColor: 'red', boxShadow: '6px 6px 3px darkblue' }}
+                onClick={(e) => setIsSearchBoard(true)}
               >
-                {currentWhiteboard?.name}
-                <br />
+                <ListItem style={{fontSize: '20px', justifyContent: "center"}}>{ currentWhiteboard?.name }</ListItem>
                 <ListItem style={{fontSize: '10px', justifyContent: "center", color: 'white'}}>{ currentWhiteboard?.isPublic ? 'public' : 'private' }</ListItem>
-              </span>
+              </Button>
             )}
             <IconButton>
               <Next />
@@ -256,17 +256,16 @@ const LoggedUserHomePage = ({ history, match }) => {
           </ListItem>
           <span style={{ paddingRight: "10px", fontSize: "20px" }}>Logout</span>
           <ExitToApp
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", boxShadow: '4px 4px 2px darkblue', border: '1px solid black', borderRadius: '5px' }}
             color="inherit"
             onClick={(e) => {
               e.preventDefault();
               logOutHandler(setUser, history)
             }}
-          >
-            <Badge badgeContent={4} color="secondary">
+          />
+            {/* <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
-            </Badge>
-          </ExitToApp>
+            </Badge> */}
         </Toolbar>
       </AppBar>
       { currentWhiteboard ? <Test color={color} currentWhiteboard={currentWhiteboard} stroke1={5} /> : null }

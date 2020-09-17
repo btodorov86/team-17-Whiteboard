@@ -8,8 +8,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
-import { colors } from '@material-ui/core';
-
+import propType from 'prop-types';
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
@@ -44,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawCircleWidget = ({shareHandler, setIsDrawing, updateShapeProp, color}) => {
+const DrawCircleWidget = ({shareHandler, updateShapeProp, color}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
@@ -55,12 +54,12 @@ const DrawCircleWidget = ({shareHandler, setIsDrawing, updateShapeProp, color}) 
       isDrawing: true,
       fill: "",
       stroke: color,
-    })} />, name: 'Draw' },
+    }, true)} />, name: 'Draw' },
     { icon: <ShareIcon onClick={(e) => updateShapeProp('circle', {
       isDrawing: true,
       fill: color,
       stroke: color,
-    })} />, name: 'Share' },
+    }, true)} />, name: 'Share' },
     // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 
@@ -115,5 +114,11 @@ const DrawCircleWidget = ({shareHandler, setIsDrawing, updateShapeProp, color}) 
     </div>
   );
 };
+
+DrawCircleWidget.propType = {
+  shareHandler: propType.func.isRequired,
+  updateShapeProp: propType.func.isRequired,
+  color: propType.string.isRequired,
+}
 
 export default DrawCircleWidget

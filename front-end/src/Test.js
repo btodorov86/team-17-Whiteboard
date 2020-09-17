@@ -400,11 +400,16 @@ const Test = ({ color, currentWhiteboard, match }) => {
     });
   }, []);
 
-  const updateShapeProp = (shape, prop) => {
+  const updateShapeProp = (shapeType, prop, token = false) => {
+    if (token) {
+      Object.keys(shape)
+      .filter((y) => y !== shapeType)
+      .map((x) => (shape[x].isDrawing = false));
+    }
     setShape(prev => ({
       ...prev,                                    // update funk with setIsDrawing funk
-      [shape]: {
-        ...prev[shape],
+      [shapeType]: {
+        ...prev[shapeType],
         ...prop,
         // [prop]: value,
       }
@@ -489,18 +494,18 @@ const Test = ({ color, currentWhiteboard, match }) => {
     }
   };
 
-  const setIsDrawing = (prop) => {
-    Object.keys(shape)
-      .filter((y) => y !== prop)
-      .map((x) => (shape[x].isDrawing = false));
-    setShape({
-      ...shape,
-      [prop]: {
-        ...shape[prop],
-        isDrawing: !shape[prop].isDrawing,
-      },
-    });
-  };
+  // const setIsDrawing = (prop) => {
+  //   Object.keys(shape)
+  //     .filter((y) => y !== prop)
+  //     .map((x) => (shape[x].isDrawing = false));
+  //   setShape({
+  //     ...shape,
+  //     [prop]: {
+  //       ...shape[prop],
+  //       isDrawing: !shape[prop].isDrawing,
+  //     },
+  //   });
+  // };
 
   const handleNewUserMessage = (data) =>
     socketRef.current.emit("send-message", {
@@ -526,22 +531,7 @@ const Test = ({ color, currentWhiteboard, match }) => {
   console.log(shape.line.strokeWidth);
 
   return (
-    <>
-      {sharedUsers.length !== 0
-        ? sharedUsers.map((user) => (
-            <Avatar
-              key={user.id}
-              src={user.avatar}
-              alt={""}
-              style={{
-                position: "absolute",
-                top: user.mouseX,
-                left: user.mouseY,
-              }}
-            />
-          ))
-        : null}
-
+    <React.Fragment>
       <Stage
         onMouseDown={(e) => mouseDown(e, e.evt.offsetX, e.evt.offsetY)}
         onMouseMove={(e) => mouseMove(e, e.evt.offsetX, e.evt.offsetY)}
@@ -603,15 +593,28 @@ const Test = ({ color, currentWhiteboard, match }) => {
       <TextBoxKonva shapeTextBox={shape.textBox} setShapes={setShapes} />
       {/* <Chat socketRef={socketRef} /> */}
       <div style={{position: 'fixed'}}>
-      <DrawEraseWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
-      <DrawTextWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
-      <DrawRectangleWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
-      <DrawCircleWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
-      <DrawBrushWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
-      <DrawPencilWidget shareHandler={shareHandler} setIsDrawing={setIsDrawing} updateShapeProp={updateShapeProp} color={color} />
-
+      <DrawEraseWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
+      <DrawTextWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
+      <DrawRectangleWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
+      <DrawCircleWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
+      <DrawBrushWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
+      <DrawPencilWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
       </div>
-    </>
+      {sharedUsers.length !== 0
+        ? sharedUsers.map((user) => (
+            <Avatar
+              key={user.id}
+              src={user.avatar}
+              alt={""}
+              style={{
+                position: "absolute",
+                top: user.mouseX,
+                left: user.mouseY,
+              }}
+            />
+          ))
+        : null}
+    </React.Fragment>
   );
 };
 

@@ -10,6 +10,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import TextFieldIcon from '@material-ui/icons/TextFields';
 import CreateIcon from '@material-ui/icons/Create';
 // import PencileIcon from '@material-ui/icons/P';
+import propType from 'prop-types';
 
 
 
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawPencilWidget = ({shareHandler, setIsDrawing, updateShapeProp}) => {
+const DrawPencilWidget = ({shareHandler, updateShapeProp, color}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
@@ -59,7 +60,7 @@ const DrawPencilWidget = ({shareHandler, setIsDrawing, updateShapeProp}) => {
     { icon: <CreateIcon onClick={(e) => updateShapeProp('line', {
       isDrawing: true,
       strokeWidth: 2,
-    })} />, name: 'Draw' },
+    }, true)} />, name: 'Draw' },
     // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 
@@ -114,5 +115,11 @@ const DrawPencilWidget = ({shareHandler, setIsDrawing, updateShapeProp}) => {
     </div>
   );
 };
+
+DrawPencilWidget.propType = {
+  shareHandler: propType.func.isRequired,
+  updateShapeProp: propType.func.isRequired,
+  color: propType.string.isRequired,
+}
 
 export default DrawPencilWidget

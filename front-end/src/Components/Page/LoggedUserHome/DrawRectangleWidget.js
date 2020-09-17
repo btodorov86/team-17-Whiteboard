@@ -8,6 +8,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Crop54SharpIcon from '@material-ui/icons/Crop54Sharp';
+import propType from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawRectangleWidget = ({shareHandler, setIsDrawing, updateShapeProp, color}) => {
+const DrawRectangleWidget = ({shareHandler, updateShapeProp, color}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
@@ -55,12 +56,12 @@ const DrawRectangleWidget = ({shareHandler, setIsDrawing, updateShapeProp, color
       isDrawing: true,
       stroke: color,
       fill: "",
-    })} />, name: 'Draw' },
+    }, true)} />, name: 'Draw' },
     { icon: <ShareIcon onClick={(e) => updateShapeProp('rectangle', {
       isDrawing: true,
       stroke: color,
       fill: color,
-    })} />, name: 'Share' },
+    }, true)} />, name: 'Share' },
   ];
 
   const handleCloseWidget = () => {
@@ -114,5 +115,11 @@ const DrawRectangleWidget = ({shareHandler, setIsDrawing, updateShapeProp, color
     </div>
   );
 };
+
+DrawRectangleWidget.propType = {
+  shareHandler: propType.func.isRequired,
+  updateShapeProp: propType.func.isRequired,
+  color: propType.string.isRequired,
+}
 
 export default DrawRectangleWidget

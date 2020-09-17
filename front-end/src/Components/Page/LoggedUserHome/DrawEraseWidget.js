@@ -8,6 +8,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
+import propType from 'prop-types';
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
@@ -42,16 +43,16 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawEraseWidget = ({shareHandler, setIsDrawing}) => {
+const DrawEraseWidget = ({shareHandler, updateShapeProp, color}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
   const actions = [
-    { icon: <FileCopyIcon />, name: 'Copy' },
-    { icon: <SaveIcon />, name: 'Save' },
-    { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
-    { icon: <ShareIcon onClick={(e) => setIsDrawing('line')} />, name: 'Share' },
-    { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
+    // { icon: <FileCopyIcon />, name: 'Copy' },
+    // { icon: <SaveIcon />, name: 'Save' },
+    // { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
+    // { icon: <ShareIcon onClick={(e) => setIsDrawing('line')} />, name: 'Share' },
+    { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Share mouse' },
   ];
 
   const handleCloseWidget = () => {
@@ -105,5 +106,11 @@ const DrawEraseWidget = ({shareHandler, setIsDrawing}) => {
     </div>
   );
 };
+
+DrawEraseWidget.propType = {
+  shareHandler: propType.func.isRequired,
+  updateShapeProp: propType.func.isRequired,
+  color: propType.string.isRequired,
+}
 
 export default DrawEraseWidget

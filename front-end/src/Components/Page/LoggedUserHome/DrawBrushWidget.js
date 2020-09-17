@@ -8,6 +8,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import BrushIcon from '@material-ui/icons/Brush';
+import propType from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawBrushWidget = ({shareHandler, setIsDrawing, updateShapeProp}) => {
+const DrawBrushWidget = ({shareHandler, updateShapeProp, color}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
@@ -54,7 +55,7 @@ const DrawBrushWidget = ({shareHandler, setIsDrawing, updateShapeProp}) => {
     { icon: <BrushIcon onClick={(e) => updateShapeProp('line', {
       isDrawing: true,
       strokeWidth: 7,
-    }) } />, name: 'Draw' },
+    }, true) } />, name: 'Draw' },
     // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 
@@ -109,5 +110,11 @@ const DrawBrushWidget = ({shareHandler, setIsDrawing, updateShapeProp}) => {
     </div>
   );
 };
+
+DrawBrushWidget.propType = {
+  shareHandler: propType.func.isRequired,
+  updateShapeProp: propType.func.isRequired,
+  color: propType.string.isRequired,
+}
 
 export default DrawBrushWidget

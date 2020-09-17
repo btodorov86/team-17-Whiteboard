@@ -8,6 +8,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
+import propType from 'prop-types';
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawTextWidget = ({shareHandler, setIsDrawing}) => {
+const DrawTextWidget = ({shareHandler, updateShapeProp, color}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
@@ -49,7 +50,10 @@ const DrawTextWidget = ({shareHandler, setIsDrawing}) => {
     // { icon: <FileCopyIcon />, name: 'Copy' },
     // { icon: <SaveIcon />, name: 'Save' },
     // { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
-    { icon: <TextFieldsIcon onClick={(e) => setIsDrawing('textBox')} />, name: 'Abc..' },
+    { icon: <TextFieldsIcon onClick={(e) => updateShapeProp('textBox', {
+      isDrawing: true,
+      fill: color,
+    }, true)} />, name: 'Abc..' },
     // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 
@@ -104,5 +108,11 @@ const DrawTextWidget = ({shareHandler, setIsDrawing}) => {
     </div>
   );
 };
+
+DrawTextWidget.propType = {
+  shareHandler: propType.func.isRequired,
+  updateShapeProp: propType.func.isRequired,
+  color: propType.string.isRequired,
+}
 
 export default DrawTextWidget
