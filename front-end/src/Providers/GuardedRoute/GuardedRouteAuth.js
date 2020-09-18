@@ -5,7 +5,7 @@ import propTypes from 'prop-types';
 const GuardedRouteAuth = ({ component: Component, user, ...otherProps }) => (
     <Route
     {...otherProps}
-    render={(props) => user ? <Component {...props} /> : <Redirect to='/login' />}
+    render={(props) => user ? <Component {...props} /> : <Redirect to='/home' />}
 
     />
 )

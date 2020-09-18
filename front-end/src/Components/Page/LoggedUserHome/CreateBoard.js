@@ -21,8 +21,9 @@ import {
 import LoadingContext from "../../../Providers/Context/LoadingContext";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import Loading from "../Loading/Loading";
+import { withRouter } from 'react-router-dom';
 
-const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
+const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard, history, leaveRoom, match }) => {
   const useStyles = makeStyles((theme) => ({
     modal: {
       display: "flex",
@@ -115,6 +116,9 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
           msg: `${resp.name} is created!`,
           statusType: exceptionStatus.success,
         });
+        localStorage.setItem('lastBoard', resp.id);
+        leaveRoom(match.params.id)
+        history.push(`${resp.id}`);
       })
       .catch((err) => {
         setOpen({
@@ -255,4 +259,4 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard }) => {
     </Modal>
   );
 };
-export default CreateBoard;
+export default withRouter(CreateBoard);

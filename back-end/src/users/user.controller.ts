@@ -69,8 +69,8 @@ export class UsersController {
         // return await this.userService.update(id, body, user.id)
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Post('upload')
+    // @UseGuards(AuthGuard('jwt'))
+    @Post('/:id/avatar')
     @UseInterceptors(FileInterceptor('files', {
         storage: diskStorage({
           destination: './avatars',
@@ -85,11 +85,12 @@ export class UsersController {
       }))
     async uploadFile(
         @UploadedFile() files,
+        @Param('id') userId: string,
         @Req() req: Request,
         ): Promise<any> {
             const user = req.user as User;
 
-            // return this.userService.upload(user.id, files.filename)
+            return this.userService.upload(userId, files.filename)
 
     }
 }

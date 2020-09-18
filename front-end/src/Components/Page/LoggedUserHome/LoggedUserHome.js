@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
@@ -21,7 +21,7 @@ import {
   exceptionStatus,
 } from "../../../Constants/Constant";
 import "react-chat-widget/lib/styles.css";
-import Test from "../../../Test";
+import Test from "./DrawingPage";
 import Next from "@material-ui/icons/NavigateNext";
 import Before from "@material-ui/icons/NavigateBefore";
 import ProfileMenu from "./ProfileMenu";
@@ -38,11 +38,16 @@ import ChangePassword from "./ChangePassword";
 import ColorPalette from './ColorPalette';
 import DeleteBoard from './DeleteBoard';
 import UpdateBoard from './UpdateBoard';
+import DrawingPage from './DrawingPage';
+import ChangeAvatar from './ChangeAvatar';
+import io from "socket.io-client";
+
 
 const LoggedUserHomePage = ({ history, match }) => {
   const { user, setUser } = useContext(AuthContext);
   const { loading, setLoading } = useContext(LoadingContext);
   const { setOpen } = useContext(ExceptionContext);
+  const socketRef = useRef();
   const useStyles = makeStyles((theme) => ({
     root: {
       display: "flex",
@@ -64,8 +69,6 @@ const LoggedUserHomePage = ({ history, match }) => {
       flexGrow: 1,
     },
   }));
-
-  // const socketRef = useRef();
 
   const classes = useStyles();
 
@@ -96,16 +99,17 @@ const LoggedUserHomePage = ({ history, match }) => {
   // });
   // const [sharedUsers, setSharedUsers] = useState([]);
   // const [whiteboards, setWhiteboards] = useState([]);
-  const [activeWhiteboards, setActiveWhiteboards] = useState([]);
   const [isSearchBoard, setIsSearchBoard] = useState(false);
   const [isCreateWhiteboard, setIsCreateWhiteboard] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
   const [isDeleteBoard, setIsDeleteBoard] = useState(false);
   const [isUpdateBoard, setIsUpdateBoard] = useState(false);
+  const [isChangeAvatar, setIsChangeAvatar] = useState(false);
 
-  // console.log(match);
-  // console.log(currentWhiteboard);
   useEffect(() => {
+    if (match.params.id === 'myProfile') {
+      return;
+    }
     setLoading(true);
     fetch(`${BASE_URL}/whiteboards/${match.params.id}`, {
       headers: {
@@ -116,7 +120,6 @@ const LoggedUserHomePage = ({ history, match }) => {
       .then((resp) => {
         isErrorResponse(resp);
         setCurrentWhiteboard(resp);
-        setActiveWhiteboards([...activeWhiteboards, resp]);
       })
       .catch((err) =>
         setOpen({
@@ -178,6 +181,13 @@ const LoggedUserHomePage = ({ history, match }) => {
   //     room: message.room,
   //     avatar: message.avatar,
   //   });
+  const leaveRoom = (room) => {
+    socketRef.current = io("http://localhost:3000/chat");
+    socketRef.current.emit('leaveRoom', {
+      room,
+      userName: user.userName
+    })
+  }
 
   const handleClickProfile = (event) => {
     setAnchorEl(event.currentTarget);
@@ -204,7 +214,7 @@ const LoggedUserHomePage = ({ history, match }) => {
   // };
 
   const showDrawingPage = currentWhiteboard ? (
-    <Test color={color} currentWhiteboard={currentWhiteboard} stroke1={5} />
+    <DrawingPage color={color} currentWhiteboard={currentWhiteboard} stroke1={5} />
   ) : null;
   const toggleSketchPicker = match.params.id ? <ColorPalette color={color} setColor={setColor} /> : null;
 
@@ -215,8 +225,16 @@ const LoggedUserHomePage = ({ history, match }) => {
     />
   ) : null;
 
-  const toggleIsDeleteBoard = user ? <DeleteBoard isDeleteBoard={isDeleteBoard} setIsDeleteBoard={setIsDeleteBoard} /> : null
-  const toggleIsUpdateBoard = user ? <UpdateBoard isUpdateBoard={isUpdateBoard} setIsUpdateBoard={setIsUpdateBoard} currentWhiteboard={currentWhiteboard} /> : null
+  const toggleIsDeleteBoard = user ? <DeleteBoard isDeleteBoard={isDeleteBoard} setIsDeleteBoard={setIsDeleteBoard} /> : null;
+  const toggleIsUpdateBoard = user ? <UpdateBoard isUpdateBoard={isUpdateBoard} setIsUpdateBoard={setIsUpdateBoard} currentWhiteboard={currentWhiteboard} /> : null;
+  const toggleIsChangeAvatar = user ? <ChangeAvatar isChangeAvatar={isChangeAvatar} setIsChangeAvatar={setIsChangeAvatar} /> : null;
+  const togglePublicOrPrivateLabel = () => {
+    if (match.params.id !== 'myProfile') {
+      return currentWhiteboard?.isPublic ? "public" : "private"
+    } else {
+      return 'Search Board'
+    }
+  }
 
   return loading ? (
     <Loading />
@@ -270,13 +288,14 @@ const LoggedUserHomePage = ({ history, match }) => {
             setIsChangePassword={setIsChangePassword}
             setIsDeleteBoard={setIsDeleteBoard}
             setIsUpdateBoard={setIsUpdateBoard}
+            setIsChangeAvatar={setIsChangeAvatar}
           />
           <ListItem style={{ justifyContent: "center" }}>
             <IconButton>
               <Before />
             </IconButton>
             {isSearchBoard ? (
-              <SearchWhiteBoards setIsSearchBoard={setIsSearchBoard} />
+              <SearchWhiteBoards setIsSearchBoard={setIsSearchBoard} leaveRoom={leaveRoom} />
             ) : (
               <Button
                 style={{
@@ -284,7 +303,7 @@ const LoggedUserHomePage = ({ history, match }) => {
                   backgroundColor: "red",
                   boxShadow: "6px 6px 3px darkblue",
                 }}
-                onClick={(e) => setIsSearchBoard(true)}
+                onClick={(e) => setIsSearchBoard(true) }
               >
                 <span
                   style={{ paddingLeft: '10px', paddingRight: '10px', fontSize: "25px", justifyContent: "center" }}
@@ -300,7 +319,7 @@ const LoggedUserHomePage = ({ history, match }) => {
                     color: "white",
                   }}
                 >
-                  {currentWhiteboard?.isPublic ? "public" : "private"}
+                  {togglePublicOrPrivateLabel()}
                 </span>
               </Button>
             )}
@@ -319,6 +338,7 @@ const LoggedUserHomePage = ({ history, match }) => {
             color="inherit"
             onClick={(e) => {
               e.preventDefault();
+              leaveRoom(match.params.id)
               logOutHandler(setUser, history);
             }}
           />
@@ -328,9 +348,11 @@ const LoggedUserHomePage = ({ history, match }) => {
       {showDrawingPage}
       {toggleSketchPicker}
       {toggleIsUpdateBoard}
+      {toggleIsChangeAvatar}
       <CreateBoard
         isCreateWhiteboard={isCreateWhiteboard}
         setIsCreateWhiteboard={setIsCreateWhiteboard}
+        leaveRoom={leaveRoom}
       />
       {toggleChangePassword}
     </div>

@@ -2,7 +2,7 @@ import { SubscribeMessage, WebSocketGateway, OnGatewayInit, OnGatewayConnection,
 import { Socket, Server } from 'socket.io'
 
 @WebSocketGateway({namespace: '/chat'})
-export class AppGateway implements OnGatewayInit{
+export class AppGatewayChat implements OnGatewayInit{
 
   @WebSocketServer() wss: Server;
   async afterInit(server: Server): Promise<void> {
@@ -26,16 +26,15 @@ export class AppGateway implements OnGatewayInit{
   @SubscribeMessage('joinRoom')
   async joinRoom(client: Socket, message: { room: string, userName: string} ): Promise<void> {
     client.join(message.room);
-    // console.log(message.room);
     client.emit('joinedToRoom', `Welcome ${message.userName}!`);
     client.to(message.room).emit('joinedToRoom', `${message.userName} has joined`);
   }
 
-  // @SubscribeMessage('leaveRoom')
-  // async leaveRoom(client: Socket, message: { room: string, userName: string}): Promise<void> {
-  //   client.to(message.room).broadcast.emit('leftRoom', `${message.userName} left chat`)
-  //   client.leave(message.room);
-  // }
+  @SubscribeMessage('leaveRoom')
+  async leaveRoom(client: Socket, message: { room: string, userName: string}): Promise<void> {
+    // client.to(message.room).emit('leftRoom', `${message.userName} left chat`)
+    client.leave(message.room);
+  }
 
   @SubscribeMessage('send-message')
   async message(client: Socket, message: {message: string, from: string, room: string, avatar: string}): Promise<void> {

@@ -3,6 +3,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import propTypes from "prop-types";
 import AuthContext from "../../../Providers/Context/AuthContext";
+import { Divider } from '@material-ui/core';
 
 const ProfileMenu = ({
   anchorEl,
@@ -11,6 +12,7 @@ const ProfileMenu = ({
   setIsChangePassword,
   setIsDeleteBoard,
   setIsUpdateBoard,
+  setIsChangeAvatar,
 }) => {
   const { user } = useContext(AuthContext);
 
@@ -27,33 +29,39 @@ const ProfileMenu = ({
   ) : null;
 
   const toggleUpdateAvatar = user ? (
-    <MenuItem onClick={handleClose} style={{ margin: "10px" }}>
+    <MenuItem
+      onClick={(e) => {
+        setIsChangeAvatar(true);
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
       Update avatar
     </MenuItem>
   ) : null;
 
   const toggleUpdateWhiteboard = user ? (
     <MenuItem
-        onClick={(e) => {
-          setIsUpdateBoard(true);
-          handleClose();
-        }}
-        style={{ margin: "10px" }}
-      >
-        Update board
-      </MenuItem>
-  ) : null
+      onClick={(e) => {
+        setIsUpdateBoard(true);
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
+      Update board
+    </MenuItem>
+  ) : null;
   const toggleDeleteWhiteboard = user ? (
     <MenuItem
-        onClick={(e) => {
-          setIsDeleteBoard(true);
-          handleClose();
-        }}
-        style={{ margin: "10px" }}
-      >
-        Delete board
-      </MenuItem>
-  ) : null
+      onClick={(e) => {
+        setIsDeleteBoard(true);
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
+      Delete board
+    </MenuItem>
+  ) : null;
 
   return (
     <Menu
@@ -75,8 +83,10 @@ const ProfileMenu = ({
       </MenuItem>
       {toggleDeleteWhiteboard}
       {toggleUpdateWhiteboard}
+      <Divider orientation="horizontal" variant='middle' />
       {toggleChangePassword}
       {toggleUpdateAvatar}
+      <Divider orientation="horizontal" variant='middle' />
     </Menu>
   );
 };

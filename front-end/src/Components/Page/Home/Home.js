@@ -29,7 +29,7 @@ const Home = () => {
 
   const [openModal, setOpenModal] = useState(false);
   const [isLoginPage, setIsLoginPage] = useState(true);
-  const [whiteboards, setWhiteboards] = useState([]);
+  // const [whiteboards, setWhiteboards] = useState([]);
   const { loading, setLoading } = useContext(LoadingContext);
   const { setOpen } = useContext(ExceptionContext);
 
@@ -40,7 +40,7 @@ const Home = () => {
     .then( r => r.json())
     .then( resp => {
       isErrorResponse(resp);
-      setWhiteboards(resp)
+      // setWhiteboards(resp)
     })
     .catch( err => setOpen({value: true, msg: err.message, statusType: exceptionStatus.error}))
     .finally(() => setLoading(false))

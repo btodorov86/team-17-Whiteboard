@@ -15,14 +15,15 @@ import {
   exceptionStatus,
 } from "../../../Constants/Constant";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
-import propTypes from 'prop-types';
+import propTypes from "prop-types";
 
 const Register = ({ isLoginPage, setIsLoginPage }) => {
-
   const { setOpen } = useContext(ExceptionContext);
   const [registrationPage, setRegistrationPage] = useState(0);
+  const [files, setFiles] = useState([]);
   const pageNumberNames = [
     "firstName",
+    "avatar",
     "lastName",
     "userName",
     "email",
@@ -35,6 +36,11 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
       isValid: true,
       isTouched: false,
       value: "",
+    },
+    avatar: {
+      isValid: true,
+      isTouched: false,
+      value: [],
     },
     lastName: {
       isValid: true,
@@ -92,10 +98,10 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
       [prop]: {
         isTouched: true,
         value,
-        isValid: userValidation[prop].reduce(
+        isValid: prop !== 'avatar' ? userValidation[prop].reduce(
           (acc, validateFn) => acc && typeof validateFn(value) === "boolean",
           true
-        ),
+        ) : true,
       },
     });
   };
@@ -104,6 +110,9 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
     firstName: [
       (data) => data?.length > 0 || "First name field is empty",
       (data) => !/[0-9]/.test(data) || "First name can't include digit",
+    ],
+    avatar: [
+      (data) => data.length || "Please upload avatar !",
     ],
     lastName: [
       (data) => data?.length > 0 || "Enter Last name",
@@ -134,6 +143,35 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
     ],
   };
 
+  const uploadFiles = (id) => {
+
+    const formData = new FormData();
+    if (!createUser.avatar.value.length) {
+      return;
+    }
+
+    formData.append('files', createUser.avatar.value[0]);
+
+    fetch(`${BASE_URL}/users/${id}/avatar`, {
+        method: 'POST',
+        headers: {
+            "Authorization": localStorage.getItem('token'),
+        },
+        body: formData
+    })
+    .then( r => r.json())
+    .then( resp => {
+        isErrorResponse(resp);
+        setOpen({
+          value: true,
+          msg: "Successes registration!",
+          statusType: exceptionStatus.success,
+        });
+        setIsLoginPage(!isLoginPage);
+    })
+    .catch( err => setOpen({ value: true, msg: err.message, statusType: exceptionStatus.error}))
+  }
+
   const signInHandler = (e) => {
     fetch(`${BASE_URL}/users`, {
       method: "POST",
@@ -150,12 +188,8 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
     })
       .then((r) => r.json())
       .then((resp) => {
-          isErrorResponse(resp);
-          setOpen({
-            value: true,
-            msg: 'Successes registration!',
-            statusType: exceptionStatus.success,
-          })
+        isErrorResponse(resp);
+        uploadFiles(resp.id);
       })
       .catch((err) =>
         setOpen({
@@ -164,7 +198,6 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
           statusType: exceptionStatus.error,
         })
       )
-      .finally(() => setIsLoginPage(false))
   };
 
   const isDisable = () => {
@@ -208,6 +241,27 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
         onChange={(e) => updateState("firstName", e.target.value.trim())}
       />
       {renderError("firstName")}
+    </Grid>,
+    <Grid item xs={12}>
+      <input
+        accept="image/*"
+        // className={classes.input}
+        style={{ display: "none" }}
+        id="raised-button-file"
+        multiple
+        type="file"
+        onChange={(e) => updateState('avatar', Array.from(e.target.files))}
+      />
+      <label htmlFor="raised-button-file">
+        <Button
+          variant="outlined"
+          component="span"
+          fullWidth
+          className={classes.submit}
+        >
+          Upload Avatar
+        </Button>
+      </label>
     </Grid>,
     <Grid item xs={12}>
       <TextField
@@ -303,7 +357,7 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
             className={classes.submit}
             onClick={(e) => {
               e.preventDefault();
-              backHandler()
+              backHandler();
             }}
             disabled={registrationPage === 0}
           >
@@ -319,7 +373,7 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
             className={classes.submit}
             onClick={(e) => {
               e.preventDefault();
-              nextHandler()
+              nextHandler();
             }}
             disabled={SingleDisable(pageNumberNames[registrationPage])}
           >
@@ -347,7 +401,7 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
           color="primary"
           onClick={(e) => {
             e.preventDefault();
-            backHandler()
+            backHandler();
           }}
         >
           Back
@@ -418,10 +472,9 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
   );
 };
 
-Register.propTypes ={
+Register.propTypes = {
   isLoginPage: propTypes.bool.isRequired,
   setIsLoginPage: propTypes.func.isRequired,
+};
 
-}
-
-export default Register
+export default Register;

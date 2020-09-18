@@ -28,7 +28,7 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
   const signInHandler = (e, obj) => {
     e.preventDefault();
     if (Object.values(obj).includes("")) {
-      console.log("pls enter valid credentials");
+      setOpen({ value: true, msg: "pls enter valid credentials", statusType: exceptionStatus.error})
     }
 
     fetch(`${BASE_URL}/session`, {
@@ -49,7 +49,8 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
 
         localStorage.setItem("token", `Bearer ${resp.token}`);
 
-        history.push('/profile')
+        history.push(`/profile/${localStorage.getItem('lastBoard') ? localStorage.getItem('lastBoard') : 'myProfile'}`)
+        // history.push(`/profile/myProfile`)
 
 
       })
@@ -58,7 +59,6 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
 
   const resetPasswordHandler = (e, email) => {
     e.preventDefault();
-    console.log(111111)
     fetch(`${BASE_URL}/recover`, {
       method: "POST",
       headers: {
@@ -67,7 +67,7 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
       body: JSON.stringify({email: email}),
     })
     .then((r) => r.text())
-    .then(res => console.log(res))
+    .then(res => setOpen({ value: true, msg: 'Check your mail !', statusType: exceptionStatus.success}))
     .catch((err) => setOpen({ value: true, msg: err.message, statusType: exceptionStatus.error}));
   }
 // // async..await is not allowed in global scope, must use a wrapper
@@ -140,7 +140,7 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
   }));
 
   const classes = useStyles();
-  console.log(isPasswordReset)
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -192,7 +192,7 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
             onClick={(e) => isPasswordReset ? resetPasswordHandler(e, email) : signInHandler(e, { email, password }) }
           >
             {/* { location.pathname.includes('password/reset') ? 'Reset password' : 'Sign In' } */}
-            { isPasswordReset ? 'Reset password' : 'Sign In' }
+            { isPasswordReset ? 'Reset password' : 'Sign in' }
           </Button>
           {/* { location.pathname.includes('password/reset') ? <Button */}
           { isPasswordReset ? <Button
@@ -210,6 +210,21 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
             style={{cursor: 'pointer'}}
           >
             Back
+          </Button> : null }
+          { !isPasswordReset ? <Button
+            type="button"
+            fullWidth
+            variant="contained"
+            color="primary"
+            // className={location.pathname.includes('password/reset') ? classes.resetPassRightBtn : classes.submit}
+            // className={isPasswordReset ? classes.resetPassRightBtn : classes.submit}
+            onClick={(e) => {
+              e.preventDefault();
+              history.push('profile/guest')
+            }}
+            style={{cursor: 'pointer'}}
+          >
+            Sign with guest
           </Button> : null }
           <Grid container>
             <Grid item xs>

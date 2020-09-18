@@ -2,23 +2,24 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { Stage, Layer, Line, Rect, Circle, Text } from "react-konva";
 import propTypes from "prop-types";
 import { v4 as uuid } from "uuid";
-import AuthContext from "./Providers/Context/AuthContext";
+import AuthContext from "../../../Providers/Context/AuthContext";
 import io from "socket.io-client";
 import { Avatar } from "@material-ui/core";
 import { Widget, addResponseMessage } from "react-chat-widget";
-import DrawEraseWidget from "./Components/Page/LoggedUserHome/DrawEraseWidget";
-import ExceptionContext from "./Providers/Context/ExceptionContext";
-import { BASE_URL, exceptionStatus, isErrorResponse } from "./Constants/Constant";
-import DrawTextWidget from './Components/Page/LoggedUserHome/DrawTextWidget';
-import DrawRectangleWidget from './Components/Page/LoggedUserHome/DrawRectangleWidget';
-import DrawCircleWidget from './Components/Page/LoggedUserHome/DrawCircleWidget';
-import DrawBrushWidget from './Components/Page/LoggedUserHome/DrawBrushWidget';
-import DrawPencilWidget from './Components/Page/LoggedUserHome/DrawPencilWidget';
+import DrawEraseWidget from "./DrawEraseWidget";
+import ExceptionContext from "../../../Providers/Context/ExceptionContext";
+import { BASE_URL, exceptionStatus, isErrorResponse } from "../../../Constants/Constant";
+import DrawTextWidget from './DrawTextWidget';
+import DrawRectangleWidget from './DrawRectangleWidget';
+import DrawCircleWidget from './DrawCircleWidget';
+import DrawBrushWidget from './DrawBrushWidget';
+import DrawPencilWidget from './DrawPencilWidget';
 import TextBoxKonva from './TextBox';
 import { withRouter } from 'react-router-dom';
+import Chat from './Chat';
 // import
 
-const Test = ({ color, currentWhiteboard, match }) => {
+const DrawingPage = ({ color, currentWhiteboard, match }) => {
   const { user } = useContext(AuthContext);
   const { setOpen } = useContext(ExceptionContext);
   const socketRef = useRef();
@@ -36,7 +37,7 @@ const Test = ({ color, currentWhiteboard, match }) => {
       isDrawing: false,
       stroke: "black",
       strokeWidth: 2,
-      drawingFunc: (obj) => <Line {...obj} draggable />,
+      drawingFunc: (obj) => <Line {...obj} />,
       updateSize: (e, x, y, prev) => {
         if (prev.points.length !== 0) {
           if (prev.points.toString().length > 4000) {
@@ -114,6 +115,14 @@ const Test = ({ color, currentWhiteboard, match }) => {
             stroke: color,
           },
         })),
+        clearDrawingObj: () => setShape((prev) => ({
+          ...shape,
+          line: {
+            ...prev.line,
+            startDrawing: false,
+            points: [],
+          },
+        }))
     },
     circle: {
       type: "circle",
@@ -123,7 +132,7 @@ const Test = ({ color, currentWhiteboard, match }) => {
       fill: "",
       strokeWidth: 1,
       radius: 0,
-      drawingFunc: (obj) => <Circle {...obj} draggable />,
+      drawingFunc: (obj) => <Circle {...obj} />,
       updateSize: (e, x, y, prev) => {
         const differenceX = Math.abs(prev.x - x);
         const differenceY = Math.abs(prev.y - y);
@@ -185,6 +194,16 @@ const Test = ({ color, currentWhiteboard, match }) => {
             radius: 10,
           },
         })),
+        clearDrawingObj: () => setShape((prev) => ({
+          ...shape,
+          circle: {
+            ...prev.circle,
+            startDrawing: false,
+            x: 0,
+            y: 0,
+            radius: 0,
+          },
+        }))
     },
     rectangle: {
       type: "rectangle",
@@ -195,7 +214,7 @@ const Test = ({ color, currentWhiteboard, match }) => {
       fill: "",
       height: 0,
       width: 0,
-      drawingFunc: (obj) => <Rect {...obj} draggable />,
+      drawingFunc: (obj) => <Rect {...obj} />,
       updateSize: (e, x, y, prev) => {
         setShape({
           ...shape,
@@ -259,6 +278,17 @@ const Test = ({ color, currentWhiteboard, match }) => {
             width: 10,
           },
         })),
+        clearDrawingObj: () => setShape((prev) => ({
+          ...shape,
+          rectangle: {
+            ...prev.rectangle,
+            startDrawing: false,
+            x: 0,
+            y: 0,
+            height: 0,
+            width: 0,
+          },
+        }))
     },
     textBox: {
       type: "textBox",
@@ -271,7 +301,7 @@ const Test = ({ color, currentWhiteboard, match }) => {
       // height: 300,
       // width: 300,
       textDecoration: '',
-      drawingFunc: (obj) => <Text {...obj} draggable />,
+      drawingFunc: (obj) => <Text {...obj} />,
       updateSize: (prop, value) => {
         setShape(prev => ({
           ...shape,
@@ -331,6 +361,14 @@ const Test = ({ color, currentWhiteboard, match }) => {
             // width: 10,
           },
         })),
+      clearDrawingObj: () => setShape((prev) => ({
+        ...shape,
+        textBox: {
+          ...prev.textBox,
+          startDrawing: false,
+          text: "",
+        },
+      }))
     },
   }); // for add new shape need only to add property obj here !!!
 
@@ -357,19 +395,19 @@ const Test = ({ color, currentWhiteboard, match }) => {
   });
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:3000/chat");
+    socketRef.current = io("http://localhost:3000/collaboration");
 
-    socketRef.current.on("come-message", (incomingMsg) => {
-      setAvatar(
-        "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
-      );
-      addResponseMessage(incomingMsg.message);
-    });
-    socketRef.current.on("joinedToRoom", (data) => {
-      addResponseMessage(data);
-    });
+    // socketRef.current.on("come-message", (incomingMsg) => {
+    //   setAvatar(
+    //     "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
+    //   );
+    //   addResponseMessage(incomingMsg.message);
+    // });
+    // socketRef.current.on("joinedToRoom", (data) => {
+    //   addResponseMessage(data);
+    // });
 
-    if (currentWhiteboard) {
+    if (currentWhiteboard && user) {
       socketRef.current.emit("joinRoom", {
         room: currentWhiteboard.id,
         userName: user.userName,
@@ -479,8 +517,12 @@ const Test = ({ color, currentWhiteboard, match }) => {
     );
     if (shapeType) {
       if (shapeType !== 'textBox') {
-        // setShapes([...shapes, shape[shapeType]]);
-        shape[shapeType].endDrawing(shape[shapeType]);
+        if (user) {
+          shape[shapeType].endDrawing(shape[shapeType]);
+        } else {
+          setShapes([...shapes, shape[shapeType]]);
+          shape[shapeType].clearDrawingObj();
+        }
       }
 
       // setShape({
@@ -527,8 +569,6 @@ const Test = ({ color, currentWhiteboard, match }) => {
       ? shape[shapeType].drawingFunc(shape[shapeType])
       : null;
   };
-
-  console.log(shape.line.strokeWidth);
 
   return (
     <React.Fragment>
@@ -583,13 +623,14 @@ const Test = ({ color, currentWhiteboard, match }) => {
           {renderSingleDrawingElement()}
         </Layer>
       </Stage>
-      <Widget
+      {/* { user ? <Widget
         handleNewUserMessage={handleNewUserMessage}
         // showTimeStamp={false}
         profileAvatar={avatar}
         title={"Chat"}
         display={"inline-block"}
-      />
+      /> : null } */}
+      {currentWhiteboard ? <Chat currentWhiteboard={currentWhiteboard} /> : null}
       <TextBoxKonva shapeTextBox={shape.textBox} setShapes={setShapes} />
       {/* <Chat socketRef={socketRef} /> */}
       <div style={{position: 'fixed'}}>
@@ -618,10 +659,10 @@ const Test = ({ color, currentWhiteboard, match }) => {
   );
 };
 
-Test.propTypes = {
+DrawingPage.propTypes = {
   color: propTypes.string.isRequired,
   // setShareMouse: propTypes.func.isRequired,
   // shareMouse: propTypes.object.isRequired,
 };
 
-export default withRouter(Test);
+export default withRouter(DrawingPage);

@@ -107,7 +107,6 @@ const UpdateBoard = ({
       name: updateBoard.name.value,
       isPublic: updateBoard.isPublic === "public" ? true : false,
     };
-    console.log(sendObj);
     fetch(`${BASE_URL}/whiteboards/${match.params.id}`, {
       method: "PUT",
       headers: {
@@ -118,7 +117,6 @@ const UpdateBoard = ({
     })
       .then((r) => r.json())
       .then((resp) => {
-        console.log(resp);
         isErrorResponse(resp);
         setOpen({
           value: true,
@@ -161,8 +159,6 @@ const UpdateBoard = ({
       [name]: event.target.value,
     });
   };
-
-  console.log(updateBoard);
 
   return (
     <Modal

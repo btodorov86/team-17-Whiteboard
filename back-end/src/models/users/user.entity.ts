@@ -21,7 +21,7 @@ export class User {
     whiteboards: Whiteboard[]
     @Column({ default: null, length: 500 })
     token: string
-    @Column({ default: 'avatar.png'})
+    @Column({nullable: true})
     avatarURL: string
     @JoinTable()
     @ManyToMany(type => Whiteboard, whiteboard => whiteboard.invitedUsers)

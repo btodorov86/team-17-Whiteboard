@@ -1,10 +1,11 @@
 import React from 'react';
 import { SketchPicker } from 'react-color';
 import propTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
-const ColorPalette = ({color, setColor}) => {
+const ColorPalette = ({color, setColor, match}) => {
 
-    return (
+    return match.params.id !== 'myProfile' ? (
         <div
       style={{
         position: "absolute",
@@ -19,7 +20,7 @@ const ColorPalette = ({color, setColor}) => {
         }}
       />
     </div>
-    )
+    ) : null
 
 };
 
@@ -28,4 +29,4 @@ ColorPalette.propTypes = {
     setColor: propTypes.func.isRequired,
 }
 
-export default ColorPalette
+export default withRouter(ColorPalette)

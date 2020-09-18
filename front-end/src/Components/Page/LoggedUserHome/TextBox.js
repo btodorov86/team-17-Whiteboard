@@ -1,5 +1,5 @@
 import { makeStyles, TextField } from "@material-ui/core";
-import React from "react";
+import React, { useContext } from "react";
 import FormatAlignLeftIcon from "@material-ui/icons/FormatAlignLeft";
 import FormatAlignCenterIcon from "@material-ui/icons/FormatAlignCenter";
 import FormatAlignRightIcon from "@material-ui/icons/FormatAlignRight";
@@ -9,8 +9,11 @@ import FormatUnderlinedIcon from "@material-ui/icons/FormatUnderlined";
 import CloseIcon from "@material-ui/icons/Close";
 import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
+import AuthContext from '../../../Providers/Context/AuthContext';
 
 const TextBoxKonva = ({ shapeTextBox, setShapes }) => {
+
+  const { user } = useContext(AuthContext)
   const useStyles = makeStyles((theme) => ({
     // root: {
     //   backgroundColor: theme.palette.background.paper,
@@ -95,7 +98,13 @@ const TextBoxKonva = ({ shapeTextBox, setShapes }) => {
           onChange={(e) => shapeTextBox.updateSize("text", e.target.value)}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
-              shapeTextBox.endDrawing(shapeTextBox);
+              if (user) {
+                shapeTextBox.endDrawing(shapeTextBox);
+              } else {
+                setShapes(prev => [...prev, shapeTextBox]);
+                shapeTextBox.clearDrawingObj();
+              }
+
             }
           }}
         />

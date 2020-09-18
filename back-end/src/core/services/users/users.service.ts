@@ -102,19 +102,18 @@ export class UsersService {
 
     return this.transform.toReturnUserDto(await this.usersRepo.save(user));
   }
-  // public async unDelete(id: string): Promise<string> {
-  //   const user = await this.usersRepo.findOne({
-  //     where: { id: id, isDeleted: true },
-  //   });
 
-  //   if (!user) {
-  //     throw new NotFoundException(`User with id: ${id} is not found`);
-  //   }
+  public async upload(id: string, filename: string): Promise<ReturnUserDTO> {
 
-  //   user.isDeleted = false;
-  //   this.usersRepo.save(user);
+    console.log(filename);
+    
+    const user = await this.usersRepo.findOne({
+      where: { id: id, isDeleted: false },
+    })
 
-  //   return 'User is restored';
-  // }
+    user.avatarURL = filename;
+
+    return this.transform.toReturnUserDto(await this.usersRepo.save(user))
+  }
 
   }

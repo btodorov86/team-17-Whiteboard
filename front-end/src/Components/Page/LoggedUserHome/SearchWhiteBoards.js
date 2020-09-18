@@ -12,7 +12,7 @@ import { withRouter } from "react-router-dom";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import AuthContext from "../../../Providers/Context/AuthContext";
 
-const SearchWhiteboard = ({ setIsSearchBoard, history }) => {
+const SearchWhiteboard = ({ setIsSearchBoard, history, match, leaveRoom }) => {
   const { user } = useContext(AuthContext);
   const { setOpen } = useContext(ExceptionContext);
   const [openAutocomplete, setOpenAutocomplete] = useState(false);
@@ -56,26 +56,6 @@ const SearchWhiteboard = ({ setIsSearchBoard, history }) => {
           statusType: exceptionStatus.error,
         })
       );
-
-    // fetch(`${BASE_URL}/whiteboards/public`)
-    //   .then( r => r.json())
-    //   .then( resp => {
-    //     isErrorResponse(resp);
-    //     setOptions(resp)
-    //   })
-    //   .catch( err => setOpen({
-    //     value: true,
-    //     msg: err.message,
-    //     statusType: exceptionStatus.error,
-    //   }))
-
-    // if (active) {
-    // setOptions(countries);
-    // }
-
-    // return () => {
-    //   active = false;
-    // };
   }, [loading, setOpen, user]);
 
   // useEffect(() => {
@@ -106,7 +86,9 @@ const SearchWhiteboard = ({ setIsSearchBoard, history }) => {
             if (e.key === "Enter") {
               const whiteboard = options.find((x) => x.name === e.target.value);
               if (whiteboard) {
-                history.push(whiteboard.id);
+                localStorage.setItem('lastBoard', whiteboard.id);
+                leaveRoom(match.params.id);
+                history.push(`/profile/${whiteboard.id}`);
               }
               setIsSearchBoard(false);
             }
