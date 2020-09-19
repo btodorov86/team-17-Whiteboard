@@ -5,12 +5,16 @@ import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import FileCopyIcon from '@material-ui/icons/FileCopyOutlined';
 import SaveIcon from '@material-ui/icons/Save';
 import PrintIcon from '@material-ui/icons/Print';
-import ShareIcon from '@material-ui/icons/Share';
+import StopIcon from '@material-ui/icons/Stop';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import Crop54SharpIcon from '@material-ui/icons/Crop54Sharp';
 import propType from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
+  notchedOutline: {
+    borderWidth: "1px",
+    width: "130% !important"
+  },
   root: {
     position: 'absolute',
     transform: 'translateZ(0px)',
@@ -56,12 +60,12 @@ const DrawRectangleWidget = ({shareHandler, updateShapeProp, color}) => {
       isDrawing: true,
       stroke: color,
       fill: "",
-    }, true)} />, name: 'Draw' },
-    { icon: <ShareIcon onClick={(e) => updateShapeProp('rectangle', {
+    }, true)} />, name: 'Contoured Rectangle' },
+    { icon: <StopIcon onClick={(e) => updateShapeProp('rectangle', {
       isDrawing: true,
       stroke: color,
       fill: color,
-    }, true)} />, name: 'Share' },
+    }, true)} />, name: 'Filled Rectangle' },
   ];
 
   const handleCloseWidget = () => {

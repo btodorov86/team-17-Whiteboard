@@ -5,7 +5,7 @@ import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import FileCopyIcon from '@material-ui/icons/FileCopyOutlined';
 import SaveIcon from '@material-ui/icons/Save';
 import PrintIcon from '@material-ui/icons/Print';
-import ShareIcon from '@material-ui/icons/Share';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked';
 import propType from 'prop-types';
@@ -55,12 +55,12 @@ const DrawCircleWidget = ({shareHandler, updateShapeProp, color}) => {
       isDrawing: true,
       fill: "",
       stroke: color,
-    }, true)} />, name: 'Draw' },
-    { icon: <ShareIcon onClick={(e) => updateShapeProp('circle', {
+    }, true)} />, name: 'Contoured Circle' },
+    { icon: <FiberManualRecordIcon onClick={(e) => updateShapeProp('circle', {
       isDrawing: true,
       fill: color,
       stroke: color,
-    }, true)} />, name: 'Share' },
+    }, true)} />, name: 'Filled Circle' },
     // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 

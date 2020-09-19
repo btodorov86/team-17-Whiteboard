@@ -578,7 +578,7 @@ const DrawingPage = ({ color, currentWhiteboard, match }) => {
         onMouseUp={(e) => mouseUp(e)}
         height={window.innerHeight}
         width={window.innerWidth}
-        // draggable={mouseUp ? false : true}
+        draggable={mouseUp ? false : true}
       >
         <Layer>
           {shapes.length !== 0

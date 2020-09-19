@@ -55,7 +55,7 @@ const DrawBrushWidget = ({shareHandler, updateShapeProp, color}) => {
     { icon: <BrushIcon onClick={(e) => updateShapeProp('line', {
       isDrawing: true,
       strokeWidth: 7,
-    }, true) } />, name: 'Draw' },
+    }, true) } />, name: 'Brush' },
     // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 

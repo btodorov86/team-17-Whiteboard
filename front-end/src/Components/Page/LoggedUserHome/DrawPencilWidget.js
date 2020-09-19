@@ -60,7 +60,7 @@ const DrawPencilWidget = ({shareHandler, updateShapeProp, color}) => {
     { icon: <CreateIcon onClick={(e) => updateShapeProp('line', {
       isDrawing: true,
       strokeWidth: 2,
-    }, true)} />, name: 'Draw' },
+    }, true)} />, name: 'Pencil' },
     // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 
