@@ -8,12 +8,12 @@ export class CreateRectangleDTO {
     @IsPositive()
     y: number
     @IsNumber()
-    @IsPositive()
+    //@IsPositive()
     height: number
     @IsNumber()
-    @IsPositive()
+    //@IsPositive()
     width: number
-    @Length(1,)
+   @Length(1,)
     @IsString()
     stroke: string
     @IsString()

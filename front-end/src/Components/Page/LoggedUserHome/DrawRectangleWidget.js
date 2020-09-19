@@ -97,7 +97,14 @@ const DrawRectangleWidget = ({shareHandler, updateShapeProp, color}) => {
         <SpeedDial
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
-          icon={<Crop54SharpIcon />}
+          icon={<Crop54SharpIcon style={{
+            backgroundColor: '#6fa241',
+            width: '100%',
+            height: '100%',
+            borderRadius: '50%',
+            padding: '20%',
+          }}
+    />}
           onClose={handleCloseWidget}
           onOpen={handleOpenWidget}
           open={openWidget}

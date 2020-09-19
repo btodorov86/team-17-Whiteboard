@@ -1,3 +1,15 @@
 .rcw-conversation-container .rcw-header {
-    background-color: red;
+    background-color: #6fa241;
+}
+
+.rcw-launcher {
+    background-color: #6fa241;
+}
+
+.rcw-client .rcw-message-text {
+    background-color: #d4de23;
+    border-radius: 10px;
+    padding: 15px;
+    max-width: 215px;
+    text-align: left;
 }

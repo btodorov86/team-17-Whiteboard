@@ -50,7 +50,8 @@ const DrawCircleWidget = ({shareHandler, updateShapeProp, color}) => {
   const actions = [
     // { icon: <FileCopyIcon />, name: 'Copy' },
     // { icon: <SaveIcon />, name: 'Save' },
-    { icon: <RadioButtonUncheckedIcon onClick={(e) => updateShapeProp('circle', {
+    { icon: <RadioButtonUncheckedIcon
+      onClick={(e) => updateShapeProp('circle', {
       isDrawing: true,
       fill: "",
       stroke: color,
@@ -96,7 +97,14 @@ const DrawCircleWidget = ({shareHandler, updateShapeProp, color}) => {
         <SpeedDial
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
-          icon={<RadioButtonUncheckedIcon />}
+          icon={<RadioButtonUncheckedIcon style={{
+            backgroundColor: '#6fa241',
+            width: '100%',
+            height: '100%',
+            borderRadius: '50%',
+            padding: '20%',
+          }}
+    />}
           onClose={handleCloseWidget}
           onOpen={handleOpenWidget}
           open={openWidget}

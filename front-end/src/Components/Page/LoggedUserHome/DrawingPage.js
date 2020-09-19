@@ -43,7 +43,7 @@ const DrawingPage = ({ color, currentWhiteboard, match }) => {
           if (prev.points.toString().length > 4000) {
             setOpen({
               value: true,
-              msg: "To long element, try to use drawing gadgets!",
+              msg: "Maximum line complexity reached. Please use another tool.",
               statusType: exceptionStatus.warning,
             });
             mouseUp();

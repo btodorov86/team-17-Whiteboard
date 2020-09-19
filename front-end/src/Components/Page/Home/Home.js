@@ -81,6 +81,7 @@ const Home = () => {
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         className={classes.modal}
+        style={{color: "darkblue"}}
         open={openModal}
         onClose={(e) => setOpenModal(false)}
         closeAfterTransition

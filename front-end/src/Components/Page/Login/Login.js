@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import images from "./../Home/earth.PNG";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -14,6 +15,7 @@ import jwt from 'jwt-decode';
 import AuthContext from '../../../Providers/Context/AuthContext';
 import ExceptionContext from '../../../Providers/Context/ExceptionContext';
 import { withRouter } from 'react-router-dom';
+import './Login.css'
 
 const Login = ({ history, setIsLoginPage, isLoginPage }) => {
 
@@ -109,6 +111,10 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
 
 
   const useStyles = makeStyles((theme) => ({
+    notchedOutline: {
+      borderWidth: "1px",
+      borderColor: "#6fa241 !important"
+    },
     paper: {
       marginTop: theme.spacing(8),
       display: "flex",
@@ -145,7 +151,7 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar src={'https://i1.wp.com/geolok.eu/wp-content/uploads/2018/02/blue-planet-earth-rotation-with-space-background-4k-animation_ed3hfc3cl__F0000-min-min.jpg?fit=555%2C340'} className={classes.avatar}>{/* <LockOutlinedI /> */}</Avatar>
+        <Avatar src={images} className={classes.avatar}>{/* <LockOutlinedI /> */}</Avatar>
         <Typography component="h1" variant="h5">
           {/* { location.pathname.includes('password/reset') ? "Password recovery" : "Sign in" } */}
           { isPasswordReset ? "Password recovery" : "Sign in" }
@@ -156,6 +162,11 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
             margin="normal"
             required
             fullWidth
+            InputProps={{
+              classes: {
+                notchedOutline: classes.notchedOutline
+              }
+            }}
             id="email"
             label="Email Address"
             name="email"
@@ -171,6 +182,11 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
             margin="normal"
             required
             fullWidth
+            InputProps={{
+              classes: {
+                notchedOutline: classes.notchedOutline
+              }
+            }}
             name="password"
             label="Password"
             type="password"
@@ -185,6 +201,7 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
             fullWidth={!isPasswordReset}
             variant="contained"
             color="primary"
+            style={{backgroundColor: "#6fa241"}}
             // className={location.pathname.includes('password/reset') ? classes.resetPassLeftBtn : classes.submit}
             className={isPasswordReset ? classes.resetPassLeftBtn : classes.submit}
             // href="/login"
@@ -207,7 +224,7 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
               e.preventDefault();
               setIsPasswordReset(!isPasswordReset)
             }}
-            style={{cursor: 'pointer'}}
+            style={{cursor: 'pointer', backgroundColor: "#6fa241"}}
           >
             Back
           </Button> : null }
@@ -222,9 +239,9 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
               e.preventDefault();
               history.push('profile/guest')
             }}
-            style={{cursor: 'pointer'}}
+            style={{cursor: 'pointer', backgroundColor: "#6fa241"}}
           >
-            Sign with guest
+            Login as guest
           </Button> : null }
           <Grid container>
             <Grid item xs>
@@ -237,7 +254,7 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
                </Link>
             </Grid>
             <Grid item>
-              <Link  style={{cursor: 'pointer'}} variant="body2" onClick={(e) => {
+              <Link style={{cursor: 'pointer'}} variant="body2" onClick={(e) => {
                 e.preventDefault();
                 setIsLoginPage(!isLoginPage)
                 }}>
