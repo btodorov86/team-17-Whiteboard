@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { HttpException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { ReturnWhiteboardDTO } from 'src/models/whiteboard/return.whiteboard.dto';
 import { Whiteboard } from 'src/models/whiteboard/whiteboard.entity';
 import { Repository } from 'typeorm';
@@ -124,5 +124,28 @@ export class WhiteBoardService{
 
         return this.transform.toSimpleReturnWhiteboardDto(await this.whiteboardsRepo.save(whiteboard), whiteboard.author)
     }
+
+    public async inviteToBoard(invitedUserName: string, invitesUsername: string, whiteboardId: string): Promise<void> {
+        const invitedUser = await this.usersRepo.findOne({
+          where: { userName: invitedUserName, isDeleted: false }
+        });
+        const invitesUser = await this.usersRepo.findOne({
+          where: { userName: invitesUsername, isDeleted: false }
+        });
+        const whiteboard = await this.whiteboardsRepo.findOne({
+            where: { id: whiteboardId, isDeleted: false },
+            relations: ['invitedUsers', 'author']
+        })
+
+        if (whiteboard.author.id !== invitedUser.id) {
+            throw new UnauthorizedException()
+        }
+        if (whiteboard.invitedUsers.some( x => x.id === invitesUser.id)) {
+            throw new HttpException("Already invite in this whiteboard", 400)
+        }
+
+        whiteboard.invitedUsers.push(invitesUser);
+        await this.whiteboardsRepo.save(whiteboard);
+      }
 
 }

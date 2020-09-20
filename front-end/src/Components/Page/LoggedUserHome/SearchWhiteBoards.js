@@ -89,6 +89,12 @@ const SearchWhiteboard = ({ setIsSearchBoard, history, match, leaveRoom }) => {
                 localStorage.setItem('lastBoard', whiteboard.id);
                 leaveRoom(match.params.id);
                 history.push(`/profile/${whiteboard.id}`);
+              } else {
+                setOpen({
+                  value: true,
+                  msg: `Whiteboard: ${e.target.value} not exist`,
+                  statusType: exceptionStatus.error,
+                })
               }
               setIsSearchBoard(false);
             }

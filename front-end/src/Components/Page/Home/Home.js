@@ -10,7 +10,7 @@ import LoadingContext from '../../../Providers/Context/LoadingContext';
 import Loading from '../Loading/Loading';
 import ExceptionContext from '../../../Providers/Context/ExceptionContext';
 
-const Home = () => {
+const Home = ({history}) => {
   const useStyles = makeStyles((theme) => ({
     modal: {
       display: "flex",
@@ -71,6 +71,7 @@ const Home = () => {
 
   return (
     <div>
+      {localStorage.getItem('token') ? history.push(`/profile/${localStorage.getItem('lastBoard') ? localStorage.getItem('lastBoard') : 'myProfile'}`) : null }
       { loading ? <Loading /> : null}
       <img
         src={images}

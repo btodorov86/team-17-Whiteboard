@@ -16,13 +16,13 @@ import DrawBrushWidget from './DrawBrushWidget';
 import DrawPencilWidget from './DrawPencilWidget';
 import TextBoxKonva from './TextBox';
 import { withRouter } from 'react-router-dom';
-import Chat from './Chat';
+// import Chat from './Chat';
 // import
 
-const DrawingPage = ({ color, currentWhiteboard, match }) => {
+const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMouse, sharedUsers, shareMouseHandler }) => {
   const { user } = useContext(AuthContext);
   const { setOpen } = useContext(ExceptionContext);
-  const socketRef = useRef();
+  // const socketRef = useRef();
   // const [textInput, setTextInput] = useState({
   //   isOpen: false,
   //   top: 200,
@@ -387,56 +387,56 @@ const DrawingPage = ({ color, currentWhiteboard, match }) => {
   //   }, [])
   // );
   const [avatar, setAvatar] = useState("");
-  const [sharedUsers, setSharedUsers] = useState([]);
-  const [shareMouse, setShareMouse] = useState({
-    isShare: false,
-    mouseX: 0,
-    mouseY: 0,
-  });
+  // const [sharedUsers, setSharedUsers] = useState([]);
+  // const [shareMouse, setShareMouse] = useState({
+  //   isShare: false,
+  //   mouseX: 0,
+  //   mouseY: 0,
+  // });
 
-  useEffect(() => {
-    socketRef.current = io("http://localhost:3000/collaboration");
+  // useEffect(() => {
+  //   socketRef.current = io("http://localhost:3000/chat");
 
-    // socketRef.current.on("come-message", (incomingMsg) => {
-    //   setAvatar(
-    //     "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
-    //   );
-    //   addResponseMessage(incomingMsg.message);
-    // });
-    // socketRef.current.on("joinedToRoom", (data) => {
-    //   addResponseMessage(data);
-    // });
+  //   // socketRef.current.on("come-message", (incomingMsg) => {
+  //   //   setAvatar(
+  //   //     "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
+  //   //   );
+  //   //   addResponseMessage(incomingMsg.message);
+  //   // });
+  //   // socketRef.current.on("joinedToRoom", (data) => {
+  //   //   addResponseMessage(data);
+  //   // });
 
-    if (currentWhiteboard && user) {
-      socketRef.current.emit("joinRoom", {
-        room: currentWhiteboard.id,
-        userName: user.userName,
-      });
-    }
-    socketRef.current.on("incomingMousePoints", (data) => {
-      const user = sharedUsers.find((x) => x.id === data.userId);
-      if (user) {
-        setSharedUsers([
-          ...sharedUsers,
-          {
-            ...user,
-            mouseX: data.mouseX,
-            mouseY: data.mouseY,
-          },
-        ]);
-      } else {
-        setSharedUsers([
-          ...sharedUsers,
-          {
-            id: data.id,
-            avatar: data.avatar,
-            mouseX: data.mouseX,
-            mouseY: data.mouseY,
-          },
-        ]);
-      }
-    });
-  }, []);
+  //   // if (currentWhiteboard && user) {
+  //   //   socketRef.current.emit("joinRoom", {
+  //   //     room: currentWhiteboard.id,
+  //   //     userName: user.userName,
+  //   //   });
+  //   // }
+  //   socketRef.current.on("incomingMousePoints", (data) => {
+  //     const user = sharedUsers.find((x) => x.id === data.userId);
+  //     if (user) {
+  //       setSharedUsers([
+  //         ...sharedUsers,
+  //         {
+  //           ...user,
+  //           mouseX: data.mouseX,
+  //           mouseY: data.mouseY,
+  //         },
+  //       ]);
+  //     } else {
+  //       setSharedUsers([
+  //         ...sharedUsers,
+  //         {
+  //           id: data.id,
+  //           avatar: data.avatar,
+  //           mouseX: data.mouseX,
+  //           mouseY: data.mouseY,
+  //         },
+  //       ]);
+  //     }
+  //   });
+  // }, []);
 
   const updateShapeProp = (shapeType, prop, token = false) => {
     if (token) {
@@ -454,16 +454,16 @@ const DrawingPage = ({ color, currentWhiteboard, match }) => {
     }))
   }
 
-  const shareMouseHandler = (x, y) => {
-    setShareMouse({ isShare: true, mouseX: y, mouseY: x });
-    socketRef.current.emit("sendMousePoints", {
-      user: user.id,
-      mouseX: y,
-      mouseY: x,
-      avatar: user.avatarURL,
-      room: currentWhiteboard.id,
-    });
-  };
+  // const shareMouseHandler = (x, y) => {
+  //   setShareMouse({ isShare: true, mouseX: y, mouseY: x });
+  //   socketRef.current.emit("sendMousePoints", {
+  //     user: user.id,
+  //     mouseX: y,
+  //     mouseY: x,
+  //     avatar: user.avatarURL,
+  //     room: currentWhiteboard.id,
+  //   });
+  // };
 
   const mouseDown = (e, x, y) => {
     const shapeType = Object.keys(shape).find((x) => shape[x].isDrawing);
@@ -549,12 +549,12 @@ const DrawingPage = ({ color, currentWhiteboard, match }) => {
   //   });
   // };
 
-  const handleNewUserMessage = (data) =>
-    socketRef.current.emit("send-message", {
-      message: data,
-      room: currentWhiteboard.id,
-      avatar: user.avatar,
-    });
+  // const handleNewUserMessage = (data) =>
+  //   socketRef.current.emit("send-message", {
+  //     message: data,
+  //     room: currentWhiteboard.id,
+  //     avatar: user.avatar,
+  //   });
 
   // const drawingLine = (obj) => <Line {...obj} />
 
@@ -630,7 +630,7 @@ const DrawingPage = ({ color, currentWhiteboard, match }) => {
         title={"Chat"}
         display={"inline-block"}
       /> : null } */}
-      {currentWhiteboard ? <Chat currentWhiteboard={currentWhiteboard} /> : null}
+      {/* {currentWhiteboard ? <Chat currentWhiteboard={currentWhiteboard} /> : null} */}
       <TextBoxKonva shapeTextBox={shape.textBox} setShapes={setShapes} />
       {/* <Chat socketRef={socketRef} /> */}
       <div style={{position: 'fixed'}}>

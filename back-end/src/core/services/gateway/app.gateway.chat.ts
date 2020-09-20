@@ -1,8 +1,13 @@
 import { SubscribeMessage, WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io'
+import { WhiteBoardService } from '../whiteBoard/whiteBoard.service';
 
 @WebSocketGateway({namespace: '/chat'})
 export class AppGatewayChat implements OnGatewayInit{
+
+  constructor (
+    private readonly whiteboardService: WhiteBoardService,
+  ) {}
 
   @WebSocketServer() wss: Server;
   async afterInit(server: Server): Promise<void> {
@@ -24,21 +29,24 @@ export class AppGatewayChat implements OnGatewayInit{
   // }
 
   @SubscribeMessage('joinRoom')
-  async joinRoom(client: Socket, message: { room: string, userName: string} ): Promise<void> {
+  async joinRoom(client: Socket, message: { room: string, userName: string, avatar: string} ): Promise<void> {
+    console.log(message);
+
     client.join(message.room);
-    client.emit('joinedToRoom', `Welcome ${message.userName}!`);
-    client.to(message.room).emit('joinedToRoom', `${message.userName} has joined`);
+    client.emit('joinedToRoom', {...message, message: `Welcome ${message.userName}!`});
+    client.to(message.room).emit('joinedToRoom', {...message, message: `${message.userName} has joined`});
   }
 
   @SubscribeMessage('leaveRoom')
   async leaveRoom(client: Socket, message: { room: string, userName: string}): Promise<void> {
     // client.to(message.room).emit('leftRoom', `${message.userName} left chat`)
+    // client.to(message.room).
     client.leave(message.room);
   }
 
   @SubscribeMessage('send-message')
   async message(client: Socket, message: {message: string, from: string, room: string, avatar: string}): Promise<void> {
-    // console.log(message);
+    console.log(message);
     client.to(message.room).emit('come-message', message)
   }
   // @SubscribeMessage('update')
@@ -83,5 +91,22 @@ export class AppGatewayChat implements OnGatewayInit{
   //   // client.emit('joinedToRoom', `Welcome ${message.userName}!`);
   //   // client.to(message.room).broadcast.emit('joinedToRoom', `${message.userName} has joined`);
   // }
+
+  @SubscribeMessage('invite')
+  async invite(client: Socket, message: { whiteboardId: string, from: string, invited: string, whiteboardName: string} ): Promise<void> {
+    this.wss.emit('sendInvite', message)
+
+  }
+  @SubscribeMessage('accept')
+  async accept(client: Socket, message: { whiteboardId: string, from: string, invited: string, whiteboardName: string} ): Promise<void> {
+    await this.whiteboardService.inviteToBoard(message.from, message.invited, message.whiteboardId);
+    this.wss.emit('userAccepted', message);
+
+  }
+  @SubscribeMessage('decline')
+  async decline(client: Socket, message: { whiteboardId: string, from: string, invited: string, whiteboardName: string} ): Promise<void> {
+    this.wss.emit('userDeclined', message);
+
+  }
 
 }

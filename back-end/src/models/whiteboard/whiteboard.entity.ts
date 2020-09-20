@@ -15,7 +15,7 @@ export class Whiteboard {
     isPublic: boolean
     // bookId: number
     // @ManyToOne(type => User, user => user.whiteboards)
-    @Column({ type: 'nvarchar'})
+    @Column({ unique: true, type: 'nvarchar'})
     name: string;
     @ManyToOne(type => User, user => user.whiteboards )
     author: User

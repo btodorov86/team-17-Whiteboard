@@ -35,13 +35,16 @@ import Loading from "../Loading/Loading";
 import SearchWhiteBoards from "./SearchWhiteBoards";
 import CreateBoard from "./CreateBoard";
 import ChangePassword from "./ChangePassword";
-import ColorPalette from './ColorPalette';
-import DeleteBoard from './DeleteBoard';
-import UpdateBoard from './UpdateBoard';
-import DrawingPage from './DrawingPage';
-import ChangeAvatar from './ChangeAvatar';
+import ColorPalette from "./ColorPalette";
+import DeleteBoard from "./DeleteBoard";
+import UpdateBoard from "./UpdateBoard";
+import DrawingPage from "./DrawingPage";
+import ChangeAvatar from "./ChangeAvatar";
 import io from "socket.io-client";
-
+import InviteUsers from "./InviteUsers";
+import IncomingInvite from "./IncomingInvite";
+import { AvatarGroup } from "@material-ui/lab";
+import { addResponseMessage, Widget } from "react-chat-widget";
 
 const LoggedUserHomePage = ({ history, match }) => {
   const { user, setUser } = useContext(AuthContext);
@@ -72,45 +75,36 @@ const LoggedUserHomePage = ({ history, match }) => {
 
   const classes = useStyles();
 
-  // const [avatar, setAvatar] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [anchorEl, setAnchorEl] = useState(false);
   const [color, setColor] = useState("black");
-
-  // const [shareMouse, setShareMouse] = useState({
-  //   isShare: false,
-  //   mouseX: 0,
-  //   mouseY: 0,
-  // });
-  // const [currentWhiteboard, setCurrentWhiteboard] = useState({
-  //   id: "",
-  //   author: "",
-  //   circles: [],
-  //   rectangles: [],
-  //   lines: [],
-  //   textBoxes: [],
-  //   name: "",
-  //   isPublic: false,
-  // });
   const [currentWhiteboard, setCurrentWhiteboard] = useState(null);
-  // const [message, setMessage] = useState({
-  //   room: user.email,
-  //   from: user.id,
-  //   avatar: user.avatarURL,
-  // });
-  // const [sharedUsers, setSharedUsers] = useState([]);
-  // const [whiteboards, setWhiteboards] = useState([]);
   const [isSearchBoard, setIsSearchBoard] = useState(false);
   const [isCreateWhiteboard, setIsCreateWhiteboard] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
   const [isDeleteBoard, setIsDeleteBoard] = useState(false);
   const [isUpdateBoard, setIsUpdateBoard] = useState(false);
   const [isChangeAvatar, setIsChangeAvatar] = useState(false);
+  const [isInviteUser, setIsInviteUser] = useState(false);
+  const [isIncomingInvite, setIsIncomingInvite] = useState({
+    data: {},
+    isInvite: false,
+  });
+  const [usersInRoom, setUsersInRoom] = useState([]);
+  const [sharedUsers, setSharedUsers] = useState([]);
+  const [shareMouse, setShareMouse] = useState({
+    isShare: false,
+    mouseX: 0,
+    mouseY: 0,
+  });
 
   useEffect(() => {
-    if (match.params.id === 'myProfile') {
-      return;
-    }
-    setLoading(true);
+    socketRef.current = io("http://localhost:3000/chat");
+
+    // if (match.params.id === 'myProfile') {
+    //   return;
+    // }
+    setLoading(false)
     fetch(`${BASE_URL}/whiteboards/${match.params.id}`, {
       headers: {
         Authorization: localStorage.getItem("token"),
@@ -119,6 +113,11 @@ const LoggedUserHomePage = ({ history, match }) => {
       .then((r) => r.json())
       .then((resp) => {
         isErrorResponse(resp);
+        socketRef.current.emit("joinRoom", {
+          room: resp.id,
+          userName: user.userName,
+          avatar: user.avatarURL,
+        });
         setCurrentWhiteboard(resp);
       })
       .catch((err) =>
@@ -128,66 +127,79 @@ const LoggedUserHomePage = ({ history, match }) => {
           statusType: exceptionStatus.error,
         })
       )
-      .finally(() => setLoading(false));
+    .finally(() => setLoading(false));
+
+    socketRef.current.on("sendInvite", (data) =>
+      data.invited === user.userName
+        ? setIsIncomingInvite({ data, isInvite: true })
+        : null
+    );
+    socketRef.current.on("userAccepted", (data) =>
+      data.from === user.userName
+        ? setOpen({
+            value: true,
+            msg: `User: ${data.invited} accept your invite!`,
+            statusType: exceptionStatus.success,
+          })
+        : null
+    );
+    socketRef.current.on("come-message", (incomingMsg) => {
+      setAvatar(`${BASE_URL}/${incomingMsg.avatar}`);
+      addResponseMessage(incomingMsg.message);
+    });
+    socketRef.current.on("joinedToRoom", (data) => {
+      if (data.userName !== user.userName) {
+        setUsersInRoom([
+          ...usersInRoom,
+          { avatar: data.avatar, userName: data.userName },
+        ]);
+      }
+      addResponseMessage(data.message);
+    });
+    socketRef.current.on("userDeclined", (data) => {
+      if (data.from === user.userName) {
+        console.log(data);
+        console.log(user);
+        setOpen({
+          value: true,
+          msg: `User: ${data.invited} decline your invite!`,
+          statusType: exceptionStatus.info,
+        });
+      }
+    });
+
+    socketRef.current.on("incomingMousePoints", (data) => {
+      const user = sharedUsers.find((x) => x.id === data.userId);
+      if (user) {
+        setSharedUsers([
+          ...sharedUsers,
+          {
+            ...user,
+            mouseX: data.mouseX,
+            mouseY: data.mouseY,
+          },
+        ]);
+      } else {
+        setSharedUsers([
+          ...sharedUsers,
+          {
+            id: data.id,
+            avatar: data.avatar,
+            mouseX: data.mouseX,
+            mouseY: data.mouseY,
+          },
+        ]);
+      }
+    });
   }, [match.params.id]);
 
-  // useEffect(() => {
-  //   socketRef.current = io("http://localhost:3000/chat");
-
-  //   socketRef.current.emit("joinRoom", {
-  //     room: message.room,
-  //     userName: user.userName,
-  //   });
-
-  //   socketRef.current.on("come-message", (incomingMsg) => {
-  //     setAvatar(
-  //       "https://cnet2.cbsistatic.com/img/liJ9UZA87zs1viJiuEfVnL7YYfw=/940x0/2020/05/18/5bac8cc1-4bd5-4496-a8c3-66a6cd12d0cb/fb-avatar-2.jpg"
-  //     );
-  //     addResponseMessage(incomingMsg.message);
-  //   });
-  //   socketRef.current.on("joinedToRoom", (data) => {
-  //     addResponseMessage(data);
-  //   });
-
-  //   socketRef.current.on("incomingMousePoints", (data) => {
-  //     // console.log(data);
-  //     const user = sharedUsers.find((x) => x.id === data.userId);
-  //     if (user) {
-  //       setSharedUsers([
-  //         ...sharedUsers,
-  //         {
-  //           ...user,
-  //           mouseX: data.mouseX,
-  //           mouseY: data.mouseY,
-  //         },
-  //       ]);
-  //     } else {
-  //       setSharedUsers([
-  //         ...sharedUsers,
-  //         {
-  //           id: data.id,
-  //           avatar: data.avatar,
-  //           mouseX: data.mouseX,
-  //           mouseY: data.mouseY,
-  //         },
-  //       ]);
-  //     }
-  //   });
-  // }, []);
-
-  // const handleNewUserMessage = (data) =>
-  //   socketRef.current.emit("send-message", {
-  //     message: data,
-  //     room: message.room,
-  //     avatar: message.avatar,
-  //   });
   const leaveRoom = (room) => {
     socketRef.current = io("http://localhost:3000/chat");
-    socketRef.current.emit('leaveRoom', {
+    socketRef.current.emit("leaveRoom", {
       room,
-      userName: user.userName
-    })
-  }
+      userName: user.userName,
+    });
+  };
 
   const handleClickProfile = (event) => {
     setAnchorEl(event.currentTarget);
@@ -197,44 +209,89 @@ const LoggedUserHomePage = ({ history, match }) => {
     setAnchorEl(false);
   };
 
+  const accept = () => {
+    socketRef.current = io("http://localhost:3000/chat");
+
+    socketRef.current.emit("accept", isIncomingInvite.data);
+  };
+
+  const decline = () => {
+    socketRef.current = io("http://localhost:3000/chat");
+    socketRef.current.emit("decline", isIncomingInvite.data);
+  };
+
+  const inviteUserHandler = (invitedUsername) => {
+    socketRef.current.emit("invite", {
+      whiteboardId: currentWhiteboard.id,
+      whiteboardName: currentWhiteboard.name,
+      from: user.userName,
+      invited: invitedUsername,
+    });
+  };
+
   // const shareMouseHandler = (x, y) => {
-  //   if (
-  //     Math.abs(shareMouse.mouseX - y) > 10 &&
-  //     Math.abs(shareMouse.mouseY - x) > 10
-  //   ) {
-  //     setShareMouse({ ...shareMouse, mouseX: y, mouseY: x });
-  //     socketRef.current.emit("sendMousePoints", {
-  //       user: user.id,
-  //       mouseX: y,
-  //       mouseY: x,
-  //       avatar: user.avatarURL,
-  //       room: message.room,
-  //     });
-  //   }
+  //   setShareMouse({ isShare: true, mouseX: y, mouseY: x });
+  //   socketRef.current.emit("sendMousePoints", {
+  //     user: user.id,
+  //     mouseX: y,
+  //     mouseY: x,
+  //     avatar: user.avatarURL,
+  //     room: currentWhiteboard.id,
+  //   });
   // };
 
-  const showDrawingPage = currentWhiteboard ? (
-    <DrawingPage color={color} currentWhiteboard={currentWhiteboard} stroke1={5} />
-  ) : null;
-  const toggleSketchPicker = match.params.id ? <ColorPalette color={color} setColor={setColor} /> : null;
+  const shareMouseHandler = (x, y) => {
+    if (
+      Math.abs(shareMouse.mouseX - y) > 5 &&
+      Math.abs(shareMouse.mouseY - x) > 5
+    ) {
+      setShareMouse({ isShare: true, mouseX: y, mouseY: x });
+      socketRef.current.emit("sendMousePoints", {
+        user: user.id,
+        mouseX: y,
+        mouseY: x,
+        avatar: user.avatarURL,
+        room: currentWhiteboard.id,
+      });
+    }
+  };
 
-  const toggleChangePassword = user ? (
-    <ChangePassword
-      isChangePassword={isChangePassword}
-      setIsChangePassword={setIsChangePassword}
+  const togglePublicOrPrivateLabel = () => {
+    if (match.params.id !== "myProfile") {
+      return currentWhiteboard?.isPublic ? "public" : "private";
+    } else {
+      return "Search Board";
+    }
+  };
+
+  const handleNewUserMessage = (data) =>
+    socketRef.current.emit("send-message", {
+      message: data,
+      room: currentWhiteboard.id,
+      avatar: user.avatarURL,
+      from: user.id,
+    });
+
+  const showDrawingPage = currentWhiteboard ? (
+    <DrawingPage
+      color={color}
+      currentWhiteboard={currentWhiteboard}
+      sharedUsers={sharedUsers}
+      setShareMouse={setShareMouse}
+      shareMouse={shareMouse}
+      shareMouseHandler={shareMouseHandler}
     />
   ) : null;
 
-  const toggleIsDeleteBoard = user ? <DeleteBoard isDeleteBoard={isDeleteBoard} setIsDeleteBoard={setIsDeleteBoard} /> : null;
-  const toggleIsUpdateBoard = user ? <UpdateBoard isUpdateBoard={isUpdateBoard} setIsUpdateBoard={setIsUpdateBoard} currentWhiteboard={currentWhiteboard} /> : null;
-  const toggleIsChangeAvatar = user ? <ChangeAvatar isChangeAvatar={isChangeAvatar} setIsChangeAvatar={setIsChangeAvatar} /> : null;
-  const togglePublicOrPrivateLabel = () => {
-    if (match.params.id !== 'myProfile') {
-      return currentWhiteboard?.isPublic ? "public" : "private"
-    } else {
-      return 'Search Board'
-    }
-  }
+  const toggleChat = currentWhiteboard ? (
+    <Widget
+      handleNewUserMessage={handleNewUserMessage}
+      // showTimeStamp={false}
+      profileAvatar={avatar}
+      title={"Chat"}
+      display={"inline-block"}
+    />
+  ) : null;
 
   return loading ? (
     <Loading />
@@ -289,13 +346,17 @@ const LoggedUserHomePage = ({ history, match }) => {
             setIsDeleteBoard={setIsDeleteBoard}
             setIsUpdateBoard={setIsUpdateBoard}
             setIsChangeAvatar={setIsChangeAvatar}
+            setIsInviteUser={setIsInviteUser}
           />
           <ListItem style={{ justifyContent: "center" }}>
             <IconButton>
               <Before />
             </IconButton>
             {isSearchBoard ? (
-              <SearchWhiteBoards setIsSearchBoard={setIsSearchBoard} leaveRoom={leaveRoom} />
+              <SearchWhiteBoards
+                setIsSearchBoard={setIsSearchBoard}
+                leaveRoom={leaveRoom}
+              />
             ) : (
               <Button
                 style={{
@@ -303,17 +364,22 @@ const LoggedUserHomePage = ({ history, match }) => {
                   backgroundColor: "red",
                   boxShadow: "6px 6px 3px darkblue",
                 }}
-                onClick={(e) => setIsSearchBoard(true) }
+                onClick={(e) => setIsSearchBoard(true)}
               >
                 <span
-                  style={{ paddingLeft: '10px', paddingRight: '10px', fontSize: "25px", justifyContent: "center" }}
+                  style={{
+                    paddingLeft: "10px",
+                    paddingRight: "10px",
+                    fontSize: "25px",
+                    justifyContent: "center",
+                  }}
                 >
                   {currentWhiteboard?.name}
                 </span>
                 <span
                   style={{
-                    paddingLeft: '10px',
-                    paddingRight: '10px',
+                    paddingLeft: "10px",
+                    paddingRight: "10px",
                     fontSize: "10px",
                     justifyContent: "center",
                     color: "white",
@@ -327,6 +393,17 @@ const LoggedUserHomePage = ({ history, match }) => {
               <Next />
             </IconButton>
           </ListItem>
+          {usersInRoom.length ? (
+            <AvatarGroup max={4} style={{ paddingRight: 20 }}>
+              {usersInRoom.map((x) => (
+                <Avatar
+                  key={x.avatar}
+                  alt={x.userName}
+                  src={`${BASE_URL}/${x.avatar}`}
+                />
+              ))}
+            </AvatarGroup>
+          ) : null}
           <span style={{ paddingRight: "10px", fontSize: "20px" }}>Logout</span>
           <ExitToApp
             style={{
@@ -338,23 +415,49 @@ const LoggedUserHomePage = ({ history, match }) => {
             color="inherit"
             onClick={(e) => {
               e.preventDefault();
-              leaveRoom(match.params.id)
+              leaveRoom(match.params.id);
               logOutHandler(setUser, history);
             }}
           />
         </Toolbar>
       </AppBar>
-      {toggleIsDeleteBoard}
+      <DeleteBoard
+        isDeleteBoard={isDeleteBoard}
+        setIsDeleteBoard={setIsDeleteBoard}
+      />
+      <UpdateBoard
+        isUpdateBoard={isUpdateBoard}
+        setIsUpdateBoard={setIsUpdateBoard}
+        currentWhiteboard={currentWhiteboard}
+      />
       {showDrawingPage}
-      {toggleSketchPicker}
-      {toggleIsUpdateBoard}
-      {toggleIsChangeAvatar}
+      <ColorPalette color={color} setColor={setColor} />
+      <ChangeAvatar
+        isChangeAvatar={isChangeAvatar}
+        setIsChangeAvatar={setIsChangeAvatar}
+      />
+      {toggleChat}
+      <InviteUsers
+        setIsInviteUser={setIsInviteUser}
+        isInviteUser={isInviteUser}
+        currentWhiteboard={currentWhiteboard}
+        inviteUserHandler={inviteUserHandler}
+      />
       <CreateBoard
         isCreateWhiteboard={isCreateWhiteboard}
         setIsCreateWhiteboard={setIsCreateWhiteboard}
         leaveRoom={leaveRoom}
       />
-      {toggleChangePassword}
+      <IncomingInvite
+        setIsIncomingInvite={setIsIncomingInvite}
+        isIncomingInvite={isIncomingInvite}
+        decline={decline}
+        accept={accept}
+      />
+      <ChangePassword
+        isChangePassword={isChangePassword}
+        setIsChangePassword={setIsChangePassword}
+      />
     </div>
   );
 };

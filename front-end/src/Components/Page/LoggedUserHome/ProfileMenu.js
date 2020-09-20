@@ -13,6 +13,7 @@ const ProfileMenu = ({
   setIsDeleteBoard,
   setIsUpdateBoard,
   setIsChangeAvatar,
+  setIsInviteUser,
 }) => {
   const { user } = useContext(AuthContext);
 
@@ -63,6 +64,18 @@ const ProfileMenu = ({
     </MenuItem>
   ) : null;
 
+  const InviteUsers = user ? (
+    <MenuItem
+      onClick={(e) => {
+        setIsInviteUser(true);
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
+      Invite User
+    </MenuItem>
+  ) : null;
+
   return (
     <Menu
       style={{ top: "-4px" }}
@@ -87,6 +100,7 @@ const ProfileMenu = ({
       {toggleChangePassword}
       {toggleUpdateAvatar}
       <Divider orientation="horizontal" variant='middle' />
+      {InviteUsers}
     </Menu>
   );
 };

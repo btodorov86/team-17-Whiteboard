@@ -106,7 +106,7 @@ export class UsersService {
   public async upload(id: string, filename: string): Promise<ReturnUserDTO> {
 
     console.log(filename);
-    
+
     const user = await this.usersRepo.findOne({
       where: { id: id, isDeleted: false },
     })
@@ -115,5 +115,6 @@ export class UsersService {
 
     return this.transform.toReturnUserDto(await this.usersRepo.save(user))
   }
+
 
   }
