@@ -43,7 +43,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
           if (prev.points.toString().length > 4000) {
             setOpen({
               value: true,
-              msg: "To long element, try to use drawing gadgets!",
+              msg: "Maximum line complexity reached. Please use another tool.",
               statusType: exceptionStatus.warning,
             });
             mouseUp();
@@ -578,7 +578,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
         onMouseUp={(e) => mouseUp(e)}
         height={window.innerHeight}
         width={window.innerWidth}
-        // draggable={mouseUp ? false : true}
+        draggable={mouseUp ? false : true}
       >
         <Layer>
           {shapes.length !== 0

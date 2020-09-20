@@ -162,7 +162,7 @@ const Navigation = ({ history, location }) => {
             noWrap
             onClick={() => history.push("/")}
           >
-            The Best Books App
+            Make Friends With Your Whiteboard
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>

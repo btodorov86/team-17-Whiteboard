@@ -40,9 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
-const DrawTextWidget = ({shareHandler, updateShapeProp, color}) => {
+const DrawTextWidget = ({ shareHandler, updateShapeProp, color }) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
@@ -50,10 +48,23 @@ const DrawTextWidget = ({shareHandler, updateShapeProp, color}) => {
     // { icon: <FileCopyIcon />, name: 'Copy' },
     // { icon: <SaveIcon />, name: 'Save' },
     // { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
-    { icon: <TextFieldsIcon onClick={(e) => updateShapeProp('textBox', {
-      isDrawing: true,
-      fill: color,
-    }, true)} />, name: 'Abc..' },
+    {
+      icon: (
+        <TextFieldsIcon
+          onClick={(e) =>
+            updateShapeProp(
+              'textBox',
+              {
+                isDrawing: true,
+                fill: color,
+              },
+              true
+            )
+          }
+        />
+      ),
+      name: 'Abc..',
+    },
     // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 
@@ -87,24 +98,34 @@ const DrawTextWidget = ({shareHandler, updateShapeProp, color}) => {
         <FormControlLabel value="left" control={<Radio />} label="Left" />
       </RadioGroup> */}
       {/* <div className={classes.exampleWrapper}> */}
-        <SpeedDial
-          ariaLabel="SpeedDial example"
-          className={classes.speedDial}
-          icon={<TextFieldsIcon />}
-          onClose={handleCloseWidget}
-          onOpen={handleOpenWidget}
-          open={openWidget}
-          direction={'right'}
-        >
-          {actions.map((action) => (
-            <SpeedDialAction
-              key={action.name}
-              icon={action.icon}
-              tooltipTitle={action.name}
-              onClick={handleCloseWidget}
-            />
-          ))}
-        </SpeedDial>
+      <SpeedDial
+        ariaLabel='SpeedDial example'
+        className={classes.speedDial}
+        icon={
+          <TextFieldsIcon
+            style={{
+              backgroundColor: '#6fa241',
+              width: '100%',
+              height: '100%',
+              borderRadius: '50%',
+              padding: '20%',
+            }}
+          />
+        }
+        onClose={handleCloseWidget}
+        onOpen={handleOpenWidget}
+        open={openWidget}
+        direction={'right'}
+      >
+        {actions.map((action) => (
+          <SpeedDialAction
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+            onClick={handleCloseWidget}
+          />
+        ))}
+      </SpeedDial>
     </div>
   );
 };
@@ -113,6 +134,6 @@ DrawTextWidget.propType = {
   shareHandler: propType.func.isRequired,
   updateShapeProp: propType.func.isRequired,
   color: propType.string.isRequired,
-}
+};
 
-export default DrawTextWidget
+export default DrawTextWidget;

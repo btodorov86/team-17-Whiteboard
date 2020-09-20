@@ -55,7 +55,7 @@ const DrawBrushWidget = ({shareHandler, updateShapeProp, color}) => {
     { icon: <BrushIcon onClick={(e) => updateShapeProp('line', {
       isDrawing: true,
       strokeWidth: 7,
-    }, true) } />, name: 'Draw' },
+    }, true) } />, name: 'Brush' },
     // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
   ];
 
@@ -92,7 +92,15 @@ const DrawBrushWidget = ({shareHandler, updateShapeProp, color}) => {
         <SpeedDial
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
-          icon={<BrushIcon />}
+          icon={<BrushIcon 
+            style={{
+              backgroundColor: '#6fa241',
+              width: '100%',
+              height: '100%',
+              borderRadius: '50%',
+              padding: '20%',
+            }}
+          />}
           onClose={handleCloseWidget}
           onOpen={handleOpenWidget}
           open={openWidget}

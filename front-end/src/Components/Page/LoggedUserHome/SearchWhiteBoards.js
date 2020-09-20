@@ -104,7 +104,7 @@ const SearchWhiteboard = ({ setIsSearchBoard, history, match, leaveRoom }) => {
               setIsSearchBoard(false);
             }
           }}
-          label="Whiteboard"
+          label="Search whiteboard"
           variant="outlined"
           InputProps={{
             ...params.InputProps,

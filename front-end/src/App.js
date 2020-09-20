@@ -20,7 +20,7 @@ const App = () => {
   const [user, setUser] = useState(getUser(getToken()));
   const [open, setOpen] = useState({
     value: false,
-    msg: "try again after few seconds",
+    msg: "Please try again after a few seconds",
     statusCode: null,
     statusType: exceptionStatus.error,
   });

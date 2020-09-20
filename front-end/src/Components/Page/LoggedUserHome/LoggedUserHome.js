@@ -307,7 +307,7 @@ const LoggedUserHomePage = ({ history, match }) => {
     >
       {/* {loading ? <Loading /> : null} */}
       <CssBaseline />
-      <AppBar position="absolute" className={classes.appBar}>
+      <AppBar position="absolute" className={classes.appBar} style={{width: "100%", backgroundColor: "#d4de23"}}>
         <Toolbar className={classes.toolbar}>
           {/* <IconButton
               edge="start"
@@ -323,9 +323,10 @@ const LoggedUserHomePage = ({ history, match }) => {
             </IconButton> */}
           <Button
             style={{
-              border: "2px solid red",
+              border: "2px solid #4d5842",
               borderRadius: "50%",
-              boxShadow: "6px 6px 3px darkblue",
+              boxShadow: "2px 2px 1px darkgreen",
+              backgroundColor: "#6fa241"
             }}
           >
             <Avatar
@@ -335,7 +336,7 @@ const LoggedUserHomePage = ({ history, match }) => {
               onClick={handleClickProfile}
             />
           </Button>
-          <span style={{ fontSize: "25px", paddingLeft: "10px" }}>
+          <span style={{ fontSize: "25px", paddingLeft: "10px", fontFamily: "monospace", fontWeight: 'bold' }}>
             {user.userName}
           </span>
           <ProfileMenu
@@ -360,19 +361,14 @@ const LoggedUserHomePage = ({ history, match }) => {
             ) : (
               <Button
                 style={{
-                  border: "1px solid black",
-                  backgroundColor: "red",
-                  boxShadow: "6px 6px 3px darkblue",
+                  border: "2px solid #4d5842",
+                  backgroundColor: "#6fa241",
+                  boxShadow: "3px 3px 1px darkgreen",
                 }}
                 onClick={(e) => setIsSearchBoard(true)}
               >
                 <span
-                  style={{
-                    paddingLeft: "10px",
-                    paddingRight: "10px",
-                    fontSize: "25px",
-                    justifyContent: "center",
-                  }}
+                  style={{ paddingLeft: '10px', paddingRight: '10px', fontSize: "22px", justifyContent: "center", fontFamily: "monospace", fontWeight: 'bold'}}
                 >
                   {currentWhiteboard?.name}
                 </span>
@@ -404,13 +400,14 @@ const LoggedUserHomePage = ({ history, match }) => {
               ))}
             </AvatarGroup>
           ) : null}
-          <span style={{ paddingRight: "10px", fontSize: "20px" }}>Logout</span>
+          <span style={{ paddingRight: "10px", fontSize: "18px", fontFamily: "monospace"}}>Logout</span>
           <ExitToApp
             style={{
               cursor: "pointer",
-              boxShadow: "4px 4px 2px darkblue",
-              border: "1px solid black",
-              borderRadius: "5px",
+              boxShadow: "3px 3px 1px darkgreen",
+              border: "1px solid #4d5842",
+              borderRadius: "3px",
+              backgroundColor: "#6fa241"
             }}
             color="inherit"
             onClick={(e) => {

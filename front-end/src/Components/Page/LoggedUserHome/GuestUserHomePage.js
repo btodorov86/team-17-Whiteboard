@@ -56,16 +56,17 @@ const GuestUserHomePage = ({ history }) => {
       className={classes.root}
     >
       <CssBaseline />
-      <AppBar position="absolute" className={classes.appBar}>
+      <AppBar position="absolute" className={classes.appBar} style={{width: "100%", backgroundColor: "#d4de23"}}>
         <Toolbar className={classes.toolbar}>
           <ListItem style={{ justifyContent: "center" }} />
-          <span style={{ paddingRight: "10px", fontSize: "20px" }}>{ user ? 'Logout' : 'Login' }</span>
+          <span style={{ paddingRight: "10px", fontSize: "18px", fontFamily: "monospace"}}>{ user ? 'Logout' : 'Login' }</span>
           <LoginIcon       // find correct icon !!!
             style={{
               cursor: "pointer",
-              boxShadow: "4px 4px 2px darkblue",
-              border: "1px solid black",
-              borderRadius: "5px",
+              boxShadow: "3px 3px 1px darkgreen",
+              border: "1px solid #4d5842",
+              borderRadius: "3px",
+              backgroundColor: "#6fa241"
             }}
             color="inherit"
             onClick={(e) => {

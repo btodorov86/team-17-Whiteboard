@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import images from "./../Home/earth.PNG";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -69,6 +70,10 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
     },
   });
   const useStyles = makeStyles((theme) => ({
+    notchedOutline: {
+      borderWidth: "1px",
+      borderColor: "#6fa241 !important"
+    },
     paper: {
       marginTop: theme.spacing(8),
       display: "flex",
@@ -233,6 +238,11 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
         variant="outlined"
         required
         fullWidth
+        InputProps={{
+          classes: {
+            notchedOutline: classes.notchedOutline
+          }
+        }}
         id="firstName"
         label="First Name"
         autoFocus
@@ -268,6 +278,11 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
         variant="outlined"
         required
         fullWidth
+        InputProps={{
+          classes: {
+            notchedOutline: classes.notchedOutline
+          }
+        }}
         id="lastName"
         label="Last Name"
         name="lastName"
@@ -283,6 +298,11 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
         variant="outlined"
         required
         fullWidth
+        InputProps={{
+          classes: {
+            notchedOutline: classes.notchedOutline
+          }
+        }}
         id="username"
         label="Username"
         name="username"
@@ -298,6 +318,11 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
         variant="outlined"
         required
         fullWidth
+        InputProps={{
+          classes: {
+            notchedOutline: classes.notchedOutline
+          }
+        }}
         id="email"
         label="Email Address"
         name="email"
@@ -314,6 +339,11 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
           variant="outlined"
           required
           fullWidth
+          InputProps={{
+            classes: {
+              notchedOutline: classes.notchedOutline
+            }
+          }}
           name="password"
           label="Password"
           type="password"
@@ -330,6 +360,11 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
           variant="outlined"
           required
           fullWidth
+          InputProps={{
+            classes: {
+              notchedOutline: classes.notchedOutline
+            }
+          }}
           name="Confirm password"
           label="Confirm password"
           type="password"
@@ -355,6 +390,7 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            style={{backgroundColor: '#6fa241'}}
             onClick={(e) => {
               e.preventDefault();
               backHandler();
@@ -371,6 +407,7 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            style={{backgroundColor: '#6fa241'}}
             onClick={(e) => {
               e.preventDefault();
               nextHandler();
@@ -388,6 +425,7 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
           fullWidth
           variant="contained"
           color="primary"
+          style={{backgroundColor: '#6fa241'}}
           className={classes.submit}
           onClick={signInHandler}
           disabled={isDisable()}
@@ -399,6 +437,7 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
           fullWidth
           variant="contained"
           color="primary"
+          style={{backgroundColor: '#6fa241'}}
           onClick={(e) => {
             e.preventDefault();
             backHandler();
@@ -425,9 +464,7 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar
-          src={
-            "https://i1.wp.com/geolok.eu/wp-content/uploads/2018/02/blue-planet-earth-rotation-with-space-background-4k-animation_ed3hfc3cl__F0000-min-min.jpg?fit=555%2C340"
-          }
+          src={images}
           className={classes.avatar}
         >
           {/* <LockOutlinedIcon /> */}
