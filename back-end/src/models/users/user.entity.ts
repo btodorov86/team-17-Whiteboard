@@ -5,7 +5,7 @@ import { Whiteboard } from '../whiteboard/whiteboard.entity';
 export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
-    @Column({unique: true, length: 10, type: 'nvarchar'})
+    @Column({unique: true, type: 'nvarchar'})
     userName: string;
     @Column({ type: 'nvarchar'})
     firstName: string;

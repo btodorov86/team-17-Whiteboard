@@ -7,7 +7,7 @@ export class Line {
     id: string
     @ManyToOne(type => Whiteboard, whiteboard => whiteboard.lines)
     whiteboard: Whiteboard
-    @Column({default: 'line'})
+    @Column({default: 'lines'})
     type: string
     @Column()
     itemPosition: number;

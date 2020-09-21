@@ -52,7 +52,7 @@ const DrawBrushWidget = ({shareHandler, updateShapeProp, color}) => {
     // { icon: <FileCopyIcon />, name: 'Copy' },
     // { icon: <SaveIcon />, name: 'Save' },
     // { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
-    { icon: <BrushIcon onClick={(e) => updateShapeProp('line', {
+    { icon: <BrushIcon onClick={(e) => updateShapeProp('lines', {
       isDrawing: true,
       strokeWidth: 7,
     }, true) } />, name: 'Brush' },
@@ -92,7 +92,7 @@ const DrawBrushWidget = ({shareHandler, updateShapeProp, color}) => {
         <SpeedDial
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
-          icon={<BrushIcon 
+          icon={<BrushIcon
             style={{
               backgroundColor: '#6fa241',
               width: '100%',

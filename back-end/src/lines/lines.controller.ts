@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Put, Delete, ValidationPipe, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, Delete, ValidationPipe, UseGuards, Req, Patch } from '@nestjs/common';
 import { CreateLineDTO } from 'src/models/line/create.line.dto';
 import { ReturnLineDTO } from 'src/models/line/return.line.dto';
 import { LineService } from 'src/core/services/line/line.service';
@@ -43,6 +43,13 @@ export class LinesController {
         @Param('lineId') lineId: string,
         ): Promise<string> {
         return this.lineService.delete(lineId)
+    }
+    @Patch(':lineId')
+    async recover(
+        @Param('lineId') lineId: string,
+        ): Promise<ReturnLineDTO> {
+
+        return this.lineService.recover(lineId)
     }
 
 }

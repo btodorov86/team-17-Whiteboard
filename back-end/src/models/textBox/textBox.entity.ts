@@ -7,7 +7,7 @@ export class TextBox {
     id: string
     @ManyToOne(type => Whiteboard, whiteboard => whiteboard.textBoxes)
     whiteboard: Whiteboard
-    @Column({default: 'textBox'})
+    @Column({default: 'textBoxes'})
     type: string
     @Column()
     itemPosition: number

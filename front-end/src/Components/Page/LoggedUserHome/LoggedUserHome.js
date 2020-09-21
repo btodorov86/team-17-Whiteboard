@@ -45,6 +45,7 @@ import InviteUsers from "./InviteUsers";
 import IncomingInvite from "./IncomingInvite";
 import { AvatarGroup } from "@material-ui/lab";
 import { addResponseMessage, Widget } from "react-chat-widget";
+import ProfilePrivateMenu from './ProfilePrivateMenu';
 
 const LoggedUserHomePage = ({ history, match }) => {
   const { user, setUser } = useContext(AuthContext);
@@ -98,13 +99,15 @@ const LoggedUserHomePage = ({ history, match }) => {
     mouseY: 0,
   });
 
+  const [shapeHistory, setShapeHistory] = useState([]);
   useEffect(() => {
     socketRef.current = io("http://localhost:3000/chat");
 
-    // if (match.params.id === 'myProfile') {
-    //   return;
-    // }
-    setLoading(false)
+    if (match.params.id === 'myProfile') {
+      return;
+    }
+
+    setLoading(true)
     fetch(`${BASE_URL}/whiteboards/${match.params.id}`, {
       headers: {
         Authorization: localStorage.getItem("token"),
@@ -118,6 +121,7 @@ const LoggedUserHomePage = ({ history, match }) => {
           userName: user.userName,
           avatar: user.avatarURL,
         });
+        console.log(resp);
         setCurrentWhiteboard(resp);
       })
       .catch((err) =>
@@ -193,6 +197,57 @@ const LoggedUserHomePage = ({ history, match }) => {
     });
   }, [match.params.id]);
 
+  const undo = (shapes, history) => { // da se popravi proverkata
+    if (!shapes.length) {
+      return
+    }
+    const lastShape = shapes.pop();
+    fetch(`${BASE_URL}/whiteboards/${currentWhiteboard.id}/lines/${lastShape.id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+    .then( r => r.text())
+    .then( resp => {
+      isErrorResponse(resp);
+      setShapeHistory(prev => [...prev, lastShape.id]);
+      // setShapes([...shapes])
+    })
+    .catch( err => setOpen({
+      value: true,
+      msg: err.message,
+      statusType: exceptionStatus.error,
+    }))
+    .finally(() => history.push(`/profile/${currentWhiteboard.id}`))
+  };
+
+  const redo = (setShapes, history) => {
+    // if (shapeHistory.length === 0) {
+    //   return
+    // }
+    // console.log(shapeHistory.length === 0);
+    const lastShape = shapeHistory.pop();
+    fetch(`${BASE_URL}/whiteboards/${currentWhiteboard.id}/lines/${lastShape}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+    .then( r => r.json())
+    .then( resp => {
+      isErrorResponse(resp);
+      setShapeHistory(prev => [...prev]);
+      setShapes(prev => [...prev, resp])
+    })
+    .catch( err => setOpen({
+      value: true,
+      msg: err.message,
+      statusType: exceptionStatus.error,
+    }))
+    .finally(() => history.push(`/profile/${currentWhiteboard.id}`))
+  }
+
   const leaveRoom = (room) => {
     socketRef.current = io("http://localhost:3000/chat");
     socketRef.current.emit("leaveRoom", {
@@ -229,32 +284,32 @@ const LoggedUserHomePage = ({ history, match }) => {
     });
   };
 
-  // const shareMouseHandler = (x, y) => {
-  //   setShareMouse({ isShare: true, mouseX: y, mouseY: x });
-  //   socketRef.current.emit("sendMousePoints", {
-  //     user: user.id,
-  //     mouseX: y,
-  //     mouseY: x,
-  //     avatar: user.avatarURL,
-  //     room: currentWhiteboard.id,
-  //   });
-  // };
-
   const shareMouseHandler = (x, y) => {
-    if (
-      Math.abs(shareMouse.mouseX - y) > 5 &&
-      Math.abs(shareMouse.mouseY - x) > 5
-    ) {
-      setShareMouse({ isShare: true, mouseX: y, mouseY: x });
-      socketRef.current.emit("sendMousePoints", {
-        user: user.id,
-        mouseX: y,
-        mouseY: x,
-        avatar: user.avatarURL,
-        room: currentWhiteboard.id,
-      });
-    }
+    setShareMouse({ isShare: true, mouseX: y, mouseY: x });
+    socketRef.current.emit("sendMousePoints", {
+      user: user.id,
+      mouseX: y,
+      mouseY: x,
+      avatar: user.avatarURL,
+      room: currentWhiteboard.id,
+    });
   };
+
+  // const shareMouseHandler = (x, y) => {
+  //   if (
+  //     Math.abs(shareMouse.mouseX - y) > 5 &&
+  //     Math.abs(shareMouse.mouseY - x) > 5
+  //   ) {
+  //     setShareMouse({ isShare: true, mouseX: y, mouseY: x });
+  //     socketRef.current.emit("sendMousePoints", {
+  //       user: user.id,
+  //       mouseX: y,
+  //       mouseY: x,
+  //       avatar: user.avatarURL,
+  //       room: currentWhiteboard.id,
+  //     });
+  //   }
+  // };
 
   const togglePublicOrPrivateLabel = () => {
     if (match.params.id !== "myProfile") {
@@ -280,6 +335,10 @@ const LoggedUserHomePage = ({ history, match }) => {
       setShareMouse={setShareMouse}
       shareMouse={shareMouse}
       shareMouseHandler={shareMouseHandler}
+      shapeHistory={shapeHistory}
+      setShapeHistory={setShapeHistory}
+      undo={undo}
+      redo={redo}
     />
   ) : null;
 
@@ -292,6 +351,8 @@ const LoggedUserHomePage = ({ history, match }) => {
       display={"inline-block"}
     />
   ) : null;
+
+  console.log(currentWhiteboard);
 
   return loading ? (
     <Loading />
@@ -339,7 +400,7 @@ const LoggedUserHomePage = ({ history, match }) => {
           <span style={{ fontSize: "25px", paddingLeft: "10px", fontFamily: "monospace", fontWeight: 'bold' }}>
             {user.userName}
           </span>
-          <ProfileMenu
+          { currentWhiteboard && currentWhiteboard.author === user.id ? <ProfilePrivateMenu
             anchorEl={anchorEl}
             handleClose={handleCloseProfile}
             setIsCreateWhiteboard={setIsCreateWhiteboard}
@@ -348,10 +409,22 @@ const LoggedUserHomePage = ({ history, match }) => {
             setIsUpdateBoard={setIsUpdateBoard}
             setIsChangeAvatar={setIsChangeAvatar}
             setIsInviteUser={setIsInviteUser}
-          />
+            currentWhiteboard={currentWhiteboard}
+          /> : <ProfileMenu
+          anchorEl={anchorEl}
+            handleClose={handleCloseProfile}
+            setIsCreateWhiteboard={setIsCreateWhiteboard}
+            setIsChangePassword={setIsChangePassword}
+            setIsDeleteBoard={setIsDeleteBoard}
+            setIsUpdateBoard={setIsUpdateBoard}
+            setIsChangeAvatar={setIsChangeAvatar}
+            setIsInviteUser={setIsInviteUser}
+            currentWhiteboard={currentWhiteboard}
+          /> }
+
           <ListItem style={{ justifyContent: "center" }}>
             <IconButton>
-              <Before />
+              <Before onClick={(e) => { e.preventDefault(); history.push(`${currentWhiteboard.id}/undo`)}} />
             </IconButton>
             {isSearchBoard ? (
               <SearchWhiteBoards
@@ -386,7 +459,7 @@ const LoggedUserHomePage = ({ history, match }) => {
               </Button>
             )}
             <IconButton>
-              <Next />
+              <Next onClick={(e) => { e.preventDefault(); return shapeHistory.length === 0 ? null : history.push(`${currentWhiteboard.id}/redo`)}} />
             </IconButton>
           </ListItem>
           {usersInRoom.length ? (

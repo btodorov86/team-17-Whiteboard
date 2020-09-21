@@ -11,7 +11,7 @@ import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
 import AuthContext from '../../../Providers/Context/AuthContext';
 
-const TextBoxKonva = ({ shapeTextBox, setShapes }) => {
+const TextBoxKonva = ({ shapeTextBoxes, setShapes }) => {
 
   const { user } = useContext(AuthContext)
   const useStyles = makeStyles((theme) => ({
@@ -23,8 +23,8 @@ const TextBoxKonva = ({ shapeTextBox, setShapes }) => {
     // },
     root: {
       position: "absolute",
-      top: shapeTextBox.y - 110,
-      left: shapeTextBox.x,
+      top: shapeTextBoxes.y - 110,
+      left: shapeTextBoxes.x,
     //   width: "fit-content",
       width: 360,
       border: `1px solid ${theme.palette.divider}`,
@@ -50,7 +50,7 @@ const TextBoxKonva = ({ shapeTextBox, setShapes }) => {
 
   return (
     // <div className={classes.root}>
-    <div hidden={!shapeTextBox.startDrawing}>
+    <div hidden={!shapeTextBoxes.startDrawing}>
       <Grid container alignItems="center" className={classes.root}>
         <FormatAlignLeftIcon />
         <FormatAlignCenterIcon />
@@ -58,33 +58,33 @@ const TextBoxKonva = ({ shapeTextBox, setShapes }) => {
         <Divider orientation="vertical" flexItem />
         <FormatBoldIcon
           onClick={(e) =>
-            shapeTextBox.fontStyle === "normal"
-              ? shapeTextBox.updateSize("fontStyle", "bold")
-              : shapeTextBox.updateSize("fontStyle", "normal")
+            shapeTextBoxes.fontStyle === "normal"
+              ? shapeTextBoxes.updateSize("fontStyle", "bold")
+              : shapeTextBoxes.updateSize("fontStyle", "normal")
           }
-          className={shapeTextBox.fontStyle === "bold" ? classes.select : null}
+          className={shapeTextBoxes.fontStyle === "bold" ? classes.select : null}
           style={{ cursor: "pointer" }}
         />
         <FormatItalicIcon
           onClick={(e) =>
-            shapeTextBox.fontStyle === "normal"
-              ? shapeTextBox.updateSize("fontStyle", "italic")
-              : shapeTextBox.updateSize("fontStyle", "normal")
+            shapeTextBoxes.fontStyle === "normal"
+              ? shapeTextBoxes.updateSize("fontStyle", "italic")
+              : shapeTextBoxes.updateSize("fontStyle", "normal")
           }
-          className={shapeTextBox.fontStyle === "italic" ? classes.select : null}
+          className={shapeTextBoxes.fontStyle === "italic" ? classes.select : null}
           style={{ cursor: "pointer" }}
         />
         <FormatUnderlinedIcon onClick={(e) =>
-            shapeTextBox.textDecoration.length === 0
-              ? shapeTextBox.updateSize("textDecoration", "underline")
-              : shapeTextBox.updateSize("textDecoration", "")
+            shapeTextBoxes.textDecoration.length === 0
+              ? shapeTextBoxes.updateSize("textDecoration", "underline")
+              : shapeTextBoxes.updateSize("textDecoration", "")
           }
-          className={shapeTextBox.textDecoration.length !== 0 ? classes.select : null}
+          className={shapeTextBoxes.textDecoration.length !== 0 ? classes.select : null}
           style={{ cursor: "pointer" }} />
           <Divider orientation="vertical" flexItem />
           <CloseIcon
         onClick={(e) =>
-            shapeTextBox.updateSize("startDrawing", false)
+          shapeTextBoxes.updateSize("startDrawing", false)
           }
           style={{ cursor: "pointer" }}
         />
@@ -93,16 +93,16 @@ const TextBoxKonva = ({ shapeTextBox, setShapes }) => {
           fullWidth
           variant="filled"
           className={classes.text}
-          value={shapeTextBox.text}
+          value={shapeTextBoxes.text}
           autoFocus
-          onChange={(e) => shapeTextBox.updateSize("text", e.target.value)}
+          onChange={(e) => shapeTextBoxes.updateSize("text", e.target.value)}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
               if (user) {
-                shapeTextBox.endDrawing(shapeTextBox);
+                shapeTextBoxes.endDrawing(shapeTextBoxes);
               } else {
-                setShapes(prev => [...prev, shapeTextBox]);
-                shapeTextBox.clearDrawingObj();
+                setShapes(prev => [...prev, shapeTextBoxes]);
+                shapeTextBoxes.clearDrawingObj();
               }
 
             }
@@ -110,9 +110,6 @@ const TextBoxKonva = ({ shapeTextBox, setShapes }) => {
         />
       </Grid>
     </div>
-
-    //   <h1>GDHGJSGDHJSGFSGFHJ</h1>
-    // </div>
   );
 };
 

@@ -51,12 +51,12 @@ const DrawCircleWidget = ({shareHandler, updateShapeProp, color}) => {
     // { icon: <FileCopyIcon />, name: 'Copy' },
     // { icon: <SaveIcon />, name: 'Save' },
     { icon: <RadioButtonUncheckedIcon
-      onClick={(e) => updateShapeProp('circle', {
+      onClick={(e) => updateShapeProp('circles', {
       isDrawing: true,
       fill: "",
       stroke: color,
     }, true)} />, name: 'Contoured Circle' },
-    { icon: <FiberManualRecordIcon onClick={(e) => updateShapeProp('circle', {
+    { icon: <FiberManualRecordIcon onClick={(e) => updateShapeProp('circles', {
       isDrawing: true,
       fill: color,
       stroke: color,

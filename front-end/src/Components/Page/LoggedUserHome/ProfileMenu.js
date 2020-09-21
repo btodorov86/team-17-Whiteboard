@@ -14,34 +14,35 @@ const ProfileMenu = ({
   setIsUpdateBoard,
   setIsChangeAvatar,
   setIsInviteUser,
+  currentWhiteboard,
 }) => {
   const { user } = useContext(AuthContext);
 
-  const toggleChangePassword = user ? (
-    <MenuItem
-      onClick={(e) => {
-        setIsChangePassword(true);
-        handleClose();
-      }}
-      style={{ margin: "10px" }}
-    >
-      Change password
-    </MenuItem>
-  ) : null;
+  // const toggleChangePassword = user ? (
+  //   <MenuItem
+  //     onClick={(e) => {
+  //       setIsChangePassword(true);
+  //       handleClose();
+  //     }}
+  //     style={{ margin: "10px" }}
+  //   >
+  //     Change password
+  //   </MenuItem>
+  // ) : null;
 
-  const toggleUpdateAvatar = user ? (
-    <MenuItem
-      onClick={(e) => {
-        setIsChangeAvatar(true);
-        handleClose();
-      }}
-      style={{ margin: "10px" }}
-    >
-      Update avatar
-    </MenuItem>
-  ) : null;
+  // const toggleUpdateAvatar = user ? (
+  //   <MenuItem
+  //     onClick={(e) => {
+  //       setIsChangeAvatar(true);
+  //       handleClose();
+  //     }}
+  //     style={{ margin: "10px" }}
+  //   >
+  //     Update avatar
+  //   </MenuItem>
+  // ) : null;
 
-  const toggleUpdateWhiteboard = user ? (
+  const toggleUpdateWhiteboard = false ? (
     <MenuItem
       onClick={(e) => {
         setIsUpdateBoard(true);
@@ -52,7 +53,7 @@ const ProfileMenu = ({
       Update board
     </MenuItem>
   ) : null;
-  const toggleDeleteWhiteboard = user ? (
+  const toggleDeleteWhiteboard = false ? (
     <MenuItem
       onClick={(e) => {
         setIsDeleteBoard(true);
@@ -64,7 +65,7 @@ const ProfileMenu = ({
     </MenuItem>
   ) : null;
 
-  const InviteUsers = user ? (
+  const InviteUsers = false ? (
     <MenuItem
       onClick={(e) => {
         setIsInviteUser(true);
@@ -97,8 +98,26 @@ const ProfileMenu = ({
       {toggleDeleteWhiteboard}
       {toggleUpdateWhiteboard}
       <Divider orientation="horizontal" variant='middle' />
-      {toggleChangePassword}
-      {toggleUpdateAvatar}
+      {/* {toggleChangePassword} */}
+      <MenuItem
+      onClick={(e) => {
+        setIsChangePassword(true);
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
+      Change password
+    </MenuItem>
+      <MenuItem
+      onClick={(e) => {
+        setIsChangeAvatar(true);
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
+      Update avatar
+    </MenuItem>
+      {/* {toggleUpdateAvatar} */}
       <Divider orientation="horizontal" variant='middle' />
       {InviteUsers}
     </Menu>

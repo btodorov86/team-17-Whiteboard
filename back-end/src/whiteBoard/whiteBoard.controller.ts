@@ -37,10 +37,10 @@ export class WhiteBoardController {
     @Get(':id')
     async getOne(
         @Param('id') id: string,
-        // @Req() req: Request,
+        @Req() req: Request,
         ): Promise<ReturnWhiteboardDTO> {
-            // const user = req.user as User;
-        return await this.whiteboardService.getOne(id)
+            const user = req.user as User;
+        return await this.whiteboardService.getOne(id, user.id)
     }
     @UseGuards(AuthGuard('jwt'))
     @Post()

@@ -7,7 +7,7 @@ export class Circle {
     id: string;
     @ManyToOne(type => Whiteboard, whiteboard => whiteboard.circles)
     whiteboard: Whiteboard;
-    @Column({default: 'circle'})
+    @Column({default: 'circles'})
     type: string
     @Column()
     x: number;

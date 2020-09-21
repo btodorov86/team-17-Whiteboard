@@ -8,7 +8,7 @@ import { User } from 'src/models/users/user.entity';
 import { use } from 'passport';
 
 
-@Controller('whiteboards/:id/texts')
+@Controller('whiteboards/:id/textBoxes')
 
 export class TextBoxController {
 

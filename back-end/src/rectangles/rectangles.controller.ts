@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Put, Delete, ValidationPipe, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, Delete, ValidationPipe, UseGuards, Req, Patch } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RectangleService } from 'src/core/services/rectangle/rectangle.service';
 import { CreateRectangleDTO } from 'src/models/rectangle/create.rectangle.dto';
@@ -43,6 +43,12 @@ export class RectangleController {
         @Param('rectangleId') rectangleId: string,
         ): Promise<string> {
         return this.rectangleService.delete(rectangleId)
+    }
+    @Patch(':rectangleId')
+    async recover(
+        @Param('rectangleId') rectangleId: string,
+        ): Promise<string> {
+        return this.rectangleService.recover(rectangleId)
     }
 
 }

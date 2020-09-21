@@ -80,8 +80,21 @@ export class RectangleService {
         }
 
         rectangle.isDeleted = true;
+        
 
         return "item is Deleted"
+    }
+    async recover(rectangleId: string): Promise<string> {
+        const rectangle = await this.rectangleRepo.findOne({
+            where: { id: rectangleId, isDeleted: true }
+        })
+        if (!Rectangle) {
+            throw new NotFoundException();
+        }
+
+        rectangle.isDeleted = false;
+
+        return "item is recovered"
     }
 
 }

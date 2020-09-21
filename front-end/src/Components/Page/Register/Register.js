@@ -24,10 +24,10 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
   const [files, setFiles] = useState([]);
   const pageNumberNames = [
     "firstName",
-    "avatar",
     "lastName",
     "userName",
     "email",
+    "avatar",
     "password",
     "confirmPassword",
   ];
@@ -253,27 +253,6 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
       {renderError("firstName")}
     </Grid>,
     <Grid item xs={12}>
-      <input
-        accept="image/*"
-        // className={classes.input}
-        style={{ display: "none" }}
-        id="raised-button-file"
-        multiple
-        type="file"
-        onChange={(e) => updateState('avatar', Array.from(e.target.files))}
-      />
-      <label htmlFor="raised-button-file">
-        <Button
-          variant="outlined"
-          component="span"
-          fullWidth
-          className={classes.submit}
-        >
-          Upload Avatar
-        </Button>
-      </label>
-    </Grid>,
-    <Grid item xs={12}>
       <TextField
         variant="outlined"
         required
@@ -333,7 +312,29 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
       />
       {renderError("email")}
     </Grid>,
-    <>
+    <Grid item xs={12}>
+    <input
+      accept="image/*"
+      // className={classes.input}
+      style={{ display: "none" }}
+      id="raised-button-file"
+      multiple
+      type="file"
+      onChange={(e) => updateState('avatar', Array.from(e.target.files))}
+    />
+    <label htmlFor="raised-button-file">
+      <Button
+        variant="outlined"
+        component="span"
+        fullWidth
+        className={classes.submit}
+      >
+        Upload Avatar
+      </Button>
+    </label>
+    {renderError("avatar")}
+  </Grid>,
+    <React.Fragment>
       <Grid item xs={12}>
         <TextField
           variant="outlined"
@@ -377,7 +378,7 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
           }
         />
       </Grid>
-    </>,
+    </React.Fragment>,
   ];
 
   const toggleButtons =

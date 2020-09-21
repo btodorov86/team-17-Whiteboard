@@ -79,10 +79,22 @@ export class LineService {
         if (!line) {
             throw new NotFoundException();
         }
-
         line.isDeleted = true;
+        await this.lineRepo.save(line);
 
         return "item is Deleted"
+    }
+    async recover(lineId: string): Promise<ReturnLineDTO> {
+        const line = await this.lineRepo.findOne({
+            where: { id: lineId, isDeleted: true }
+        });
+
+        if (!line) {
+            throw new NotFoundException();
+        }
+        line.isDeleted = false;
+
+        return this.transformService.toReturnLineDto(await this.lineRepo.save(line))
     }
 
 }

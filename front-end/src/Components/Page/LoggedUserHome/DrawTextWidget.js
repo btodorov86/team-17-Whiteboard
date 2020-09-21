@@ -53,7 +53,7 @@ const DrawTextWidget = ({ shareHandler, updateShapeProp, color }) => {
         <TextFieldsIcon
           onClick={(e) =>
             updateShapeProp(
-              'textBox',
+              'textBoxes',
               {
                 isDrawing: true,
                 fill: color,

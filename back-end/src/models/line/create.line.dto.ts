@@ -1,7 +1,7 @@
-import { Length, IsString, IsPositive, IsNumber, IsNotEmpty } from 'class-validator'
+import { Length, IsString, IsPositive, IsNumber } from 'class-validator'
 
 export class CreateLineDTO {
-    @Length(3, )
+    @Length(2, )
     @IsString()
     points: string
     @Length(1, )

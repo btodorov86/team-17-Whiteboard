@@ -56,12 +56,12 @@ const DrawRectangleWidget = ({shareHandler, updateShapeProp, color}) => {
     // { icon: <FileCopyIcon />, name: 'Copy' },
     // { icon: <SaveIcon />, name: 'Save' },
     // { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
-    { icon: <Crop54SharpIcon onClick={(e) => updateShapeProp('rectangle', {
+    { icon: <Crop54SharpIcon onClick={(e) => updateShapeProp('rectangles', {
       isDrawing: true,
       stroke: color,
       fill: "",
     }, true)} />, name: 'Contoured Rectangle' },
-    { icon: <StopIcon onClick={(e) => updateShapeProp('rectangle', {
+    { icon: <StopIcon onClick={(e) => updateShapeProp('rectangles', {
       isDrawing: true,
       stroke: color,
       fill: color,

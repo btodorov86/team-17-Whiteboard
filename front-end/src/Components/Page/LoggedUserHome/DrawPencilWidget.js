@@ -57,7 +57,7 @@ const DrawPencilWidget = ({shareHandler, updateShapeProp, color}) => {
     // { icon: <FileCopyIcon onClick={(e) => setIsDrawing('textBox')} />, name: 'Copy' },
     // { icon: <SaveIcon onClick={(e) => setIsDrawing('rectangle')} />, name: 'rectangle' },
     // { icon: <PrintIcon onClick={(e) => updateShapeProp('line', {stroke:strokeWidth: 2})} />, name: 'strokeWidth' },
-    { icon: <CreateIcon onClick={(e) => updateShapeProp('line', {
+    { icon: <CreateIcon onClick={(e) => updateShapeProp('lines', {
       isDrawing: true,
       strokeWidth: 2,
     }, true)} />, name: 'Pencil' },

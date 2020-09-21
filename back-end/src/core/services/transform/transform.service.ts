@@ -44,14 +44,14 @@ export class TransformService {
 
   toReturnWhiteboardDto(whiteboard: Whiteboard): ReturnWhiteboardDTO {
     return {
-      author: whiteboard.author.userName,
+      author: whiteboard.author.id,
       id: whiteboard.id,
       isPublic: whiteboard.isPublic,
-      circle: whiteboard.circles,
-      line: whiteboard.lines.map( x => this.toReturnLineDto(x)),
+      circle: whiteboard.circles.filter(x => x.isDeleted === false),
+      line: whiteboard.lines.filter(x => x.isDeleted === false).map( x => this.toReturnLineDto(x)),
       name: whiteboard.name,
-      rectangle: whiteboard.rectangles,
-      textBoxes: whiteboard.textBoxes
+      rectangle: whiteboard.rectangles.filter(x => x.isDeleted === false),
+      textBoxes: whiteboard.textBoxes.filter(x => x.isDeleted === false),
     }
   }
   toReturnCreatedWhiteboardDto(whiteboard: Whiteboard, user: User): ReturnCreatedWhiteboardDTO {

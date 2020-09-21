@@ -21,13 +21,19 @@ export class WhiteBoardService{
       ) {}
 
 
-    async getOne(id: string): Promise<ReturnWhiteboardDTO> {
+    async getOne(id: string, userId: string): Promise<ReturnWhiteboardDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: id, isDeleted: false},
-            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes']
+            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes', 'invitedUsers']
         })
+
         if(!whiteboard) {
             throw new NotFoundException();
+        }
+        if (!whiteboard.isPublic) {
+            if (whiteboard.author.id !== userId || whiteboard.invitedUsers.some( x => x.id === userId)) {
+                throw new UnauthorizedException();
+            }
         }
 
         return this.transform.toReturnWhiteboardDto(whiteboard)
@@ -98,7 +104,7 @@ export class WhiteBoardService{
         await this.whiteboardsRepo.save(whiteboard)
         return 'Board is deleted'
     }
-    async update(id: string, body: Partial<UpdateWhiteboardDTO>, whiteboardId: string): Promise<SimpleReturnWhiteboardDTO> {
+    async update(id: string, body: UpdateWhiteboardDTO, whiteboardId: string): Promise<SimpleReturnWhiteboardDTO> {
         console.log(id, body);
 
         const whiteboard = await this.whiteboardsRepo.findOne({
@@ -111,12 +117,12 @@ export class WhiteBoardService{
         if(whiteboard.author.id !== id) {
             throw new UnauthorizedException();
         }
-        if (body.invitedUsersId) {
-            const invitedUser = await this.usersRepo.findOne({
-                where: { id: body.invitedUsersId, isDeleted: false}
-            });
-            whiteboard.invitedUsers.push(invitedUser);
-        }
+        // if (body.invitedUsersId) {
+        //     const invitedUser = await this.usersRepo.findOne({
+        //         where: { id: body.invitedUsersId, isDeleted: false}
+        //     });
+        //     whiteboard.invitedUsers.push(invitedUser);
+        // }
 
         body?.name ? whiteboard.name = body.name : null;   // fix update obj
         body?.isPublic ? whiteboard.isPublic = body.isPublic : null;
