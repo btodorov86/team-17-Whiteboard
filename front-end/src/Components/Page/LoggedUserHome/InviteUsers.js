@@ -84,7 +84,7 @@ const InviteUsers = ({
         Authorization: localStorage.getItem("token"),
       },
     })
-      .then((r) => r.json())
+        .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
         isErrorResponse(resp);
         setOptions(resp.filter( x => x.id !== user.id));

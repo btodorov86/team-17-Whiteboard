@@ -6,7 +6,7 @@ import AuthContext from "../../../Providers/Context/AuthContext";
 import io from "socket.io-client";
 import { Avatar } from "@material-ui/core";
 import { Widget, addResponseMessage } from "react-chat-widget";
-import DrawEraseWidget from "./DrawEraseWidget";
+import DrawExtrasWidget from "./DrawExtrasWidget";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import { BASE_URL, exceptionStatus, isErrorResponse } from "../../../Constants/Constant";
 import DrawTextWidget from './DrawTextWidget';
@@ -17,6 +17,7 @@ import DrawPencilWidget from './DrawPencilWidget';
 import TextBoxKonva from './TextBox';
 import { withRouter } from 'react-router-dom';
 import { Undo } from '@material-ui/icons';
+import DrawEraserWidget from './DrawEraserWidget';
 // import Chat from './Chat';
 // import
 
@@ -649,12 +650,13 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
       <TextBoxKonva shapeTextBoxes={shape.textBoxes} setShapes={setShapes} />
       {/* <Chat socketRef={socketRef} /> */}
       <div style={{position: 'fixed'}}>
-      <DrawEraseWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
+      <DrawExtrasWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
       <DrawTextWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
       <DrawRectangleWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
       <DrawCircleWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
       <DrawBrushWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
       <DrawPencilWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
+      <DrawEraserWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} />
       </div>
       {!location.pathname.includes('guest') && sharedUsers.length !== 0
         ? sharedUsers.map((user) => (

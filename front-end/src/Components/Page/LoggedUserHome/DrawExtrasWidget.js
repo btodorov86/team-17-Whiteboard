@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
-import BrushIcon from '@material-ui/icons/Brush';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import ClearAllIcon from '@material-ui/icons/ClearAll';
 import propType from 'prop-types';
-
 const useStyles = makeStyles((theme) => ({
   root: {
-    position: 'absolute',
+    position: 'fixed',
     transform: 'translateZ(0px)',
     flexGrow: 1,
-    top: 390,
-    marginLeft: 10,
+    top: 70,
+    marginLeft: '50%',
     width: 60,
     height: 60,
 
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawBrushWidget = ({shareHandler, updateShapeProp, color}) => {
+const DrawExtrasWidget = ({shareHandler, updateShapeProp, color}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
@@ -47,11 +47,8 @@ const DrawBrushWidget = ({shareHandler, updateShapeProp, color}) => {
     // { icon: <FileCopyIcon />, name: 'Copy' },
     // { icon: <SaveIcon />, name: 'Save' },
     // { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
-    { icon: <BrushIcon onClick={(e) => updateShapeProp('lines', {
-      isDrawing: true,
-      strokeWidth: 7,
-    }, true) } />, name: 'Brush' },
-    // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
+    // { icon: <ShareIcon onClick={(e) => setIsDrawing('line')} />, name: 'Share' },
+    { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Share mouse' },
   ];
 
   const handleCloseWidget = () => {
@@ -87,14 +84,14 @@ const DrawBrushWidget = ({shareHandler, updateShapeProp, color}) => {
         <SpeedDial
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
-          icon={<BrushIcon
-            style={{
+            icon={<ClearAllIcon 
+              style={{
               backgroundColor: '#6fa241',
               width: '100%',
               height: '100%',
               borderRadius: '50%',
               padding: '20%',
-            }}
+            }} 
           />}
           onClose={handleCloseWidget}
           onOpen={handleOpenWidget}
@@ -114,10 +111,10 @@ const DrawBrushWidget = ({shareHandler, updateShapeProp, color}) => {
   );
 };
 
-DrawBrushWidget.propType = {
+DrawExtrasWidget.propType = {
   shareHandler: propType.func.isRequired,
   updateShapeProp: propType.func.isRequired,
   color: propType.string.isRequired,
 }
 
-export default DrawBrushWidget
+export default DrawExtrasWidget

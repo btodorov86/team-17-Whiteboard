@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, makeStyles } from '@material-ui/core';
 
-const NotFound = ({history}) => {
+const ServerError = ({history}) => {
 
     const useStyles = makeStyles((theme) => ({
         paper: {
@@ -15,11 +15,11 @@ const NotFound = ({history}) => {
 
     return (
     <div className={classes.paper}>
-        <img src={require('./image404.PNG')} alt='' />
-    <h4>Looks like you have followed a broken link or the resource does not exist anymore.</h4>
+        <img src={require('./500-internal-server-error.png')} alt='' />
+    <h4>Internal Server Error. Please contact the System Administrator.</h4>
     <Button variant='contained' color='primary' style={{backgroundColor: '#6fa241'}} onClick={() => history.push("/home")}>Go back home</Button>
     </div>
     )
 }
 
-export default NotFound
+export default ServerError

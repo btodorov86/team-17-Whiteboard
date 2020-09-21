@@ -25,7 +25,7 @@ const SearchWhiteboard = ({ setIsSearchBoard, history, match, leaveRoom }) => {
     }
 
     fetch(`${BASE_URL}/whiteboards/public`)
-      .then((r) => r.json())
+      .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
         isErrorResponse(resp);
         setOptions(resp);

@@ -2,13 +2,10 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
-import FileCopyIcon from '@material-ui/icons/FileCopyOutlined';
-import SaveIcon from '@material-ui/icons/Save';
-import PrintIcon from '@material-ui/icons/Print';
-import ShareIcon from '@material-ui/icons/Share';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ClearAllIcon from '@material-ui/icons/ClearAll';
 import propType from 'prop-types';
+import KitchenSharpIcon from '@material-ui/icons/KitchenSharp'
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     position: 'absolute',
@@ -43,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawEraseWidget = ({shareHandler, updateShapeProp, color}) => {
+const DrawEraserWidget = ({shareHandler, updateShapeProp, color}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
@@ -51,8 +48,11 @@ const DrawEraseWidget = ({shareHandler, updateShapeProp, color}) => {
     // { icon: <FileCopyIcon />, name: 'Copy' },
     // { icon: <SaveIcon />, name: 'Save' },
     // { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
-    // { icon: <ShareIcon onClick={(e) => setIsDrawing('line')} />, name: 'Share' },
-    { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Share mouse' },
+    { icon: <KitchenSharpIcon onClick={(e) => {
+      updateShapeProp('line', {
+      isDrawing: true,
+      strokeWidth: 17,
+    }, true)} } />, name: 'Eraser' },
   ];
 
   const handleCloseWidget = () => {
@@ -88,14 +88,14 @@ const DrawEraseWidget = ({shareHandler, updateShapeProp, color}) => {
         <SpeedDial
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
-            icon={<ClearAllIcon 
-              style={{
+          icon={<KitchenSharpIcon 
+            style={{
               backgroundColor: '#6fa241',
               width: '100%',
               height: '100%',
               borderRadius: '50%',
               padding: '20%',
-            }} 
+            }}
           />}
           onClose={handleCloseWidget}
           onOpen={handleOpenWidget}
@@ -115,10 +115,10 @@ const DrawEraseWidget = ({shareHandler, updateShapeProp, color}) => {
   );
 };
 
-DrawEraseWidget.propType = {
+DrawEraserWidget.propType = {
   shareHandler: propType.func.isRequired,
   updateShapeProp: propType.func.isRequired,
   color: propType.string.isRequired,
 }
 
-export default DrawEraseWidget
+export default DrawEraserWidget

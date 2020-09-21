@@ -2,17 +2,8 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
-import FileCopyIcon from '@material-ui/icons/FileCopyOutlined';
-import SaveIcon from '@material-ui/icons/Save';
-import PrintIcon from '@material-ui/icons/Print';
-import ShareIcon from '@material-ui/icons/Share';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import TextFieldIcon from '@material-ui/icons/TextFields';
 import CreateIcon from '@material-ui/icons/Create';
-// import PencileIcon from '@material-ui/icons/P';
 import propType from 'prop-types';
-
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -95,7 +86,6 @@ const DrawPencilWidget = ({shareHandler, updateShapeProp, color}) => {
       </RadioGroup> */}
       {/* <div className={classes.exampleWrapper}> */}
         <SpeedDial
-        // <button class="MuiButtonBase-root MuiFab-root MuiSpeedDial-fab MuiFab-primary" tabindex="0" type="button" aria-label="SpeedDial example" aria-haspopup="true" aria-expanded="false" aria-controls="SpeedDialexample-actions" style="transform: none; transition: transform 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms; background-color: red"><span class="MuiFab-label"><svg class="MuiSvgIcon-root" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path></svg></span><span class="MuiTouchRipple-root"></span></button>
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
           icon={<CreateIcon
@@ -111,7 +101,6 @@ const DrawPencilWidget = ({shareHandler, updateShapeProp, color}) => {
           onOpen={handleOpenWidget}
           open={openWidget}
           direction={'right'}
-          style={{fill: "#6fa241"}}
         >
           {actions.map((action) => (
             <SpeedDialAction

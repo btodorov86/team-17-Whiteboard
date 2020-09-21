@@ -18,7 +18,7 @@ import {
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import propTypes from "prop-types";
 
-const Register = ({ isLoginPage, setIsLoginPage }) => {
+const Register = ({ isLoginPage, setIsLoginPage, history }) => {
   const { setOpen } = useContext(ExceptionContext);
   const [registrationPage, setRegistrationPage] = useState(0);
   const [files, setFiles] = useState([]);
@@ -191,7 +191,7 @@ const Register = ({ isLoginPage, setIsLoginPage }) => {
         password: createUser.password.value,
       }),
     })
-      .then((r) => r.json())
+     .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
         isErrorResponse(resp);
         uploadFiles(resp.id);

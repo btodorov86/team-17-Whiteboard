@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { BASE_URL, isErrorResponse, exceptionMsg, exceptionStatus } from '../../../../../Constants/Constant';
 import ExceptionContext from '../../../../../Providers/Context/ExceptionContext';
 // import FormFileInput from 'react-bootstrap/esm/FormFileInput';
-
+// DELETE??
 const AdminCreateBookContainer = ({ history }) => {
 
   const { setOpen } = useContext(ExceptionContext)
@@ -37,7 +37,7 @@ const AdminCreateBookContainer = ({ history }) => {
       },
       body: JSON.stringify(book),
     })
-      .then((r) => r.json())
+      .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
         isErrorResponse(resp);
         setCreatedBookId(resp.id);
