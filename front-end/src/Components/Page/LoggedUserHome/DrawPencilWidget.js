@@ -4,6 +4,9 @@ import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import CreateIcon from '@material-ui/icons/Create';
 import propType from 'prop-types';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import ChangeThickness from '../../Base/ChangeThickness/ChangeThickness';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,9 +41,10 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawPencilWidget = ({shareHandler, updateShapeProp, color}) => {
+const DrawPencilWidget = ({setStrokeWidth, updateShapeProp, strokeWidth}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
+
 
   const actions = [
     // { icon: <TextFieldIcon onClick={(e) => setTextInput(prev => ({...prev, isOpen: !prev.isOpen }))} />, name: 'Copy' },
@@ -52,7 +56,7 @@ const DrawPencilWidget = ({shareHandler, updateShapeProp, color}) => {
       isDrawing: true,
       strokeWidth: 2,
     }, true)} />, name: 'Pencil' },
-    // { icon: <FavoriteIcon onClick={shareHandler} />, name: 'Like' },
+    { icon: <ChangeThickness strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} />, name: 'StrokeWidth' },
   ];
 
   const handleCloseWidget = () => {

@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DrawTextWidget = ({ shareHandler, updateShapeProp, color }) => {
+const DrawTextWidget = ({ updateShapeProp, color }) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 

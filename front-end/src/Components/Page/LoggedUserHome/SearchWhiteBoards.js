@@ -19,35 +19,19 @@ const SearchWhiteboard = ({ setIsSearchBoard, history, match, leaveRoom }) => {
   const [options, setOptions] = useState([]);
   const loading = openAutocomplete && options.length === 0;
   useEffect(() => {
-
     if (!loading) {
       return undefined;
     }
 
-    fetch(`${BASE_URL}/whiteboards/public`)
-      .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
-      .then((resp) => {
-        isErrorResponse(resp);
-        setOptions(resp);
-        if (user) {
-          fetch(`${BASE_URL}/whiteboards/private`, {
-            headers: {
-              Authorization: localStorage.getItem("token"),
-            },
-          })
-            .then((re) => re.json())
-            .then((secondResp) => {
-              isErrorResponse(secondResp);
-              setOptions((prev) => [...prev, ...secondResp]);
-            })
-            .catch((err) =>
-              setOpen({
-                value: true,
-                msg: err.message,
-                statusType: exceptionStatus.error,
-              })
-            );
-        }
+    fetch(`${BASE_URL}/whiteboards`, {
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
+    })
+      .then((r) => (r.status >= 500 ? history.push("/servererror") : r.json()))
+      .then((secondResp) => {
+        isErrorResponse(secondResp);
+        setOptions([...secondResp]);
       })
       .catch((err) =>
         setOpen({
@@ -57,12 +41,6 @@ const SearchWhiteboard = ({ setIsSearchBoard, history, match, leaveRoom }) => {
         })
       );
   }, [loading, setOpen, user]);
-
-  // useEffect(() => {
-  //   if (!open) {
-  //     setOptions([]);
-  //   }
-  // }, [open]);
 
   return (
     <Autocomplete
@@ -86,7 +64,7 @@ const SearchWhiteboard = ({ setIsSearchBoard, history, match, leaveRoom }) => {
             if (e.key === "Enter") {
               const whiteboard = options.find((x) => x.name === e.target.value);
               if (whiteboard) {
-                localStorage.setItem('lastBoard', whiteboard.id);
+                localStorage.setItem("lastBoard", whiteboard.id);
                 leaveRoom(match.params.id);
                 history.push(`/profile/${whiteboard.id}`);
               } else {
@@ -94,7 +72,7 @@ const SearchWhiteboard = ({ setIsSearchBoard, history, match, leaveRoom }) => {
                   value: true,
                   msg: `Whiteboard: ${e.target.value} not exist`,
                   statusType: exceptionStatus.error,
-                })
+                });
               }
               setIsSearchBoard(false);
             }

@@ -14,32 +14,8 @@ const ProfilePrivateMenu = ({
   setIsUpdateBoard,
   setIsChangeAvatar,
   setIsInviteUser,
+  setIsKickUsers,
 }) => {
-  const { user } = useContext(AuthContext);
-
-  // const toggleChangePassword = user ? (
-  //   <MenuItem
-  //     onClick={(e) => {
-  //       setIsChangePassword(true);
-  //       handleClose();
-  //     }}
-  //     style={{ margin: "10px" }}
-  //   >
-  //     Change password
-  //   </MenuItem>
-  // ) : null;
-
-  // const toggleUpdateAvatar = user ? (
-  //   <MenuItem
-  //     onClick={(e) => {
-  //       setIsChangeAvatar(true);
-  //       handleClose();
-  //     }}
-  //     style={{ margin: "10px" }}
-  //   >
-  //     Update avatar
-  //   </MenuItem>
-  // ) : null;
 
   return (
     <Menu
@@ -107,6 +83,15 @@ const ProfilePrivateMenu = ({
       style={{ margin: "10px" }}
     >
       Invite User
+    </MenuItem>
+      <MenuItem
+      onClick={(e) => {
+        setIsKickUsers(true);
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
+      Kick User
     </MenuItem>
     </Menu>
   );

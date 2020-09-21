@@ -20,18 +20,20 @@ export class RectangleService {
     async create(whiteboardId: string, body: CreateRectangleDTO, userId: string): Promise<ReturnRectangleDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: whiteboardId, isDeleted: false},
-            relations: ['rectangles', 'invitedUsers', 'author']
+            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes', 'invitedUsers']
         })
 
         if (!whiteboard) {
             throw new NotFoundException();
         }
-        if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+        if (userId !== whiteboard.author.id && !whiteboard.invitedUsers.find(x => x.id === userId)) {
             throw new UnauthorizedException();
         }
 
+        const currentPosition = whiteboard.circles.length + whiteboard.lines.length + whiteboard.rectangles.length + whiteboard.textBoxes.length
+
         const newRectangle = await this.rectangleRepo.save({
-            itemPosition: whiteboard.rectangles.length + 1,
+            itemPosition: currentPosition + 1,
             x: body.x,
             y: body.y,
             height: body.height,
@@ -71,30 +73,28 @@ export class RectangleService {
         return await this.rectangleRepo.save({...rectangle, ...body, strokeWidth: Number(body.strokeWidth)});
 
     }
-    async delete(rectangleId: string): Promise<string> {
+    async delete(rectangleId: string): Promise<ReturnRectangleDTO> {
         const rectangle = await this.rectangleRepo.findOne({
             where: { id: rectangleId, isDeleted: false }
         })
-        if (!Rectangle) {
+        if (!rectangle) {
             throw new NotFoundException();
         }
-
         rectangle.isDeleted = true;
-        
 
-        return "item is Deleted"
+        return await this.rectangleRepo.save(rectangle);
     }
-    async recover(rectangleId: string): Promise<string> {
+    async recover(rectangleId: string): Promise<ReturnRectangleDTO> {
         const rectangle = await this.rectangleRepo.findOne({
             where: { id: rectangleId, isDeleted: true }
-        })
-        if (!Rectangle) {
+        });
+
+        if (!rectangle) {
             throw new NotFoundException();
         }
-
         rectangle.isDeleted = false;
 
-        return "item is recovered"
+        return await this.rectangleRepo.save(rectangle);
     }
 
 }

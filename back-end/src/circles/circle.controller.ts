@@ -8,6 +8,7 @@ import {
   ValidationPipe,
   UseGuards,
   Req,
+  Patch
 } from '@nestjs/common';
 import { CreateCircleDTO } from 'src/models/circle/create.circle.dto';
 import { ReturnCircleDTO } from 'src/models/circle/return.circle.dto';
@@ -45,7 +46,16 @@ export class CircleController {
   }
 
   @Delete(':circleId')
-  async delete(@Param('circleId') circleId: string): Promise<string> {
-    return this.circleService.delete(circleId);
-  }
+    async delete(
+        @Param('circleId') circleId: string,
+        ): Promise<ReturnCircleDTO> {
+        return this.circleService.delete(circleId)
+    }
+    @Patch(':circleId')
+    async recover(
+        @Param('circleId') circleId: string,
+        ): Promise<ReturnCircleDTO> {
+
+        return this.circleService.recover(circleId)
+    }
 }

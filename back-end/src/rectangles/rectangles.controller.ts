@@ -41,13 +41,13 @@ export class RectangleController {
     @Delete(':rectangleId')
     async delete(
         @Param('rectangleId') rectangleId: string,
-        ): Promise<string> {
+        ): Promise<ReturnRectangleDTO> {
         return this.rectangleService.delete(rectangleId)
     }
     @Patch(':rectangleId')
     async recover(
         @Param('rectangleId') rectangleId: string,
-        ): Promise<string> {
+        ): Promise<ReturnRectangleDTO> {
         return this.rectangleService.recover(rectangleId)
     }
 

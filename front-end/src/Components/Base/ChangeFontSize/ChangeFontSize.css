@@ -1,0 +1,6 @@
+.MuiSelect-select.MuiSelect-select {
+    padding-right: 10px
+}
+.MuiSelect-select {
+    min-width: 5px;
+}

@@ -41,13 +41,15 @@ export class AppGatewayChat implements OnGatewayInit{
   async leaveRoom(client: Socket, message: { room: string, userName: string}): Promise<void> {
     // client.to(message.room).emit('leftRoom', `${message.userName} left chat`)
     // client.to(message.room).
+    console.log(`${message.userName} - leave room`);
+
     client.leave(message.room);
   }
 
   @SubscribeMessage('send-message')
   async message(client: Socket, message: {message: string, from: string, room: string, avatar: string}): Promise<void> {
     console.log(message);
-    client.to(message.room).emit('come-message', message)
+    client.broadcast.to(message.room).emit('come-message', message)
   }
   // @SubscribeMessage('update')
   // update(client: Socket, message: { room: string, from: string}): void {
@@ -101,6 +103,12 @@ export class AppGatewayChat implements OnGatewayInit{
   async accept(client: Socket, message: { whiteboardId: string, from: string, invited: string, whiteboardName: string} ): Promise<void> {
     await this.whiteboardService.inviteToBoard(message.from, message.invited, message.whiteboardId);
     this.wss.emit('userAccepted', message);
+
+  }
+  @SubscribeMessage('kick')
+  async kick(client: Socket, message: { whiteboardId: string, from: string, kicked: string, whiteboardName: string} ): Promise<void> {
+    await this.whiteboardService.KickFromBoard(message.kicked, message.from, message.whiteboardId);
+    this.wss.emit('isKicked', message);
 
   }
   @SubscribeMessage('decline')

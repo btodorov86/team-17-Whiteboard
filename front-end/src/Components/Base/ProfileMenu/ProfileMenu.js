@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import propTypes from "prop-types";
-import AuthContext from "../../../Providers/Context/AuthContext";
 import { Divider } from '@material-ui/core';
 
 const ProfileMenu = ({
@@ -10,72 +9,8 @@ const ProfileMenu = ({
   handleClose,
   setIsCreateWhiteboard,
   setIsChangePassword,
-  setIsDeleteBoard,
-  setIsUpdateBoard,
   setIsChangeAvatar,
-  setIsInviteUser,
-  currentWhiteboard,
 }) => {
-  const { user } = useContext(AuthContext);
-
-  // const toggleChangePassword = user ? (
-  //   <MenuItem
-  //     onClick={(e) => {
-  //       setIsChangePassword(true);
-  //       handleClose();
-  //     }}
-  //     style={{ margin: "10px" }}
-  //   >
-  //     Change password
-  //   </MenuItem>
-  // ) : null;
-
-  // const toggleUpdateAvatar = user ? (
-  //   <MenuItem
-  //     onClick={(e) => {
-  //       setIsChangeAvatar(true);
-  //       handleClose();
-  //     }}
-  //     style={{ margin: "10px" }}
-  //   >
-  //     Update avatar
-  //   </MenuItem>
-  // ) : null;
-
-  const toggleUpdateWhiteboard = false ? (
-    <MenuItem
-      onClick={(e) => {
-        setIsUpdateBoard(true);
-        handleClose();
-      }}
-      style={{ margin: "10px" }}
-    >
-      Update board
-    </MenuItem>
-  ) : null;
-  const toggleDeleteWhiteboard = false ? (
-    <MenuItem
-      onClick={(e) => {
-        setIsDeleteBoard(true);
-        handleClose();
-      }}
-      style={{ margin: "10px" }}
-    >
-      Delete board
-    </MenuItem>
-  ) : null;
-
-  const InviteUsers = false ? (
-    <MenuItem
-      onClick={(e) => {
-        setIsInviteUser(true);
-        handleClose();
-      }}
-      style={{ margin: "10px" }}
-    >
-      Invite User
-    </MenuItem>
-  ) : null;
 
   return (
     <Menu
@@ -95,8 +30,6 @@ const ProfileMenu = ({
       >
         Create board
       </MenuItem>
-      {toggleDeleteWhiteboard}
-      {toggleUpdateWhiteboard}
       <Divider orientation="horizontal" variant='middle' />
       {/* {toggleChangePassword} */}
       <MenuItem
@@ -119,7 +52,6 @@ const ProfileMenu = ({
     </MenuItem>
       {/* {toggleUpdateAvatar} */}
       <Divider orientation="horizontal" variant='middle' />
-      {InviteUsers}
     </Menu>
   );
 };

@@ -1,5 +1,5 @@
 import { makeStyles, TextField } from "@material-ui/core";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import FormatAlignLeftIcon from "@material-ui/icons/FormatAlignLeft";
 import FormatAlignCenterIcon from "@material-ui/icons/FormatAlignCenter";
 import FormatAlignRightIcon from "@material-ui/icons/FormatAlignRight";
@@ -10,8 +10,9 @@ import CloseIcon from "@material-ui/icons/Close";
 import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
 import AuthContext from '../../../Providers/Context/AuthContext';
+import ChangeFontSize from '../../Base/ChangeFontSize/ChangeFontSize';
 
-const TextBoxKonva = ({ shapeTextBoxes, setShapes }) => {
+const TextBoxKonva = ({ shapeTextBoxes, setShapes, fontSize, setFontSize, color }) => {
 
   const { user } = useContext(AuthContext)
   const useStyles = makeStyles((theme) => ({
@@ -46,13 +47,17 @@ const TextBoxKonva = ({ shapeTextBoxes, setShapes }) => {
     }
   }));
 
+  // useEffect(() => {
+  //   shapeTextBoxes.updateSize('fill', color)
+  // }, [color])
+
   const classes = useStyles();
 
   return (
     // <div className={classes.root}>
     <div hidden={!shapeTextBoxes.startDrawing}>
       <Grid container alignItems="center" className={classes.root}>
-        <FormatAlignLeftIcon />
+        <ChangeFontSize fontSize={fontSize} setFontSize={setFontSize} textBox={shapeTextBoxes} />
         <FormatAlignCenterIcon />
         <FormatAlignRightIcon />
         <Divider orientation="vertical" flexItem />
@@ -89,13 +94,13 @@ const TextBoxKonva = ({ shapeTextBoxes, setShapes }) => {
           style={{ cursor: "pointer" }}
         />
         <TextField
-          multiline
+          // multiline
           fullWidth
           variant="filled"
           className={classes.text}
           value={shapeTextBoxes.text}
           autoFocus
-          onChange={(e) => shapeTextBoxes.updateSize("text", e.target.value)}
+          onChange={(e) => { shapeTextBoxes.updateSize('fill', color); shapeTextBoxes.updateSize("text", e.target.value) }}
           onKeyPress={(e) => {
             if (e.key === "Enter") {
               if (user) {

@@ -20,18 +20,20 @@ export class CircleService {
     async create(whiteboardId: string, body: CreateCircleDTO, userId: string): Promise<ReturnCircleDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: whiteboardId, isDeleted: false},
-            relations: ['circles', 'invitedUsers', 'author']
-        })
+            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes', 'invitedUsers']
+        });
 
         if (!whiteboard) {
             throw new NotFoundException();
         }
-        if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+        if (userId !== whiteboard.author.id && !whiteboard.invitedUsers.find(x => x.id === userId)) {
             throw new UnauthorizedException();
         }
 
+        const currentPosition = whiteboard.circles.length + whiteboard.lines.length + whiteboard.rectangles.length + whiteboard.textBoxes.length
+
         const newCircle = await this.circleRepo.save({
-            itemPosition: whiteboard.circles.length + 1,
+            itemPosition: currentPosition + 1,
             x: body.x,
             y: body.y,
             radius: body.radius,
@@ -56,31 +58,43 @@ export class CircleService {
         if (!whiteboard) {
             throw new NotFoundException();
         }
-        if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+        if (userId !== whiteboard.author.id && !whiteboard.invitedUsers.find(x => x.id === userId)) {
+
             throw new UnauthorizedException();
         }
 
-        const Circle = await this.circleRepo.findOne({
+        const circle = await this.circleRepo.findOne({
             where: { id: circleId, isDeleted: false }
         })
 
-        if (!Circle) {
+        if (!circle) {
             throw new NotFoundException();
         }
-        return await this.circleRepo.save({...Circle, ...body, strokeWidth: Number(body.strokeWidth)});
+        return await this.circleRepo.save({...circle, ...body, strokeWidth: Number(body.strokeWidth)});
 
     }
-    async delete(circleId: string): Promise<string> {
-        const Circle = await this.circleRepo.findOne({
+    async delete(circleId: string): Promise<ReturnCircleDTO> {
+        const circle = await this.circleRepo.findOne({
             where: { id: circleId, isDeleted: false }
         })
-        if (!Circle) {
+        if (!circle) {
             throw new NotFoundException();
         }
+        circle.isDeleted = true;
 
-        Circle.isDeleted = true;
+        return await this.circleRepo.save(circle);
+    }
+    async recover(circleId: string): Promise<ReturnCircleDTO> {
+        const circle = await this.circleRepo.findOne({
+            where: { id: circleId, isDeleted: true }
+        });
 
-        return "item is Deleted"
+        if (!circle) {
+            throw new NotFoundException();
+        }
+        circle.isDeleted = false;
+
+        return await this.circleRepo.save(circle);
     }
 
 }

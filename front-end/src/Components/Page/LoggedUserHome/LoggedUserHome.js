@@ -24,7 +24,6 @@ import "react-chat-widget/lib/styles.css";
 import Test from "./DrawingPage";
 import Next from "@material-ui/icons/NavigateNext";
 import Before from "@material-ui/icons/NavigateBefore";
-import ProfileMenu from "./ProfileMenu";
 // import DrawEraseWidget from "./DrawEraseWidget";
 import "./chat.css";
 import { SketchPicker } from "react-color";
@@ -45,7 +44,9 @@ import InviteUsers from "./InviteUsers";
 import IncomingInvite from "./IncomingInvite";
 import { AvatarGroup } from "@material-ui/lab";
 import { addResponseMessage, Widget } from "react-chat-widget";
-import ProfilePrivateMenu from './ProfilePrivateMenu';
+import ProfileMenu from '../../Base/ProfileMenu/ProfileMenu';
+import ProfilePrivateMenu from '../../Base/ProfileMenu/ProfilePrivateMenu';
+import KickUsers from '../../Base/KickUsers/KickUsers';
 
 const LoggedUserHomePage = ({ history, match }) => {
   const { user, setUser } = useContext(AuthContext);
@@ -87,6 +88,7 @@ const LoggedUserHomePage = ({ history, match }) => {
   const [isUpdateBoard, setIsUpdateBoard] = useState(false);
   const [isChangeAvatar, setIsChangeAvatar] = useState(false);
   const [isInviteUser, setIsInviteUser] = useState(false);
+  const [isKickUsers, setIsKickUsers] = useState(false);
   const [isIncomingInvite, setIsIncomingInvite] = useState({
     data: {},
     isInvite: false,
@@ -103,8 +105,11 @@ const LoggedUserHomePage = ({ history, match }) => {
   useEffect(() => {
     socketRef.current = io("http://localhost:3000/chat");
 
-    if (match.params.id === 'myProfile') {
+    if (match.params.id === 'my') {
       return;
+    }
+    if (!match.params.id && !user) {
+      return
     }
 
     setLoading(true)
@@ -121,7 +126,6 @@ const LoggedUserHomePage = ({ history, match }) => {
           userName: user.userName,
           avatar: user.avatarURL,
         });
-        console.log(resp);
         setCurrentWhiteboard(resp);
       })
       .catch((err) =>
@@ -162,13 +166,21 @@ const LoggedUserHomePage = ({ history, match }) => {
     });
     socketRef.current.on("userDeclined", (data) => {
       if (data.from === user.userName) {
-        console.log(data);
-        console.log(user);
         setOpen({
           value: true,
           msg: `User: ${data.invited} decline your invite!`,
           statusType: exceptionStatus.info,
         });
+      }
+    });
+    socketRef.current.on("isKicked", (data) => {
+      if (data.kicked === user.userName) {
+        setOpen({
+          value: true,
+          msg: `You are kick from Whiteboard: ${data.whiteboardName} !`,
+          statusType: exceptionStatus.warning,
+        });
+        history.push('my')
       }
     });
 
@@ -202,7 +214,7 @@ const LoggedUserHomePage = ({ history, match }) => {
       return
     }
     const lastShape = shapes.pop();
-    fetch(`${BASE_URL}/whiteboards/${currentWhiteboard.id}/lines/${lastShape.id}`, {
+    fetch(`${BASE_URL}/whiteboards/${currentWhiteboard.id}/${lastShape.type}/${lastShape.id}`, {
       method: 'DELETE',
       headers: {
         Authorization: localStorage.getItem("token"),
@@ -211,8 +223,7 @@ const LoggedUserHomePage = ({ history, match }) => {
     .then( r => r.text())
     .then( resp => {
       isErrorResponse(resp);
-      setShapeHistory(prev => [...prev, lastShape.id]);
-      // setShapes([...shapes])
+      setShapeHistory(prev => [...prev, { id: lastShape.id, type: lastShape.type }]);
     })
     .catch( err => setOpen({
       value: true,
@@ -223,12 +234,8 @@ const LoggedUserHomePage = ({ history, match }) => {
   };
 
   const redo = (setShapes, history) => {
-    // if (shapeHistory.length === 0) {
-    //   return
-    // }
-    // console.log(shapeHistory.length === 0);
     const lastShape = shapeHistory.pop();
-    fetch(`${BASE_URL}/whiteboards/${currentWhiteboard.id}/lines/${lastShape}`, {
+    fetch(`${BASE_URL}/whiteboards/${currentWhiteboard.id}/${lastShape.type}/${lastShape.id}`, {
       method: 'PATCH',
       headers: {
         Authorization: localStorage.getItem("token"),
@@ -283,6 +290,14 @@ const LoggedUserHomePage = ({ history, match }) => {
       invited: invitedUsername,
     });
   };
+  const kickUserHandler = (kickedUsername) => {
+    socketRef.current.emit("kick", {
+      whiteboardId: currentWhiteboard.id,
+      whiteboardName: currentWhiteboard.name,
+      from: user.userName,
+      kicked: kickedUsername,
+    });
+  };
 
   const shareMouseHandler = (x, y) => {
     setShareMouse({ isShare: true, mouseX: y, mouseY: x });
@@ -295,24 +310,8 @@ const LoggedUserHomePage = ({ history, match }) => {
     });
   };
 
-  // const shareMouseHandler = (x, y) => {
-  //   if (
-  //     Math.abs(shareMouse.mouseX - y) > 5 &&
-  //     Math.abs(shareMouse.mouseY - x) > 5
-  //   ) {
-  //     setShareMouse({ isShare: true, mouseX: y, mouseY: x });
-  //     socketRef.current.emit("sendMousePoints", {
-  //       user: user.id,
-  //       mouseX: y,
-  //       mouseY: x,
-  //       avatar: user.avatarURL,
-  //       room: currentWhiteboard.id,
-  //     });
-  //   }
-  // };
-
   const togglePublicOrPrivateLabel = () => {
-    if (match.params.id !== "myProfile") {
+    if (match.params.id !== "my") {
       return currentWhiteboard?.isPublic ? "public" : "private";
     } else {
       return "Search Board";
@@ -357,31 +356,10 @@ const LoggedUserHomePage = ({ history, match }) => {
   return loading ? (
     <Loading />
   ) : (
-    <div
-      className={classes.root}
-      // onMouseMove={(e) =>
-      //   shareMouse.isShare ? shareMouseHandler(e.clientX, e.clientY) : null
-      // }
-      // onClick={(e) =>
-      //   setShareMouse({ ...shareMouse, isShare: !shareMouse.isShare })
-      // }
-    >
-      {/* {loading ? <Loading /> : null} */}
+    <div className={classes.root}>
       <CssBaseline />
       <AppBar position="absolute" className={classes.appBar} style={{width: "100%", backgroundColor: "#d4de23"}}>
         <Toolbar className={classes.toolbar}>
-          {/* <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              className={clsx(
-                classes.menuButton,
-                open && classes.menuButtonHidden
-              )}
-            >
-              <MenuIcon />
-            </IconButton> */}
           <Button
             style={{
               border: "2px solid #4d5842",
@@ -410,6 +388,7 @@ const LoggedUserHomePage = ({ history, match }) => {
             setIsChangeAvatar={setIsChangeAvatar}
             setIsInviteUser={setIsInviteUser}
             currentWhiteboard={currentWhiteboard}
+            setIsKickUsers={setIsKickUsers}
           /> : <ProfileMenu
           anchorEl={anchorEl}
             handleClose={handleCloseProfile}
@@ -528,6 +507,7 @@ const LoggedUserHomePage = ({ history, match }) => {
         isChangePassword={isChangePassword}
         setIsChangePassword={setIsChangePassword}
       />
+      <KickUsers currentWhiteboard={currentWhiteboard} isKickUsers={isKickUsers} setIsKickUsers={setIsKickUsers} kickUserHandler={kickUserHandler} />
     </div>
   );
 };

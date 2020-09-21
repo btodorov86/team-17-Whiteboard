@@ -63,6 +63,8 @@ const DeleteBoard = ({isDeleteBoard, setIsDeleteBoard, match, history}) => {
           msg: `Board is deleted!`,
           statusType: exceptionStatus.success,
         });
+        localStorage.removeItem('lastBoard');
+        history.push('/home');
       })
       .catch((err) => {
         setOpen({

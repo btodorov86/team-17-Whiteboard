@@ -51,8 +51,8 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
 
         localStorage.setItem("token", `Bearer ${resp.token}`);
 
-        history.push(`/profile/${localStorage.getItem('lastBoard') ? localStorage.getItem('lastBoard') : 'myProfile'}`)
-        // history.push(`/profile/myProfile`)
+        history.push(`/profile/${localStorage.getItem('lastBoard') ? localStorage.getItem('lastBoard') : 'my'}`)
+        // history.push(`/profile/my`)
 
 
       })
@@ -68,8 +68,8 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
       },
       body: JSON.stringify({email: email}),
     })
-    .then((r) => r.status >= 500 ? history.push('/servererror') : r.text())
-    .then(res => setOpen({ value: true, msg: 'Check your mail !', statusType: exceptionStatus.success}))
+    .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
+    .then(res => { isErrorResponse(res); setOpen({ value: true, msg: 'Check your mail !', statusType: exceptionStatus.success}) })
     .catch((err) => setOpen({ value: true, msg: err.message, statusType: exceptionStatus.error}));
   }
 // // async..await is not allowed in global scope, must use a wrapper
