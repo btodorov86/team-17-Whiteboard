@@ -106,7 +106,7 @@ const ChangeAvatar = ({ isChangeAvatar, setIsChangeAvatar, history }) => {
     })
       .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
-        // isErrorResponse(resp);
+        isErrorResponse(resp); // add history in isErrorResponse
         setOpen({
           value: true,
           msg: "Successes!",
