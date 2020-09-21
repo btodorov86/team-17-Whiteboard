@@ -27,6 +27,7 @@ const UpdateBoard = ({
   isUpdateBoard,
   setIsUpdateBoard,
   currentWhiteboard,
+  history,
   match,
 }) => {
   const useStyles = makeStyles((theme) => ({
@@ -115,7 +116,7 @@ const UpdateBoard = ({
       },
       body: JSON.stringify(sendObj),
     })
-      .then((r) => r.json())
+      .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
         isErrorResponse(resp);
         setOpen({

@@ -19,7 +19,7 @@ import LoadingContext from "../../../Providers/Context/LoadingContext";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import Loading from "../Loading/Loading";
 
-const ChangePassword = ({ isChangePassword, setIsChangePassword }) => {
+const ChangePassword = ({ isChangePassword, setIsChangePassword, history }) => {
   const useStyles = makeStyles((theme) => ({
     modal: {
       display: "flex",
@@ -110,7 +110,7 @@ const ChangePassword = ({ isChangePassword, setIsChangePassword }) => {
       },
       body: JSON.stringify(sendObj),
     })
-      .then((r) => r.json())
+      .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
         console.log(resp);
         isErrorResponse(resp);

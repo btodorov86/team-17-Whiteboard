@@ -110,7 +110,7 @@ const LoggedUserHomePage = ({ history, match }) => {
         Authorization: localStorage.getItem("token"),
       },
     })
-      .then((r) => r.json())
+    .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
         isErrorResponse(resp);
         socketRef.current.emit("joinRoom", {

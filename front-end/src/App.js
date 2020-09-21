@@ -15,6 +15,7 @@ import LoadingContext from "./Providers/Context/LoadingContext";
 import LoggedUserHomePage from './Components/Page/LoggedUserHome/LoggedUserHome';
 import Home from './Components/Page/Home/Home';
 import GuestUserHomePage from './Components/Page/LoggedUserHome/GuestUserHomePage';
+import ServerError from './Components/Page/ServerError/ServerError';
 
 const App = () => {
   const [user, setUser] = useState(getUser(getToken()));
@@ -42,6 +43,7 @@ const App = () => {
                 path="/profile/:id"
                 component={LoggedUserHomePage}
               />
+              <Route path="/servererror" component={ServerError} />
               <Route path="*" component={NotFound} />
             </Switch>
           </ExceptionContext.Provider>

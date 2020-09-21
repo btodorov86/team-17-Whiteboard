@@ -107,7 +107,7 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard, history, leave
       },
       body: JSON.stringify(sendObj),
     })
-      .then((r) => r.json())
+       .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
         console.log(resp);
         isErrorResponse(resp);

@@ -19,7 +19,7 @@ import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import Loading from "../Loading/Loading";
 import { withRouter } from 'react-router-dom';
 
-const DeleteBoard = ({isDeleteBoard, setIsDeleteBoard, match}) => {
+const DeleteBoard = ({isDeleteBoard, setIsDeleteBoard, match, history}) => {
   const useStyles = makeStyles((theme) => ({
     modal: {
       display: "flex",
@@ -55,7 +55,7 @@ const DeleteBoard = ({isDeleteBoard, setIsDeleteBoard, match}) => {
         Authorization: localStorage.getItem("token"),
       },
     })
-      .then((r) => r.text())
+      .then((r) => r.status >= 500 ? history.push('/servererror') : r.text())
       .then((resp) => {
         isErrorResponse(resp);
         setOpen({

@@ -40,7 +40,7 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
       },
       body: JSON.stringify(obj),
     })
-      .then((r) => r.json())
+      .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
         isErrorResponse(resp)
         try {
@@ -68,7 +68,7 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
       },
       body: JSON.stringify({email: email}),
     })
-    .then((r) => r.text())
+    .then((r) => r.status >= 500 ? history.push('/servererror') : r.text())
     .then(res => setOpen({ value: true, msg: 'Check your mail !', statusType: exceptionStatus.success}))
     .catch((err) => setOpen({ value: true, msg: err.message, statusType: exceptionStatus.error}));
   }

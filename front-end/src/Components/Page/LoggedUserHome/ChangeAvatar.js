@@ -19,8 +19,9 @@ import LoadingContext from "../../../Providers/Context/LoadingContext";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import Loading from "../Loading/Loading";
 import AuthContext from '../../../Providers/Context/AuthContext';
+import { withRouter } from 'react-router-dom';
 
-const ChangeAvatar = ({ isChangeAvatar, setIsChangeAvatar }) => {
+const ChangeAvatar = ({ isChangeAvatar, setIsChangeAvatar, history }) => {
 
   const { user } = useContext(AuthContext)
   const useStyles = makeStyles((theme) => ({
@@ -103,9 +104,9 @@ const ChangeAvatar = ({ isChangeAvatar, setIsChangeAvatar }) => {
       },
       body: formData,
     })
-      .then((r) => r.json())
+      .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
-        isErrorResponse(resp);
+        // isErrorResponse(resp);
         setOpen({
           value: true,
           msg: "Successes!",
@@ -203,4 +204,4 @@ const ChangeAvatar = ({ isChangeAvatar, setIsChangeAvatar }) => {
     </Modal>
   );
 };
-export default ChangeAvatar;
+export default withRouter(ChangeAvatar);
