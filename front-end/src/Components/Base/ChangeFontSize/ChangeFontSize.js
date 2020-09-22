@@ -31,6 +31,7 @@ const ChangeFontSize = ({setFontSize, fontSize, textBox}) => {
           onClose={handleClose}
           onOpen={handleOpen}
           value={textBox.fontSize}
+          style={{backgroundColor: '#fafafa', width: '44px'}}
           onChange={handleChange}
         >
           {/* <MenuItem value="">

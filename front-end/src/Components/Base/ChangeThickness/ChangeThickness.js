@@ -31,6 +31,7 @@ const ChangeThickness = ({setStrokeWidth, strokeWidth}) => {
           onOpen={handleOpen}
           value={strokeWidth}
           onChange={handleChange}
+          style={{borderRadius: '50%', backgroundColor: '#fafafa', width: '0px'}}
         >
           {/* <MenuItem value="">
             <em>None</em>

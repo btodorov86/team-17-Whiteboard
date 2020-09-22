@@ -538,7 +538,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
       >
         <Layer>
           {shapes.length !== 0
-            ? shapes.map((x) => shape[x.type].drawingFunc(x))
+            ? shapes.sort((a, b) => a.itemPosition - b.itemPosition).map((x) => shape[x.type].drawingFunc(x))
             : null}
           {renderSingleDrawingElement()}
         </Layer>

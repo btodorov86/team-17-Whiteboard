@@ -27,13 +27,13 @@ const TextBoxKonva = ({ shapeTextBoxes, setShapes, fontSize, setFontSize, color 
       top: shapeTextBoxes.y - 110,
       left: shapeTextBoxes.x,
     //   width: "fit-content",
-      width: 360,
+      width: 220,
       border: `1px solid ${theme.palette.divider}`,
       borderRadius: theme.shape.borderRadius,
       backgroundColor: theme.palette.background.paper,
       color: theme.palette.text.secondary,
       "& svg": {
-        margin: theme.spacing(1.5),
+        margin: theme.spacing(0.9),
       },
       "& hr": {
         margin: theme.spacing(0, 0.5),
@@ -58,8 +58,7 @@ const TextBoxKonva = ({ shapeTextBoxes, setShapes, fontSize, setFontSize, color 
     <div hidden={!shapeTextBoxes.startDrawing}>
       <Grid container alignItems="center" className={classes.root}>
         <ChangeFontSize fontSize={fontSize} setFontSize={setFontSize} textBox={shapeTextBoxes} />
-        <FormatAlignCenterIcon />
-        <FormatAlignRightIcon />
+      
         <Divider orientation="vertical" flexItem />
         <FormatBoldIcon
           onClick={(e) =>
