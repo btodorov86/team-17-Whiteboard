@@ -21,7 +21,20 @@ import DrawEraserWidget from './DrawEraserWidget';
 // import Chat from './Chat';
 // import
 
-const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMouse, sharedUsers, shareMouseHandler, location, undo, history, redo }) => {
+const DrawingPage = ({
+  color,
+  currentWhiteboard,
+  match,
+  shareMouse,
+  setShareMouse,
+  sharedUsers,
+  shareMouseHandler,
+  location,
+  undo,
+  history,
+  redo,
+  isShareMouse,
+}) => {
   const { user } = useContext(AuthContext);
   const { setOpen } = useContext(ExceptionContext);
   const [isErase, setIsErase] = useState(false);
@@ -472,7 +485,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
   // console.log(isErase);
 
   const mouseMove = (e, x, y) => {
-    if (!location.pathname.includes('guest') && shareMouse.isShare) {
+    if (isShareMouse) {
       if (
         Math.abs(shareMouse.mouseX - y) > 10 ||
         Math.abs(shareMouse.mouseY - x) > 10
@@ -513,8 +526,8 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
     }
   };
 
-  const shareHandler = (e) =>
-    setShareMouse({ ...shareMouse, isShare: !shareMouse.isShare });
+  // const shareHandler = (e) =>
+  //   setShareMouse({ ...shareMouse, isShare: !shareMouse.isShare });
 
   const renderSingleDrawingElement = () => {
     const shapeType = Object.keys(shape).find(
@@ -554,11 +567,11 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
       <TextBoxKonva shapeTextBoxes={shape.textBoxes} setShapes={setShapes} color={color} />
       {/* <Chat socketRef={socketRef} /> */}
       <div style={{position: 'fixed'}}>
-      <DrawExtrasWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
-      <DrawTextWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
-      <DrawRectangleWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
-      <DrawCircleWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
-      <DrawBrushWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
+      {/* <DrawExtrasWidget updateShapeProp={updateShapeProp} color={color} /> */}
+      <DrawTextWidget updateShapeProp={updateShapeProp} color={color} />
+      <DrawRectangleWidget updateShapeProp={updateShapeProp} color={color} />
+      <DrawCircleWidget updateShapeProp={updateShapeProp} color={color} />
+      <DrawBrushWidget updateShapeProp={updateShapeProp} color={color} />
       <DrawPencilWidget setStrokeWidth={setStrokeWidth} updateShapeProp={updateShapeProp} color={color} strokeWidth={strokeWidth} />
       <DrawEraserWidget setIsErase={setIsErase} updateShapeProp={updateShapeProp} strokeWidth={strokeWidth} />
       </div>
