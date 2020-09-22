@@ -27,6 +27,7 @@ const ColorPalette = ({color, setColor, match}) => {
 ColorPalette.propTypes = {
     color: propTypes.string.isRequired,
     setColor: propTypes.func.isRequired,
+    match: propTypes.object.isRequired,
 }
 
 export default withRouter(ColorPalette)

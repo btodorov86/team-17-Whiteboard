@@ -6,6 +6,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Badge from "@material-ui/core/Badge";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import ExitToApp from "@material-ui/icons/ExitToApp";
+import propType from 'prop-types';
 import {
   ListItemAvatar,
   Avatar,
@@ -391,6 +392,7 @@ const LoggedUserHomePage = ({ history, match }) => {
 
   const showDrawingPage = currentWhiteboard ? (
     <DrawingPage
+      style={{alignSelf: 'flex-start'}}
       color={color}
       currentWhiteboard={currentWhiteboard}
       sharedUsers={sharedUsers}
@@ -632,5 +634,10 @@ const LoggedUserHomePage = ({ history, match }) => {
 
     </div>
   );
+};
+
+LoggedUserHomePage.propType = {
+  history: propType.object.isRequired,
+  match: propType.object.isRequired,
 };
 export default LoggedUserHomePage;

@@ -19,6 +19,7 @@ import {
   exceptionStatus,
   isErrorResponse,
 } from "../../../Constants/Constant";
+import propType from 'prop-types';
 import LoadingContext from "../../../Providers/Context/LoadingContext";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import Loading from "../Loading/Loading";
@@ -32,9 +33,6 @@ const InviteUsers = ({
   setIsInviteUser,
   inviteUserHandler,
   history,
-  leaveRoom,
-  match,
-  currentWhiteboard,
 }) => {
   const useStyles = makeStyles((theme) => ({
     modal: {
@@ -275,5 +273,12 @@ const InviteUsers = ({
       </Fade>
     </Modal>
   );
+};
+
+InviteUsers.propType = {
+  history: propType.object.isRequired,
+  isInviteUser: propType.bool.isRequired,
+  setIsInviteUser: propType.func.isRequired,
+  inviteUserHandler: propType.func.isRequired
 };
 export default withRouter(InviteUsers);

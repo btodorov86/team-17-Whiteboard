@@ -21,6 +21,7 @@ import { withRouter } from "react-router-dom";
 import AuthContext from "../../../Providers/Context/AuthContext";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import io from "socket.io-client";
+import propTypes from "prop-types";
 
 const KickUsers = ({
   isKickUsers,
@@ -266,4 +267,12 @@ const KickUsers = ({
     </Modal>
   );
 };
+
+KickUsers.propTypes = {
+  isKickUsers: propTypes.bool.isRequired, 
+  setIsKickUsers: propTypes.func.isRequired,
+  history: propTypes.object.isRequired,
+  currentWhiteboard: propTypes.object.isRequired,
+  kickUserHandler: propTypes.func.isRequired,
+}
 export default withRouter(KickUsers);
