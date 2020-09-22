@@ -44,9 +44,9 @@ import InviteUsers from "./InviteUsers";
 import IncomingInvite from "./IncomingInvite";
 import { AvatarGroup } from "@material-ui/lab";
 import { addResponseMessage, Widget } from "react-chat-widget";
-import ProfileMenu from '../../Base/ProfileMenu/ProfileMenu';
-import ProfilePrivateMenu from '../../Base/ProfileMenu/ProfilePrivateMenu';
-import KickUsers from '../../Base/KickUsers/KickUsers';
+import ProfileMenu from "../../Base/ProfileMenu/ProfileMenu";
+import ProfilePrivateMenu from "../../Base/ProfileMenu/ProfilePrivateMenu";
+import KickUsers from "../../Base/KickUsers/KickUsers";
 
 const LoggedUserHomePage = ({ history, match }) => {
   const { user, setUser } = useContext(AuthContext);
@@ -73,6 +73,20 @@ const LoggedUserHomePage = ({ history, match }) => {
     title: {
       flexGrow: 1,
     },
+    boardNameBar: {
+      paddingLeft: "10px",
+      paddingRight: "10px",
+      fontSize: "10px",
+      justifyContent: "center",
+      color: "white",
+    },
+    searchBoard: {
+      // paddingLeft: "10px",
+      paddingRight: "15px",
+      // fontSize: "10px",
+      justifyContent: "center",
+      color: "white",
+    }
   }));
 
   const classes = useStyles();
@@ -105,20 +119,20 @@ const LoggedUserHomePage = ({ history, match }) => {
   useEffect(() => {
     socketRef.current = io("http://localhost:3000/chat");
 
-    if (match.params.id === 'my') {
+    if (match.params.id === "my") {
       return;
     }
     if (!match.params.id && !user) {
-      return
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     fetch(`${BASE_URL}/whiteboards/${match.params.id}`, {
       headers: {
         Authorization: localStorage.getItem("token"),
       },
     })
-    .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
+      .then((r) => (r.status >= 500 ? history.push("/servererror") : r.json()))
       .then((resp) => {
         isErrorResponse(resp);
         socketRef.current.emit("joinRoom", {
@@ -135,7 +149,7 @@ const LoggedUserHomePage = ({ history, match }) => {
           statusType: exceptionStatus.error,
         })
       )
-    .finally(() => setLoading(false));
+      .finally(() => setLoading(false));
 
     socketRef.current.on("sendInvite", (data) =>
       data.invited === user.userName
@@ -180,7 +194,7 @@ const LoggedUserHomePage = ({ history, match }) => {
           msg: `You are kick from Whiteboard: ${data.whiteboardName} !`,
           statusType: exceptionStatus.warning,
         });
-        history.push('my')
+        history.push("my");
       }
     });
 
@@ -211,51 +225,65 @@ const LoggedUserHomePage = ({ history, match }) => {
     });
   }, [match.params.id]);
 
-  const undo = (shapes, history) => { // da se popravi proverkata
+  const undo = (shapes, history) => {
+    // da se popravi proverkata
     if (!shapes.length) {
-      return
+      return;
     }
     const lastShape = shapes.pop();
-    fetch(`${BASE_URL}/whiteboards/${currentWhiteboard.id}/${lastShape.type}/${lastShape.id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    })
-    .then( r => r.text())
-    .then( resp => {
-      isErrorResponse(resp);
-      setShapeHistory(prev => [...prev, { id: lastShape.id, type: lastShape.type }]);
-    })
-    .catch( err => setOpen({
-      value: true,
-      msg: err.message,
-      statusType: exceptionStatus.error,
-    }))
-    .finally(() => history.push(`/profile/${currentWhiteboard.id}`))
+    fetch(
+      `${BASE_URL}/whiteboards/${currentWhiteboard.id}/${lastShape.type}/${lastShape.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    )
+      .then((r) => r.text())
+      .then((resp) => {
+        isErrorResponse(resp);
+        setShapeHistory((prev) => [
+          ...prev,
+          { id: lastShape.id, type: lastShape.type },
+        ]);
+      })
+      .catch((err) =>
+        setOpen({
+          value: true,
+          msg: err.message,
+          statusType: exceptionStatus.error,
+        })
+      )
+      .finally(() => history.push(`/profile/${currentWhiteboard.id}`));
   };
 
   const redo = (setShapes, history) => {
     const lastShape = shapeHistory.pop();
-    fetch(`${BASE_URL}/whiteboards/${currentWhiteboard.id}/${lastShape.type}/${lastShape.id}`, {
-      method: 'PATCH',
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    })
-    .then( r => r.json())
-    .then( resp => {
-      isErrorResponse(resp);
-      setShapeHistory(prev => [...prev]);
-      setShapes(prev => [...prev, resp])
-    })
-    .catch( err => setOpen({
-      value: true,
-      msg: err.message,
-      statusType: exceptionStatus.error,
-    }))
-    .finally(() => history.push(`/profile/${currentWhiteboard.id}`))
-  }
+    fetch(
+      `${BASE_URL}/whiteboards/${currentWhiteboard.id}/${lastShape.type}/${lastShape.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    )
+      .then((r) => r.json())
+      .then((resp) => {
+        isErrorResponse(resp);
+        setShapeHistory((prev) => [...prev]);
+        setShapes((prev) => [...prev, resp]);
+      })
+      .catch((err) =>
+        setOpen({
+          value: true,
+          msg: err.message,
+          statusType: exceptionStatus.error,
+        })
+      )
+      .finally(() => history.push(`/profile/${currentWhiteboard.id}`));
+  };
 
   const leaveRoom = (room) => {
     socketRef.current = io("http://localhost:3000/chat");
@@ -302,7 +330,7 @@ const LoggedUserHomePage = ({ history, match }) => {
   };
 
   const shareMouseHandler = (x, y) => {
-    setShareMouse({mouseX: y, mouseY: x });
+    setShareMouse({ mouseX: y, mouseY: x });
     socketRef.current.emit("sendMousePoints", {
       user: user.id,
       mouseX: y,
@@ -317,6 +345,13 @@ const LoggedUserHomePage = ({ history, match }) => {
       return currentWhiteboard?.isPublic ? "public" : "private";
     } else {
       return "Search Board";
+    }
+  };
+  const toggleClasses = () => {
+    if (match.params.id !== "my") {
+      return classes.boardNameBar
+    } else {
+      return classes.searchBoard;
     }
   };
 
@@ -361,14 +396,18 @@ const LoggedUserHomePage = ({ history, match }) => {
   ) : (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="absolute" className={classes.appBar} style={{width: "100%", backgroundColor: "#d4de23"}}>
+      <AppBar
+        position="absolute"
+        className={classes.appBar}
+        style={{ width: "100%", backgroundColor: "#d4de23" }}
+      >
         <Toolbar className={classes.toolbar}>
           <Button
             style={{
               border: "2px solid #4d5842",
               borderRadius: "50%",
               boxShadow: "2px 2px 1px darkgreen",
-              backgroundColor: "#6fa241"
+              backgroundColor: "#6fa241",
             }}
           >
             <Avatar
@@ -378,37 +417,53 @@ const LoggedUserHomePage = ({ history, match }) => {
               onClick={handleClickProfile}
             />
           </Button>
-          <span style={{ fontSize: "25px", paddingLeft: "10px", fontFamily: "monospace", fontWeight: 'bold' }}>
+          <span
+            style={{
+              fontSize: "25px",
+              paddingLeft: "10px",
+              fontFamily: "monospace",
+              fontWeight: "bold",
+            }}
+          >
             {user.userName}
           </span>
-          { currentWhiteboard && currentWhiteboard.author === user.id ? <ProfilePrivateMenu
-            anchorEl={anchorEl}
-            handleClose={handleCloseProfile}
-            setIsCreateWhiteboard={setIsCreateWhiteboard}
-            setIsChangePassword={setIsChangePassword}
-            setIsDeleteBoard={setIsDeleteBoard}
-            setIsUpdateBoard={setIsUpdateBoard}
-            setIsChangeAvatar={setIsChangeAvatar}
-            setIsInviteUser={setIsInviteUser}
-            currentWhiteboard={currentWhiteboard}
-            setIsKickUsers={setIsKickUsers}
-            setIsShareMouse={setIsShareMouse}
-          /> : <ProfileMenu
-          anchorEl={anchorEl}
-            handleClose={handleCloseProfile}
-            setIsCreateWhiteboard={setIsCreateWhiteboard}
-            setIsChangePassword={setIsChangePassword}
-            setIsDeleteBoard={setIsDeleteBoard}
-            setIsUpdateBoard={setIsUpdateBoard}
-            setIsChangeAvatar={setIsChangeAvatar}
-            setIsInviteUser={setIsInviteUser}
-            setIsShareMouse={setIsShareMouse}
-            currentWhiteboard={currentWhiteboard}
-          /> }
+          {currentWhiteboard && currentWhiteboard.author === user.id ? (
+            <ProfilePrivateMenu
+              anchorEl={anchorEl}
+              handleClose={handleCloseProfile}
+              setIsCreateWhiteboard={setIsCreateWhiteboard}
+              setIsChangePassword={setIsChangePassword}
+              setIsDeleteBoard={setIsDeleteBoard}
+              setIsUpdateBoard={setIsUpdateBoard}
+              setIsChangeAvatar={setIsChangeAvatar}
+              setIsInviteUser={setIsInviteUser}
+              currentWhiteboard={currentWhiteboard}
+              setIsKickUsers={setIsKickUsers}
+              setIsShareMouse={setIsShareMouse}
+            />
+          ) : (
+            <ProfileMenu
+              anchorEl={anchorEl}
+              handleClose={handleCloseProfile}
+              setIsCreateWhiteboard={setIsCreateWhiteboard}
+              setIsChangePassword={setIsChangePassword}
+              setIsDeleteBoard={setIsDeleteBoard}
+              setIsUpdateBoard={setIsUpdateBoard}
+              setIsChangeAvatar={setIsChangeAvatar}
+              setIsInviteUser={setIsInviteUser}
+              setIsShareMouse={setIsShareMouse}
+              currentWhiteboard={currentWhiteboard}
+            />
+          )}
 
           <ListItem style={{ justifyContent: "center" }}>
             <IconButton>
-              <Before onClick={(e) => { e.preventDefault(); history.push(`${currentWhiteboard.id}/undo`)}} />
+              <Before
+                onClick={(e) => {
+                  e.preventDefault();
+                  history.push(`${currentWhiteboard.id}/undo`);
+                }}
+              />
             </IconButton>
             {isSearchBoard ? (
               <SearchWhiteBoards
@@ -425,25 +480,39 @@ const LoggedUserHomePage = ({ history, match }) => {
                 onClick={(e) => setIsSearchBoard(true)}
               >
                 <span
-                  style={{ paddingLeft: '10px', paddingRight: '10px', fontSize: "22px", justifyContent: "center", fontFamily: "monospace", fontWeight: 'bold'}}
-                >
-                  {currentWhiteboard?.name}
-                </span>
-                <span
                   style={{
                     paddingLeft: "10px",
                     paddingRight: "10px",
-                    fontSize: "10px",
+                    fontSize: "22px",
                     justifyContent: "center",
-                    color: "white",
+                    fontFamily: "monospace",
+                    fontWeight: "bold",
                   }}
+                >
+                  {currentWhiteboard?.name}
+                </span>
+                <span className={match.params.id !== "my" ? classes.boardNameBar : classes.searchBoard}
+                  // style={{
+                  //   paddingLeft: "10px",
+                  //   paddingRight: "10px",
+                  //   fontSize: "10px",
+                  //   justifyContent: "center",
+                  //   color: "white",
+                  // }}
                 >
                   {togglePublicOrPrivateLabel()}
                 </span>
               </Button>
             )}
             <IconButton>
-              <Next onClick={(e) => { e.preventDefault(); return shapeHistory.length === 0 ? null : history.push(`${currentWhiteboard.id}/redo`)}} />
+              <Next
+                onClick={(e) => {
+                  e.preventDefault();
+                  return shapeHistory.length === 0
+                    ? null
+                    : history.push(`${currentWhiteboard.id}/redo`);
+                }}
+              />
             </IconButton>
           </ListItem>
           {usersInRoom.length ? (
@@ -457,14 +526,22 @@ const LoggedUserHomePage = ({ history, match }) => {
               ))}
             </AvatarGroup>
           ) : null}
-          <span style={{ paddingRight: "10px", fontSize: "18px", fontFamily: "monospace"}}>Logout</span>
+          <span
+            style={{
+              paddingRight: "10px",
+              fontSize: "18px",
+              fontFamily: "monospace",
+            }}
+          >
+            Logout
+          </span>
           <ExitToApp
             style={{
               cursor: "pointer",
               boxShadow: "3px 3px 1px darkgreen",
               border: "1px solid #4d5842",
               borderRadius: "3px",
-              backgroundColor: "#6fa241"
+              backgroundColor: "#6fa241",
             }}
             color="inherit"
             onClick={(e) => {
@@ -512,7 +589,12 @@ const LoggedUserHomePage = ({ history, match }) => {
         isChangePassword={isChangePassword}
         setIsChangePassword={setIsChangePassword}
       />
-      <KickUsers currentWhiteboard={currentWhiteboard} isKickUsers={isKickUsers} setIsKickUsers={setIsKickUsers} kickUserHandler={kickUserHandler} />
+      <KickUsers
+        currentWhiteboard={currentWhiteboard}
+        isKickUsers={isKickUsers}
+        setIsKickUsers={setIsKickUsers}
+        kickUserHandler={kickUserHandler}
+      />
     </div>
   );
 };
