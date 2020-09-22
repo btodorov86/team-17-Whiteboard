@@ -68,7 +68,7 @@ const Login = ({ history, setIsLoginPage, isLoginPage }) => {
       },
       body: JSON.stringify({email: email}),
     })
-    .then((r) => r.status >= 500 ? history.push('/servererror') : r.text())
+    .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
     .then(res => setOpen({ value: true, msg: 'Check your mail !', statusType: exceptionStatus.success}))
     .catch((err) => setOpen({ value: true, msg: err.message, statusType: exceptionStatus.error}));
   }
