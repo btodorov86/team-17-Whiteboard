@@ -11,6 +11,7 @@ import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
 import AuthContext from '../../../Providers/Context/AuthContext';
 import ChangeFontSize from '../../Base/ChangeFontSize/ChangeFontSize';
+import propType from 'prop-types';
 
 const TextBoxKonva = ({ shapeTextBoxes, setShapes, fontSize, setFontSize, color }) => {
 
@@ -117,4 +118,12 @@ const TextBoxKonva = ({ shapeTextBoxes, setShapes, fontSize, setFontSize, color 
   );
 };
 
+TextBoxKonva.propType = {
+  history: propType.object.isRequired,
+  shapeTextBoxes: propType.object.isRequired,
+  setShapes: propType.func.isRequired,
+  fontSize: propType.number.isRequired,
+  setFontSize: propType.func.isRequired,
+  color: propType.string.isRequired,
+};
 export default TextBoxKonva;

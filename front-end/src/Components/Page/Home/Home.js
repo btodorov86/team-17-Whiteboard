@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import images from "./img11.png";
 import "./home.css";
+import "./home1.css";
 import { Modal, makeStyles, Fade } from "@material-ui/core";
 import Login from "../Login/Login";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -50,13 +51,32 @@ const Home = ({history}) => {
   );
 
   return (
-    <div>
+    <div style={{textAlign: 'center'}}>
       {localStorage.getItem('token') ? history.push(`/profile/${localStorage.getItem('lastBoard') ? localStorage.getItem('lastBoard') : 'my'}`) : null }
       <img
         src={images}
         alt={"home"}
         style={{ width: "100%", textAlign: "center" }}
       />
+      {/* <button style={{
+        width: "100%", 
+        minWidth: '50px',
+        maxWidth: '250px', 
+        minHeight: '20px',
+        maxHeight: '100px',
+        backgroundImage: 'linear-gradient(#6fa241,#e7eb99)',
+        borderRadius: '5px',
+        top: '40%',
+        left: '40%',
+        right: '40%',
+        bottom: '40%',
+        position: 'absolute',
+        boxShadow: ''
+      }}>
+      </button> */}
+
+      <button class="learn-more">Learn More</button>
+      
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

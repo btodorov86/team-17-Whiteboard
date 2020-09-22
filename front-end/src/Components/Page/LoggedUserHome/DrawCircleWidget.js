@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     transform: 'translateZ(0px)',
     flexGrow: 1,
-    top: 450,
+    top: 510,
     marginLeft: 10,
     width: 60,
     height: 60,

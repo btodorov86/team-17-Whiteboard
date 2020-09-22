@@ -547,7 +547,7 @@ const DrawingPage = ({
         onMouseUp={(e) => mouseUp(e)}
         height={window.innerHeight}
         width={window.innerWidth}
-        draggable={mouseUp ? false : true}
+        // draggable={mouseUp ? false : true}
       >
         <Layer>
           {shapes.length !== 0
@@ -566,7 +566,7 @@ const DrawingPage = ({
       {/* {currentWhiteboard ? <Chat currentWhiteboard={currentWhiteboard} /> : null} */}
       <TextBoxKonva shapeTextBoxes={shape.textBoxes} setShapes={setShapes} color={color} />
       {/* <Chat socketRef={socketRef} /> */}
-      <div style={{position: 'fixed'}}>
+      <div style={{position: 'fixed', bottom: '720px', left: '10px'}}>
       {/* <DrawExtrasWidget updateShapeProp={updateShapeProp} color={color} /> */}
       <DrawTextWidget updateShapeProp={updateShapeProp} color={color} />
       <DrawRectangleWidget updateShapeProp={updateShapeProp} color={color} />
@@ -595,8 +595,18 @@ const DrawingPage = ({
 
 DrawingPage.propTypes = {
   color: propTypes.string.isRequired,
-  // setShareMouse: propTypes.func.isRequired,
-  // shareMouse: propTypes.object.isRequired,
+  currentWhiteboard: propTypes.object.isRequired,
+  match: propTypes.object.isRequired,
+  shareMouse: propTypes.object.isRequired,
+  setShareMouse: propTypes.func.isRequired,
+  sharedUsers: propTypes.array.isRequired,
+  shareMouseHandler: propTypes.func.isRequired,
+  location: propTypes.object.isRequired,
+  undo: propTypes.func.isRequired,
+  history: propTypes.object.isRequired,
+  redo: propTypes.func.isRequired,
+  isShareMouse: propTypes.bool.isRequired,
+  
 };
 
 export default withRouter(DrawingPage);

@@ -112,6 +112,12 @@ ProfilePrivateMenu.propTypes = {
   handleClose: propTypes.func.isRequired,
   setIsChangePassword: propTypes.func.isRequired,
   setIsCreateWhiteboard: propTypes.func.isRequired,
+  setIsDeleteBoard: propTypes.func.isRequired,  
+  setIsUpdateBoard: propTypes.func.isRequired,
+  setIsChangeAvatar: propTypes.func.isRequired,
+  setIsInviteUser: propTypes.func.isRequired,
+  setIsKickUsers: propTypes.func.isRequired,
+  setIsShareMouse: propTypes.func.isRequired,
 };
 
 export default ProfilePrivateMenu;

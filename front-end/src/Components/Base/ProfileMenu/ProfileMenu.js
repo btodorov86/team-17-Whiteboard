@@ -73,6 +73,9 @@ ProfileMenu.propTypes = {
   handleClose: propTypes.func.isRequired,
   setIsChangePassword: propTypes.func.isRequired,
   setIsCreateWhiteboard: propTypes.func.isRequired,
+  setIsChangeAvatar: propTypes.func.isRequired,
+  setIsShareMouse: propTypes.func.isRequired,
+  location: propTypes.object.isRequired,
 };
 
 export default withRouter(ProfileMenu);

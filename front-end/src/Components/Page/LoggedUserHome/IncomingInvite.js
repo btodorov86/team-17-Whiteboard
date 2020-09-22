@@ -8,6 +8,7 @@ import {
   Button,
   Typography,
 } from "@material-ui/core";
+import propType from 'prop-types';
 import Backdrop from "@material-ui/core/Backdrop";
 import {
   BASE_URL,
@@ -112,5 +113,12 @@ const IncomingInvite = ({ isIncomingInvite, setIsIncomingInvite, accept, decline
       </Fade>
     </Modal>
   );
+};
+
+IncomingInvite.propType = {
+  isIncomingInvite: propType.object.isRequired,
+  setIsIncomingInvite: propType.func.isRequired,
+  accept: propType.func.isRequired,
+  decline: propType.func.isRequired,
 };
 export default withRouter(IncomingInvite);

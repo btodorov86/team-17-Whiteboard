@@ -3,8 +3,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import './ChangeFontSize.css'
+import propTypes from "prop-types";
 
-const ChangeFontSize = ({setFontSize, fontSize, textBox}) => {
+const ChangeFontSize = ({textBox}) => {
   const [open, setOpen] = React.useState(false);
 
   const handleChange = (event) => {
@@ -21,7 +22,7 @@ const ChangeFontSize = ({setFontSize, fontSize, textBox}) => {
   };
 
   return (
-    <div style={{height: '40px', width: '40px', borderRadius: '20px', padding: 0, minWidth: 0 }}>
+    <div className='MuiInputBase-inputBase' style={{height: '41px', width: '41px', borderRadius: '20px', padding: 10, minWidth: 0 }}>
       <FormControl >
         {/* <InputLabel id="demo-controlled-open-select-label">Age</InputLabel> */}
         <Select
@@ -50,4 +51,8 @@ const ChangeFontSize = ({setFontSize, fontSize, textBox}) => {
   );
 };
 
+
+ChangeFontSize.propTypes = {
+  textBox: propTypes.object.isRequired,
+}
 export default ChangeFontSize

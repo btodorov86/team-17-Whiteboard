@@ -22,6 +22,7 @@ import LoadingContext from "../../../Providers/Context/LoadingContext";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import Loading from "../Loading/Loading";
 import { withRouter } from 'react-router-dom';
+import propType from 'prop-types';
 
 const UpdateBoard = ({
   isUpdateBoard,
@@ -275,5 +276,13 @@ const UpdateBoard = ({
       </Fade>
     </Modal>
   );
+};
+
+UpdateBoard.propType = {
+  history: propType.object.isRequired,
+  isUpdateBoard: propType.bool.isRequired,
+  setIsUpdateBoard: propType.func.isRequired,
+  currentWhiteboard: propType.object.isRequired,
+  match: propType.object.isRequired,
 };
 export default withRouter(UpdateBoard);

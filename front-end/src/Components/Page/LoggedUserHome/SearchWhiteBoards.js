@@ -11,6 +11,7 @@ import {
 import { withRouter } from "react-router-dom";
 import ExceptionContext from "../../../Providers/Context/ExceptionContext";
 import AuthContext from "../../../Providers/Context/AuthContext";
+import propType from 'prop-types';
 
 const SearchWhiteboard = ({ setIsSearchBoard, history, match, leaveRoom }) => {
   const { user } = useContext(AuthContext);
@@ -101,4 +102,10 @@ const SearchWhiteboard = ({ setIsSearchBoard, history, match, leaveRoom }) => {
   );
 };
 
+SearchWhiteboard.propType = {
+  history: propType.object.isRequired,
+  match: propType.object.isRequired,
+  setIsSearchBoard: propType.func.isRequired,
+  leaveRoom: propType.func.isRequired,
+};
 export default withRouter(SearchWhiteboard);

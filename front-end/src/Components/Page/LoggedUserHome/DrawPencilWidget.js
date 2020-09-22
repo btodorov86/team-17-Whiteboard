@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
-import CreateIcon from '@material-ui/icons/Create';
+import ClearAllIcon from '@material-ui/icons/ClearAll'
 import propType from 'prop-types';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
@@ -47,16 +47,11 @@ const DrawPencilWidget = ({setStrokeWidth, updateShapeProp, strokeWidth}) => {
 
 
   const actions = [
-    // { icon: <TextFieldIcon onClick={(e) => setTextInput(prev => ({...prev, isOpen: !prev.isOpen }))} />, name: 'Copy' },
-    // { icon: <TextFieldIcon onClick={(e) => setIsDrawing('textBox')} />, name: 'Text' },
-    // { icon: <FileCopyIcon onClick={(e) => setIsDrawing('textBox')} />, name: 'Copy' },
-    // { icon: <SaveIcon onClick={(e) => setIsDrawing('rectangle')} />, name: 'rectangle' },
-    // { icon: <PrintIcon onClick={(e) => updateShapeProp('line', {stroke:strokeWidth: 2})} />, name: 'strokeWidth' },
-    { icon: <CreateIcon onClick={(e) => updateShapeProp('lines', {
-      isDrawing: true,
-      strokeWidth: 2,
-    }, true)} />, name: 'Pencil' },
-    { icon: <ChangeThickness strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} />, name: 'StrokeWidth' },
+    // { icon: <CreateIcon onClick={(e) => updateShapeProp('lines', {
+    //   isDrawing: true,
+    //   strokeWidth: 2,
+    // }, true)} />, name: 'Change Thickness' },
+    { icon: <ChangeThickness strokeWidth={strokeWidth} setStrokeWidth={setStrokeWidth} />, name: 'Change Thickness' },
   ];
 
   const handleCloseWidget = () => {
@@ -92,7 +87,7 @@ const DrawPencilWidget = ({setStrokeWidth, updateShapeProp, strokeWidth}) => {
         <SpeedDial
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
-          icon={<CreateIcon
+          icon={<ClearAllIcon
             style={{
               backgroundColor: '#6fa241',
               width: '100%',
@@ -123,6 +118,8 @@ DrawPencilWidget.propType = {
   shareHandler: propType.func.isRequired,
   updateShapeProp: propType.func.isRequired,
   color: propType.string.isRequired,
+  strokeWidth: propType.number.isRequired,
+  setStrokeWidth: propType.func.isRequired,
 }
 
 export default DrawPencilWidget

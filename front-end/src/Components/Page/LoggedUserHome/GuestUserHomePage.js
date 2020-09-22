@@ -4,6 +4,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import LoginIcon from "@material-ui/icons/Add";
+import propType from 'prop-types';
 import {
   ListItem,
 } from "@material-ui/core";
@@ -80,5 +81,9 @@ const GuestUserHomePage = ({ history }) => {
       <ColorPalette color={color} setColor={setColor} />
     </div>
   );
+};
+
+GuestUserHomePage.propType = {
+  history: propType.object.isRequired,
 };
 export default GuestUserHomePage;
