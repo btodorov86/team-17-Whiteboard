@@ -25,6 +25,10 @@ import { withRouter } from 'react-router-dom';
 
 const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard, history, leaveRoom, match }) => {
   const useStyles = makeStyles((theme) => ({
+    notchedOutline: {
+      borderWidth: "1px",
+      borderColor: "#6fa241 !important"
+    },
     modal: {
       display: "flex",
       alignItems: "center",
@@ -185,6 +189,11 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard, history, leave
                     variant="outlined"
                     required
                     fullWidth
+                    InputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline
+                      }
+                    }}
                     id="createBoard"
                     label="Create Whiteboard"
                     autoFocus
@@ -200,6 +209,11 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard, history, leave
                     variant="outlined"
                     className={classes.formControl}
                     fullWidth
+                    InputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline
+                      }
+                    }}
                   >
                     <InputLabel htmlFor="outlined-age-native-simple">
                       {createBoard.isPublic === "public" ? "Public" : "Private"}
@@ -207,6 +221,11 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard, history, leave
                     <Select
                       native
                       fullWidth
+                      inputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline
+                      }
+                    }}
                       placeholder={createBoard.isPublic ? 'Public' : 'Private'}
                       variant="outlined"
                       value={createBoard.isPublic}
@@ -228,6 +247,7 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard, history, leave
                     fullWidth
                     variant="contained"
                     color="primary"
+                    style={{backgroundColor: "#6fa241"}}
                     className={classes.submit}
                     onClick={(e) => create()}
                     disabled={!createBoard.isValid || !createBoard.isTouched}
@@ -239,6 +259,7 @@ const CreateBoard = ({ isCreateWhiteboard, setIsCreateWhiteboard, history, leave
                     fullWidth
                     variant="contained"
                     color="primary"
+                    style={{backgroundColor: "#6fa241"}}
                     onClick={(e) => {
                       setIsCreateWhiteboard(false);
                       setCreateBoard({

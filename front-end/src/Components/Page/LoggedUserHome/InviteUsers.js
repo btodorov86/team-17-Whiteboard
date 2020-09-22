@@ -260,6 +260,7 @@ const InviteUsers = ({
                     fullWidth
                     variant="contained"
                     color="primary"
+                    style={{backgroundColor: "#6fa241"}}
                     onClick={(e) => {
                       setIsInviteUser(false);
                     }}

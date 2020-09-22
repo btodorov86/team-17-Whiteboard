@@ -21,6 +21,10 @@ import Loading from "../Loading/Loading";
 
 const ChangePassword = ({ isChangePassword, setIsChangePassword, history }) => {
   const useStyles = makeStyles((theme) => ({
+    notchedOutline: {
+      borderWidth: "1px",
+      borderColor: "#6fa241 !important"
+    },
     modal: {
       display: "flex",
       alignItems: "center",
@@ -182,6 +186,11 @@ const ChangePassword = ({ isChangePassword, setIsChangePassword, history }) => {
                     variant="outlined"
                     required
                     fullWidth
+                    InputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline
+                      }
+                    }}
                     name="password"
                     label="Password"
                     type="password"
@@ -199,6 +208,11 @@ const ChangePassword = ({ isChangePassword, setIsChangePassword, history }) => {
                     variant="outlined"
                     required
                     fullWidth
+                    InputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline
+                      }
+                    }}
                     name="Confirm-password"
                     label="Confirm password"
                     type="password"
@@ -217,6 +231,11 @@ const ChangePassword = ({ isChangePassword, setIsChangePassword, history }) => {
                     variant="outlined"
                     required
                     fullWidth
+                    InputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline
+                      }
+                    }}
                     name="new-password"
                     label="New Password"
                     type="password"
@@ -234,7 +253,8 @@ const ChangePassword = ({ isChangePassword, setIsChangePassword, history }) => {
                     fullWidth
                     variant="contained"
                     color="primary"
-                    className={classes.submit}
+                    style={{backgroundColor: "#6fa241"}}
+                    className={classes.submit} 
                     onClick={(e) => update()}
                     disabled={isDisable()}
                   >
@@ -245,6 +265,7 @@ const ChangePassword = ({ isChangePassword, setIsChangePassword, history }) => {
                     fullWidth
                     variant="contained"
                     color="primary"
+                    style={{backgroundColor: "#6fa241"}}
                     onClick={(e) => setIsChangePassword(false)}
                   >
                     Cancel

@@ -220,7 +220,7 @@ const LoggedUserHomePage = ({ history, match }) => {
         Authorization: localStorage.getItem("token"),
       },
     })
-    .then( r => r.json())
+    .then( r => r.text())
     .then( resp => {
       isErrorResponse(resp);
       setShapeHistory(prev => [...prev, { id: lastShape.id, type: lastShape.type }]);

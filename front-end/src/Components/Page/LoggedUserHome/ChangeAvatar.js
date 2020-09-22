@@ -163,11 +163,11 @@ const ChangeAvatar = ({ isChangeAvatar, setIsChangeAvatar, history }) => {
                   />
                   <label htmlFor="raised-button-file">
                     <Button
-                      variant="outlined"
+                      variant="contained"
                       component="span"
                       fullWidth
                       color='primary'
-                      style={{backgroundColor: 'red', color: 'white', cursor: 'pointer'}}
+                      style={{backgroundColor: '#6fa241', cursor: 'pointer'}}
                       className={classes.submit}
                     >
                       Upload Avatar
@@ -179,6 +179,7 @@ const ChangeAvatar = ({ isChangeAvatar, setIsChangeAvatar, history }) => {
                     fullWidth
                     variant="contained"
                     color="primary"
+                    style={{backgroundColor: "#6fa241"}}
                     className={classes.submit}
                     disabled={isDisable()}
                     onClick={(e) => uploadFiles(user.id)}
@@ -190,6 +191,7 @@ const ChangeAvatar = ({ isChangeAvatar, setIsChangeAvatar, history }) => {
                     fullWidth
                     variant="contained"
                     color="primary"
+                    style={{backgroundColor: "#6fa241"}}
                     // className={classes.submit}
                     onClick={(e) => setIsChangeAvatar(false)}
                   >
