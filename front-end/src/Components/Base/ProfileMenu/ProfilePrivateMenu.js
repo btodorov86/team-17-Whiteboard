@@ -15,6 +15,7 @@ const ProfilePrivateMenu = ({
   setIsChangeAvatar,
   setIsInviteUser,
   setIsKickUsers,
+  setIsShareMouse,
 }) => {
 
   return (
@@ -92,6 +93,15 @@ const ProfilePrivateMenu = ({
       style={{ margin: "10px" }}
     >
       Kick User
+    </MenuItem>
+      <MenuItem
+      onClick={(e) => {
+        setIsShareMouse(prev => !prev);
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
+      Share mouse
     </MenuItem>
     </Menu>
   );

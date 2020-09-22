@@ -3,6 +3,7 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import propTypes from "prop-types";
 import { Divider } from '@material-ui/core';
+import { withRouter } from 'react-router-dom';
 
 const ProfileMenu = ({
   anchorEl,
@@ -10,6 +11,8 @@ const ProfileMenu = ({
   setIsCreateWhiteboard,
   setIsChangePassword,
   setIsChangeAvatar,
+  setIsShareMouse,
+  location,
 }) => {
 
   return (
@@ -50,9 +53,18 @@ const ProfileMenu = ({
     >
       Update avatar
     </MenuItem>
-      {/* {toggleUpdateAvatar} */}
       <Divider orientation="horizontal" variant='middle' />
+      { !location.pathname.includes('my') ? <MenuItem
+      onClick={(e) => {
+        setIsShareMouse(prev => !prev);
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
+      Share mouse
+    </MenuItem> : null }
     </Menu>
+
   );
 };
 
@@ -63,4 +75,4 @@ ProfileMenu.propTypes = {
   setIsCreateWhiteboard: propTypes.func.isRequired,
 };
 
-export default ProfileMenu;
+export default withRouter(ProfileMenu);

@@ -89,6 +89,7 @@ const LoggedUserHomePage = ({ history, match }) => {
   const [isChangeAvatar, setIsChangeAvatar] = useState(false);
   const [isInviteUser, setIsInviteUser] = useState(false);
   const [isKickUsers, setIsKickUsers] = useState(false);
+  const [isShareMouse, setIsShareMouse] = useState(false);
   const [isIncomingInvite, setIsIncomingInvite] = useState({
     data: {},
     isInvite: false,
@@ -96,7 +97,6 @@ const LoggedUserHomePage = ({ history, match }) => {
   const [usersInRoom, setUsersInRoom] = useState([]);
   const [sharedUsers, setSharedUsers] = useState([]);
   const [shareMouse, setShareMouse] = useState({
-    isShare: false,
     mouseX: 0,
     mouseY: 0,
   });
@@ -302,7 +302,7 @@ const LoggedUserHomePage = ({ history, match }) => {
   };
 
   const shareMouseHandler = (x, y) => {
-    setShareMouse({ isShare: true, mouseX: y, mouseY: x });
+    setShareMouse({mouseX: y, mouseY: x });
     socketRef.current.emit("sendMousePoints", {
       user: user.id,
       mouseX: y,
@@ -340,6 +340,7 @@ const LoggedUserHomePage = ({ history, match }) => {
       setShapeHistory={setShapeHistory}
       undo={undo}
       redo={redo}
+      isShareMouse={isShareMouse}
     />
   ) : null;
 
@@ -391,6 +392,7 @@ const LoggedUserHomePage = ({ history, match }) => {
             setIsInviteUser={setIsInviteUser}
             currentWhiteboard={currentWhiteboard}
             setIsKickUsers={setIsKickUsers}
+            setIsShareMouse={setIsShareMouse}
           /> : <ProfileMenu
           anchorEl={anchorEl}
             handleClose={handleCloseProfile}
@@ -400,6 +402,7 @@ const LoggedUserHomePage = ({ history, match }) => {
             setIsUpdateBoard={setIsUpdateBoard}
             setIsChangeAvatar={setIsChangeAvatar}
             setIsInviteUser={setIsInviteUser}
+            setIsShareMouse={setIsShareMouse}
             currentWhiteboard={currentWhiteboard}
           /> }
 
