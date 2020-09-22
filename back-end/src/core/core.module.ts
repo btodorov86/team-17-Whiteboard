@@ -20,10 +20,12 @@ import { WhiteBoardService } from './services/whiteBoard/whiteBoard.service';
 import { TextBoxService } from './services/textBox/textBox.service';
 import { TextBox } from 'src/models/textBox/textBox.entity';
 import { ResetPasswordEmailService } from "./services/mailer/mailer.service";
+import { CommentService } from './services/comment/comment.service';
+import { Comment } from 'src/models/comment/comment.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User, Circle, Rectangle, Line, Whiteboard, TextBox]),
+        TypeOrmModule.forFeature([User, Circle, Rectangle, Line, Whiteboard, TextBox, Comment]),
         ScheduleModule.forRoot(),
         PassportModule,
         JwtModule.register({
@@ -44,6 +46,7 @@ import { ResetPasswordEmailService } from "./services/mailer/mailer.service";
         LineService,
         TextBoxService,
         ResetPasswordEmailService,
+        CommentService,
     ],
     exports:[
         UsersService,
@@ -56,6 +59,7 @@ import { ResetPasswordEmailService } from "./services/mailer/mailer.service";
         LineService,
         TextBoxService,
         ResetPasswordEmailService,
+        CommentService,
     ],
 })
 export class CoreModule{}

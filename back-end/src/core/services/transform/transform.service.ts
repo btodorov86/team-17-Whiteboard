@@ -52,6 +52,7 @@ export class TransformService {
       name: whiteboard.name,
       rectangle: whiteboard.rectangles.filter(x => x.isDeleted === false),
       textBoxes: whiteboard.textBoxes.filter(x => x.isDeleted === false),
+      comments: whiteboard.comments.filter(x => x.isDeleted === false),
     }
   }
   toReturnCreatedWhiteboardDto(whiteboard: Whiteboard, user: User): ReturnCreatedWhiteboardDTO {

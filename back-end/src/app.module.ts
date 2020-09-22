@@ -11,6 +11,7 @@ import { CircleModule } from './circles/circle.module';
 import { TextBoxModule } from './textBox/textBox.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailerController } from './mailer/mailer.controller';
+import { CommentModule } from './comments/coments.module';
 
 
 
@@ -23,6 +24,7 @@ import { MailerController } from './mailer/mailer.controller';
     LineModule,
     RectangleModule,
     CircleModule,
+    CommentModule,
     TextBoxModule,
     MailerModule.forRoot({
       transport: 'smtp://alboig2005@gmail.com',

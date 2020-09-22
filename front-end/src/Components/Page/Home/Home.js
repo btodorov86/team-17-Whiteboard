@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import images from "./img11.png";
 import "./home.css";
-import { Modal, makeStyles, Fade } from "@material-ui/core";
+import { Modal, makeStyles, Fade, Button } from "@material-ui/core";
 import Login from "../Login/Login";
 import Backdrop from "@material-ui/core/Backdrop";
 import Register from "../Register/Register";
@@ -19,6 +19,9 @@ const Home = ({history}) => {
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
     },
+    // warper: {
+    //   position: ''
+    // }
   }));
 
   const classes = useStyles();
@@ -50,7 +53,7 @@ const Home = ({history}) => {
   );
 
   return (
-    <div>
+    <div style={{textAlign: 'center'}}>
       {localStorage.getItem('token') ? history.push(`/profile/${localStorage.getItem('lastBoard') ? localStorage.getItem('lastBoard') : 'my'}`) : null }
       <img
         src={images}
@@ -86,7 +89,10 @@ const Home = ({history}) => {
           </div>
         </Fade>
       </Modal>
-      {phoneRinging}
+      {/* <div style={{position: 'absolute', width: '100%', height: '100%', top: 0, left: 0, right: 0, bottom: 0}}>
+        {phoneRinging}
+      </div> */}
+      {/* <HomeTest /> */}
     </div>
   );
 };

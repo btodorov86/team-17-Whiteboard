@@ -16,6 +16,7 @@ const ProfilePrivateMenu = ({
   setIsInviteUser,
   setIsKickUsers,
   setIsShareMouse,
+  setIsAddComment,
 }) => {
 
   return (
@@ -102,6 +103,16 @@ const ProfilePrivateMenu = ({
       style={{ margin: "10px" }}
     >
       Share mouse
+    </MenuItem>
+    <Divider orientation="horizontal" variant='middle' />
+      <MenuItem
+      onClick={(e) => {
+        setIsAddComment(prev => ({...prev, isActive: !prev.isActive}));
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
+      Add comment
     </MenuItem>
     </Menu>
   );

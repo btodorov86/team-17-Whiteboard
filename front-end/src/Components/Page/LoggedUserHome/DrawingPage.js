@@ -18,6 +18,8 @@ import TextBoxKonva from './TextBox';
 import { withRouter } from 'react-router-dom';
 import { Undo } from '@material-ui/icons';
 import DrawEraserWidget from './DrawEraserWidget';
+import CommentInput from '../../Base/Comments/CommentInput';
+import SingleComment from '../../Base/Comments/SingleComment';
 // import Chat from './Chat';
 // import
 
@@ -34,12 +36,23 @@ const DrawingPage = ({
   history,
   redo,
   isShareMouse,
+  incomingShape,
+  isDrawShape,
+  shapes,
+  setShapes,
+  setComments,
+  comments,
+  isAddComment,
+  setIsAddComment,
 }) => {
   const { user } = useContext(AuthContext);
   const { setOpen } = useContext(ExceptionContext);
   const [isErase, setIsErase] = useState(false);
-  const [strokeWidth, setStrokeWidth] = useState(1);
+  const [strokeWidth, setStrokeWidth] = useState(2);
+
+
   // const [fontSize, setFontSize] = useState(12);
+  // const socketRef = useRef();
 
   const [shape, setShape] = useState({
     lines: {
@@ -103,6 +116,7 @@ const DrawingPage = ({
             points: [],
           },
         }));
+        isDrawShape(resp);
         })
         .catch( err => setOpen({
           value: true,
@@ -178,6 +192,7 @@ const DrawingPage = ({
             radius: 0,
           },
         }));
+        isDrawShape(resp);
         })
         .catch( err => setOpen({
           value: true,
@@ -260,6 +275,7 @@ const DrawingPage = ({
             width: 0,
           },
         }));
+        isDrawShape(resp);
         })
         .catch( err => setOpen({
           value: true,
@@ -341,6 +357,7 @@ const DrawingPage = ({
             text: "",
           },
         }));
+        isDrawShape(resp);
         })
         .catch( err => setOpen({
           value: true,
@@ -376,12 +393,12 @@ const DrawingPage = ({
     },
   }); // for add new shape need only to add property obj here !!!
 
-  const [shapes, setShapes] = useState(Object.keys(currentWhiteboard).reduce((acc, value) => {
-    if (typeof currentWhiteboard[value] === 'object') {
-      return [...acc, ...currentWhiteboard[value]]
-    }
-    return acc
-  }, []).sort((a, b) => a.itemPosition - b.itemPosition));
+  // const [shapes, setShapes] = useState(Object.keys(currentWhiteboard).reduce((acc, value) => {
+  //   if (typeof currentWhiteboard[value] === 'object') {
+  //     return [...acc, ...currentWhiteboard[value]]
+  //   }
+  //   return acc
+  // }, []).sort((a, b) => a.itemPosition - b.itemPosition));
 
   // console.log(shape.lines);
   useEffect(() => {
@@ -392,6 +409,10 @@ const DrawingPage = ({
     } else {
       return
     }
+    // if (location.pathname.includes('incoming-shape')) {
+    //   console.log('from drawingPage effect');
+    //   history.goBack();
+    // }
   }, [location.pathname])
 
   // useEffect(() => {
@@ -471,6 +492,10 @@ const DrawingPage = ({
   //   });
   // };
   const mouseDown = (e, x, y) => {
+    if (isAddComment.isActive) {
+      console.log(x, y);
+      setIsAddComment(prev => ({...prev, x, y}))
+    }
     const shapeType = Object.keys(shape).find((x) => shape[x].isDrawing);
     if (shapeType) {
       if (shapeType === 'lines' && isErase) {
@@ -539,6 +564,9 @@ const DrawingPage = ({
       : null;
   };
 
+  console.log(comments);
+
+
   return (
     <React.Fragment>
       <Stage
@@ -589,6 +617,8 @@ const DrawingPage = ({
             />
           ))
         : null}
+        <CommentInput isAddComment={isAddComment} setComments={setComments} setIsAddComment={setIsAddComment} isDrawShape={isDrawShape} />
+      { comments.length ? comments.map( x => <SingleComment key={x.id} {...x} />) : null }
     </React.Fragment>
   );
 };

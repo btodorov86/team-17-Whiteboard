@@ -30,7 +30,7 @@ export class AppGatewayChat implements OnGatewayInit{
 
   @SubscribeMessage('joinRoom')
   async joinRoom(client: Socket, message: { room: string, userName: string, avatar: string} ): Promise<void> {
-    console.log(message);
+    // console.log(message);
 
     client.join(message.room);
     client.emit('joinedToRoom', {...message, message: `Welcome ${message.userName}!`});
@@ -48,8 +48,13 @@ export class AppGatewayChat implements OnGatewayInit{
 
   @SubscribeMessage('send-message')
   async message(client: Socket, message: {message: string, from: string, room: string, avatar: string}): Promise<void> {
-    console.log(message);
+    // console.log(message);
     client.broadcast.to(message.room).emit('come-message', message)
+  }
+  @SubscribeMessage('someOneDrawShape')
+  async drawShape(client: Socket, message: {room: string, shape: any }): Promise<void> {
+    console.log(message.room);
+    client.broadcast.to(message.room).emit('someOneDrawShape', message)
   }
   // @SubscribeMessage('update')
   // update(client: Socket, message: { room: string, from: string}): void {

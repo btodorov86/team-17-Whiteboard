@@ -25,7 +25,7 @@ export class WhiteBoardService{
     async getOne(id: string, userId: string): Promise<ReturnWhiteboardDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: id, isDeleted: false},
-            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes', 'invitedUsers']
+            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes', 'invitedUsers', 'comments']
         })
 
         if(!whiteboard) {

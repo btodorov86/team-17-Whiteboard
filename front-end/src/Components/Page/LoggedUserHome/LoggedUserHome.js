@@ -47,12 +47,15 @@ import { addResponseMessage, Widget } from "react-chat-widget";
 import ProfileMenu from "../../Base/ProfileMenu/ProfileMenu";
 import ProfilePrivateMenu from "../../Base/ProfileMenu/ProfilePrivateMenu";
 import KickUsers from "../../Base/KickUsers/KickUsers";
+import SingleComment from '../../Base/Comments/SingleComment';
+import CommentInput from '../../Base/Comments/CommentInput';
 
 const LoggedUserHomePage = ({ history, match }) => {
   const { user, setUser } = useContext(AuthContext);
   const { loading, setLoading } = useContext(LoadingContext);
   const { setOpen } = useContext(ExceptionContext);
   const socketRef = useRef();
+
   const useStyles = makeStyles((theme) => ({
     root: {
       display: "flex",
@@ -95,6 +98,8 @@ const LoggedUserHomePage = ({ history, match }) => {
   const [anchorEl, setAnchorEl] = useState(false);
   const [color, setColor] = useState("black");
   const [currentWhiteboard, setCurrentWhiteboard] = useState(null);
+  const [shapes, setShapes] = useState([]);
+
   const [isSearchBoard, setIsSearchBoard] = useState(false);
   const [isCreateWhiteboard, setIsCreateWhiteboard] = useState(false);
   const [isChangePassword, setIsChangePassword] = useState(false);
@@ -113,6 +118,13 @@ const LoggedUserHomePage = ({ history, match }) => {
   const [shareMouse, setShareMouse] = useState({
     mouseX: 0,
     mouseY: 0,
+  });
+
+  const [comments, setComments] = useState([]);
+  const [isAddComment, setIsAddComment] = useState({
+    isActive: false,
+    x: 0,
+    y: 0,
   });
 
   const [shapeHistory, setShapeHistory] = useState([]);
@@ -141,6 +153,13 @@ const LoggedUserHomePage = ({ history, match }) => {
           avatar: user.avatarURL,
         });
         setCurrentWhiteboard(resp);
+        setShapes(Object.keys(resp).reduce((acc, value) => {
+          if (typeof resp[value] === 'object' && value !== 'comments') {
+            return [...acc, ...resp[value]]
+          }
+          return acc
+        }, []).sort((a, b) => a.itemPosition - b.itemPosition));
+        setComments([...resp.comments])
       })
       .catch((err) =>
         setOpen({
@@ -156,6 +175,16 @@ const LoggedUserHomePage = ({ history, match }) => {
         ? setIsIncomingInvite({ data, isInvite: true })
         : null
     );
+    socketRef.current.on("someOneDrawShape", (data) => {
+
+    console.log(data);
+    if (data.shape.type === 'comments') {
+      setComments(prev => [...prev, data.shape])
+    } else {
+      setShapes(prev => [...prev, data.shape])
+    }
+
+    });
     socketRef.current.on("userAccepted", (data) =>
       data.from === user.userName
         ? setOpen({
@@ -329,6 +358,10 @@ const LoggedUserHomePage = ({ history, match }) => {
     });
   };
 
+  const isDrawShape = (shape) => {
+    socketRef.current.emit('someOneDrawShape', {room: currentWhiteboard.id, shape})
+  }
+
   const shareMouseHandler = (x, y) => {
     setShareMouse({ mouseX: y, mouseY: x });
     socketRef.current.emit("sendMousePoints", {
@@ -345,13 +378,6 @@ const LoggedUserHomePage = ({ history, match }) => {
       return currentWhiteboard?.isPublic ? "public" : "private";
     } else {
       return "Search Board";
-    }
-  };
-  const toggleClasses = () => {
-    if (match.params.id !== "my") {
-      return classes.boardNameBar
-    } else {
-      return classes.searchBoard;
     }
   };
 
@@ -376,6 +402,13 @@ const LoggedUserHomePage = ({ history, match }) => {
       undo={undo}
       redo={redo}
       isShareMouse={isShareMouse}
+      isDrawShape={isDrawShape}
+      shapes={shapes}
+      setShapes={setShapes}
+      comments={comments}
+      setComments={setComments}
+      isAddComment={isAddComment}
+      setIsAddComment={setIsAddComment}
     />
   ) : null;
 
@@ -440,6 +473,7 @@ const LoggedUserHomePage = ({ history, match }) => {
               currentWhiteboard={currentWhiteboard}
               setIsKickUsers={setIsKickUsers}
               setIsShareMouse={setIsShareMouse}
+              setIsAddComment={setIsAddComment}
             />
           ) : (
             <ProfileMenu
@@ -595,6 +629,7 @@ const LoggedUserHomePage = ({ history, match }) => {
         setIsKickUsers={setIsKickUsers}
         kickUserHandler={kickUserHandler}
       />
+
     </div>
   );
 };
