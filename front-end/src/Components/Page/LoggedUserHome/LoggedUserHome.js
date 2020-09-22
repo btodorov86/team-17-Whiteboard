@@ -185,7 +185,9 @@ const LoggedUserHomePage = ({ history, match }) => {
     });
 
     socketRef.current.on("incomingMousePoints", (data) => {
-      const user = sharedUsers.find((x) => x.id === data.userId);
+      console.log(sharedUsers);
+      const user = sharedUsers.find((x) => x.id === data.user);
+      console.log(user);
       if (user) {
         setSharedUsers([
           ...sharedUsers,
@@ -351,7 +353,7 @@ const LoggedUserHomePage = ({ history, match }) => {
     />
   ) : null;
 
-  console.log(currentWhiteboard);
+  // console.log(currentWhiteboard);
 
   return loading ? (
     <Loading />

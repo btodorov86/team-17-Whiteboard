@@ -26,7 +26,7 @@ export class RectangleService {
         if (!whiteboard) {
             throw new NotFoundException();
         }
-        if (userId !== whiteboard.author.id && !whiteboard.invitedUsers.find(x => x.id === userId)) {
+        if (!whiteboard.isPublic && userId !== whiteboard.author.id && !whiteboard.invitedUsers.find(x => x.id === userId)) {
             throw new UnauthorizedException();
         }
 

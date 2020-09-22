@@ -28,9 +28,11 @@ export class TextBoxService {
     if (!whiteboard) {
       throw new NotFoundException();
     }
-    if (userId !== whiteboard.author.id && !whiteboard.invitedUsers.find(x => x.id === userId)) {
-      throw new UnauthorizedException();
-  }
+
+      if (!whiteboard.isPublic && userId !== whiteboard.author.id && !whiteboard.invitedUsers.find(x => x.id === userId)) {
+        throw new UnauthorizedException();
+    }
+
 
   const currentPosition = whiteboard.circles.length + whiteboard.lines.length + whiteboard.rectangles.length + whiteboard.textBoxes.length;
 

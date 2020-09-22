@@ -370,7 +370,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
     return acc
   }, []).sort((a, b) => a.itemPosition - b.itemPosition));
 
-  console.log(shape.lines);
+  // console.log(shape.lines);
   useEffect(() => {
     if (location.pathname.includes('undo')) {
       undo(shapes, history)
@@ -469,7 +469,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
     }
   };
 
-  console.log(isErase);
+  // console.log(isErase);
 
   const mouseMove = (e, x, y) => {
     if (!location.pathname.includes('guest') && shareMouse.isShare) {
