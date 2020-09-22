@@ -250,6 +250,7 @@ const KickUsers = ({
                     fullWidth
                     variant="contained"
                     color="primary"
+                    style={{backgroundColor: "#6fa241"}}
                     onClick={(e) => {
                       setIsKickUsers(false);
                     }}

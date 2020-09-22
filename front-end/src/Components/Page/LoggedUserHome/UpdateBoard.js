@@ -31,6 +31,10 @@ const UpdateBoard = ({
   match,
 }) => {
   const useStyles = makeStyles((theme) => ({
+    notchedOutline: {
+      borderWidth: "1px",
+      borderColor: "#6fa241 !important"
+    },
     modal: {
       display: "flex",
       alignItems: "center",
@@ -189,6 +193,11 @@ const UpdateBoard = ({
                     variant="outlined"
                     required
                     fullWidth
+                    InputProps={{
+                      classes: {
+                        notchedOutline: classes.notchedOutline
+                      }
+                    }}
                     id="updateBoard"
                     label="Update Whiteboard name"
                     autoFocus
@@ -232,6 +241,7 @@ const UpdateBoard = ({
                     fullWidth
                     variant="contained"
                     color="primary"
+                    style={{backgroundColor: "#6fa241"}}
                     className={classes.submit}
                     onClick={(e) => updateBoardFunc()}
                     disabled={!updateBoard.name.isValid || !updateBoard.name.isTouched}
@@ -243,7 +253,7 @@ const UpdateBoard = ({
                     fullWidth
                     variant="contained"
                     color="primary"
-                    onClick={(e) => {
+                    style={{backgroundColor: "#6fa241"}}                    onClick={(e) => {
                       setIsUpdateBoard(false);
                       setUpdateBoard({
                         name: {

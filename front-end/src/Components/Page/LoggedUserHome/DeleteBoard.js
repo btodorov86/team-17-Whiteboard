@@ -55,7 +55,7 @@ const DeleteBoard = ({isDeleteBoard, setIsDeleteBoard, match, history}) => {
         Authorization: localStorage.getItem("token"),
       },
     })
-      .then((r) => r.status >= 500 ? history.push('/servererror') : r.text())
+      .then((r) => r.status >= 500 ? history.push('/servererror') : r.json())
       .then((resp) => {
         isErrorResponse(resp);
         setOpen({
@@ -87,6 +87,7 @@ const DeleteBoard = ({isDeleteBoard, setIsDeleteBoard, match, history}) => {
     fullWidth
     variant="contained"
     color="primary"
+    style={{backgroundColor: "#6fa241"}}
     className={classes.submit}
     onClick={(e) => setShowDeleteButton(false)}
   >
@@ -99,6 +100,7 @@ const DeleteBoard = ({isDeleteBoard, setIsDeleteBoard, match, history}) => {
     fullWidth
     variant="contained"
     color="primary"
+    style={{backgroundColor: "#6fa241"}}
     className={classes.submit}
     onClick={(e) => deleteBoard()}
   >
@@ -109,6 +111,7 @@ const DeleteBoard = ({isDeleteBoard, setIsDeleteBoard, match, history}) => {
     fullWidth
     variant="contained"
     color="primary"
+    style={{backgroundColor: "#6fa241"}}
     onClick={(e) => {
       setIsDeleteBoard(false);
     }}
