@@ -8,6 +8,7 @@ import { Request } from 'express';
 import { ReturnCreatedWhiteboardDTO } from 'src/models/whiteboard/return.created.whiteboard.dto';
 import { SimpleReturnWhiteboardDTO } from 'src/models/whiteboard/simple.return.whiteboard.dto';
 import { UpdateWhiteboardDTO } from 'src/models/whiteboard/update.whiteboard.dto';
+import { ReturnUserDTO } from 'src/models/users/return.user.dto';
 
 
 @Controller('whiteboards')
@@ -18,19 +19,13 @@ export class WhiteBoardController {
         private readonly whiteboardService: WhiteBoardService
     ) {}
 
-    @Get('public')
-    async getAllPublic(): Promise<ReturnWhiteboardDTO[]> {
-
-        return await this.whiteboardService.getAllPublic()
-    }
-
     @UseGuards(AuthGuard('jwt'))
-    @Get('private')
-    async getAllPrivate(
+    @Get()
+    async getAll(
         @Req() req: Request,
     ): Promise<SimpleReturnWhiteboardDTO[]> {
          const user = req.user as User;
-        return await this.whiteboardService.getAllPrivate(user.id)
+        return await this.whiteboardService.getAll(user.id)
     }
 
     @UseGuards(AuthGuard('jwt'))
@@ -41,6 +36,15 @@ export class WhiteBoardController {
         ): Promise<ReturnWhiteboardDTO> {
             const user = req.user as User;
         return await this.whiteboardService.getOne(id, user.id)
+    }
+    @UseGuards(AuthGuard('jwt'))
+    @Get(':id/invited')
+    async getAllInvitedUsers(
+        @Param('id') id: string,
+        @Req() req: Request,
+        ): Promise<ReturnUserDTO[]> {
+            const user = req.user as User;
+        return await this.whiteboardService.getAllInvitedUsers(id, user.id)
     }
     @UseGuards(AuthGuard('jwt'))
     @Post()
@@ -57,7 +61,7 @@ export class WhiteBoardController {
     async delete(
         @Param('id') id: string,
         @Req() req: Request,
-        ): Promise<string> {
+        ): Promise<void> {
             const user = req.user as User;
             console.log(id);
 

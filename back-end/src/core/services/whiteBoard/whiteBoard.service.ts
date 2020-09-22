@@ -8,6 +8,7 @@ import { User } from 'src/models/users/user.entity';
 import { ReturnCreatedWhiteboardDTO } from 'src/models/whiteboard/return.created.whiteboard.dto';
 import { SimpleReturnWhiteboardDTO } from 'src/models/whiteboard/simple.return.whiteboard.dto';
 import { UpdateWhiteboardDTO } from 'src/models/whiteboard/update.whiteboard.dto';
+import { ReturnUserDTO } from 'src/models/users/return.user.dto';
 
 @Injectable()
 export class WhiteBoardService{
@@ -31,40 +32,51 @@ export class WhiteBoardService{
             throw new NotFoundException();
         }
         if (!whiteboard.isPublic) {
-            if (whiteboard.author.id !== userId || whiteboard.invitedUsers.some( x => x.id === userId)) {
+            if (whiteboard.author.id !== userId && !whiteboard.invitedUsers.find( x => x.id === userId)) {
                 throw new UnauthorizedException();
             }
         }
 
         return this.transform.toReturnWhiteboardDto(whiteboard)
     }
-    async getAllPublic(): Promise<ReturnWhiteboardDTO[]> {
-        const whiteboard = await this.whiteboardsRepo.find({
-            where: { isPublic: true, isDeleted: false},
-            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes']
+    async getAllInvitedUsers(id: string, userId: string): Promise<ReturnUserDTO[]> {
+        const whiteboard = await this.whiteboardsRepo.findOne({
+            where: { id: id, isDeleted: false},
+            relations: ['author', 'invitedUsers']
         })
 
-        if(whiteboard.length === 0) {
-
+        if(!whiteboard) {
             throw new NotFoundException();
         }
+        if (!whiteboard.invitedUsers.length) {
+            throw new NotFoundException('Not invited users in this board')
+        }
+        if (whiteboard.author.id !== userId) {
+            throw new UnauthorizedException()
+        }
 
-        return whiteboard.map( board => this.transform.toReturnWhiteboardDto(board))
+        return whiteboard.invitedUsers
     }
-    async getAllPrivate(userId: string): Promise<SimpleReturnWhiteboardDTO[]> {
+    async getAll(userId: string): Promise<SimpleReturnWhiteboardDTO[]> {
 
         const user = await this.usersRepo.findOne({
             where: { id: userId, isDeleted: false},
             relations: ['whiteboards', 'whiteboards.author', 'canUpdate', 'canUpdate.author']
-        })
+        });
+
+        const whiteboard = await this.whiteboardsRepo.find({
+            where: { isPublic: true, isDeleted: false},
+            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes']
+        });
 
         if(!user) {
             throw new NotFoundException();
         }
 
-        const result = [...user.whiteboards, ...user.canUpdate];
+        const result = [...user.whiteboards, ...user.canUpdate].reduce((acc, value) => { return value.isPublic === false && value.isDeleted === false ? [...acc, value] : acc }, []);
 
-        return result.filter( x => x.isPublic === false).map( x => ({
+
+        return [...result, ...whiteboard].map( x => ({
             id: x.id,
             name: x.name,
             isPublic: x.isPublic,
@@ -82,6 +94,14 @@ export class WhiteBoardService{
             throw new NotFoundException();
         }
 
+        const isExistWhiteboard = await this.whiteboardsRepo.findOne({
+            where: { name: name }
+        });
+
+        if(isExistWhiteboard) {
+            throw new HttpException(`Board with name: ${name} already exist`, 404);
+        }
+
         const whiteboard: Whiteboard = await this.whiteboardsRepo.save({
             isPublic,
             name
@@ -91,18 +111,16 @@ export class WhiteBoardService{
 
         return this.transform.toReturnCreatedWhiteboardDto(whiteboard, user)
     }
-    async delete(id: string): Promise<string> {
+    async delete(id: string): Promise<void> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: id, isDeleted: false},
         })
         if(!whiteboard) {
             throw new NotFoundException();
         }
-        console.log(whiteboard);
 
         whiteboard.isDeleted = true;
         await this.whiteboardsRepo.save(whiteboard)
-        return 'Board is deleted'
     }
     async update(id: string, body: UpdateWhiteboardDTO, whiteboardId: string): Promise<SimpleReturnWhiteboardDTO> {
         console.log(id, body);
@@ -149,9 +167,31 @@ export class WhiteBoardService{
         if (whiteboard.invitedUsers.some( x => x.id === invitesUser.id)) {
             throw new HttpException("Already invite in this whiteboard", 400)
         }
-
         whiteboard.invitedUsers.push(invitesUser);
         await this.whiteboardsRepo.save(whiteboard);
+      }
+    public async KickFromBoard(kickedUserName: string, kicksUserName: string, whiteboardId: string): Promise<void> {
+        const kickedUser = await this.usersRepo.findOne({
+          where: { userName: kickedUserName, isDeleted: false }
+        });
+        const kicksUser = await this.usersRepo.findOne({
+          where: { userName: kicksUserName, isDeleted: false }
+        });
+        const whiteboard = await this.whiteboardsRepo.findOne({
+            where: { id: whiteboardId, isDeleted: false },
+            relations: ['invitedUsers', 'author']
+        })
+
+        if (whiteboard.author.id !== kicksUser.id) {
+            throw new UnauthorizedException()
+        }
+        if (!whiteboard.invitedUsers.some( x => x.id === kickedUser.id)) {
+            throw new HttpException(`User: ${kickedUser.userName} not invited`, 400)
+        }
+
+        const result = whiteboard.invitedUsers.filter( x => x.id !== kickedUser.id);
+        whiteboard.invitedUsers = result;
+        await this.whiteboardsRepo.save(whiteboard)
       }
 
 }

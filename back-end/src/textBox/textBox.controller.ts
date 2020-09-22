@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Put, Delete, ValidationPipe, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, Delete, ValidationPipe, UseGuards, Req, Patch } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TextBoxService } from 'src/core/services/textBox/textBox.service';
 import { CreateTextBoxDTO } from 'src/models/textBox/create.textBox.dto';
@@ -41,8 +41,15 @@ export class TextBoxController {
     @Delete(':textBoxId')
     async delete(
         @Param('textBoxId') textBoxId: string,
-        ): Promise<string> {
+        ): Promise<ReturnTextBoxDTO> {
         return this.textBoxService.delete(textBoxId)
+    }
+    @Patch(':textBoxId')
+    async recover(
+        @Param('textBoxId') textBoxId: string,
+        ): Promise<ReturnTextBoxDTO> {
+
+        return this.textBoxService.recover(textBoxId)
     }
 
 }

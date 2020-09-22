@@ -22,19 +22,20 @@ export class LineService {
     async create(whiteboardId: string, body: CreateLineDTO, userId: string): Promise<ReturnLineDTO> {
         const whiteboard = await this.whiteboardsRepo.findOne({
             where: { id: whiteboardId, isDeleted: false},
-            relations: ['lines', 'invitedUsers', 'author']
-        })
-        console.log(whiteboard);
+            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes', 'invitedUsers']
+        });
 
         if (!whiteboard) {
             throw new NotFoundException();
         }
-        if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+        if (userId !== whiteboard.author.id && !whiteboard.invitedUsers.find(x => x.id === userId)) {
             throw new UnauthorizedException();
         }
 
+        const currentPosition = whiteboard.circles.length + whiteboard.lines.length + whiteboard.rectangles.length + whiteboard.textBoxes.length
+
         const newLine = await this.lineRepo.save({
-            itemPosition: whiteboard.lines.length + 1,
+            itemPosition: currentPosition + 1,
             points: body.points,
             stroke: body.stroke,
             strokeWidth: Number(body.strokeWidth),

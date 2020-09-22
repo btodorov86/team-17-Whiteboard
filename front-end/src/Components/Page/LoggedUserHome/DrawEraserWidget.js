@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-const DrawEraserWidget = ({shareHandler, updateShapeProp, color}) => {
+const DrawEraserWidget = ({setIsErase, updateShapeProp, strokeWidth}) => {
   const classes = useStyles();
   const [openWidget, setOpenWidget] = useState(false);
 
@@ -49,10 +49,11 @@ const DrawEraserWidget = ({shareHandler, updateShapeProp, color}) => {
     // { icon: <SaveIcon />, name: 'Save' },
     // { icon: <PrintIcon onClick={(e) => setIsDrawing('circle')} />, name: 'Print' },
     { icon: <KitchenSharpIcon onClick={(e) => {
-      updateShapeProp('line', {
+      setIsErase(true)
+      updateShapeProp('lines', {
       isDrawing: true,
-      strokeWidth: 17,
-    }, true)} } />, name: 'Eraser' },
+      strokeWidth: strokeWidth,
+    }, true, false)} } />, name: 'Eraser' },
   ];
 
   const handleCloseWidget = () => {
@@ -65,30 +66,11 @@ const DrawEraserWidget = ({shareHandler, updateShapeProp, color}) => {
 
   return (
     <div className={classes.root}>
-      {/* <FormControlLabel
-        control={<Switch checked={hidden} onChange={handleHiddenChange} color="primary" />}
-        label="Hidden"
-      />
-      <FormLabel className={classes.radioGroup} component="legend">
-        Direction
-      </FormLabel>
-      <RadioGroup
-        aria-label="direction"
-        name="direction"
-        value={direction}
-        onChange={handleDirectionChange}
-        row
-      >
-        <FormControlLabel value="up" control={<Radio />} label="Up" />
-        <FormControlLabel value="right" control={<Radio />} label="Right" />
-        <FormControlLabel value="down" control={<Radio />} label="Down" />
-        <FormControlLabel value="left" control={<Radio />} label="Left" />
-      </RadioGroup> */}
-      {/* <div className={classes.exampleWrapper}> */}
+
         <SpeedDial
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
-          icon={<KitchenSharpIcon 
+          icon={<KitchenSharpIcon
             style={{
               backgroundColor: '#6fa241',
               width: '100%',

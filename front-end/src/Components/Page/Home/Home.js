@@ -1,14 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import images from "./img11.png";
 import "./home.css";
 import { Modal, makeStyles, Fade } from "@material-ui/core";
 import Login from "../Login/Login";
 import Backdrop from "@material-ui/core/Backdrop";
 import Register from "../Register/Register";
-import { BASE_URL, exceptionStatus, isErrorResponse } from '../../../Constants/Constant';
-import LoadingContext from '../../../Providers/Context/LoadingContext';
-import Loading from '../Loading/Loading';
-import ExceptionContext from '../../../Providers/Context/ExceptionContext';
 
 const Home = ({history}) => {
   const useStyles = makeStyles((theme) => ({
@@ -29,22 +25,6 @@ const Home = ({history}) => {
 
   const [openModal, setOpenModal] = useState(false);
   const [isLoginPage, setIsLoginPage] = useState(true);
-  // const [whiteboards, setWhiteboards] = useState([]);
-  const { loading, setLoading } = useContext(LoadingContext);
-  const { setOpen } = useContext(ExceptionContext);
-
-
-  useEffect(() => {
-    setLoading(true);
-    fetch(`${BASE_URL}/whiteboards/public`)
-    .then( r => r.json())
-    .then( resp => {
-      isErrorResponse(resp);
-      // setWhiteboards(resp)
-    })
-    .catch( err => setOpen({value: true, msg: err.message, statusType: exceptionStatus.error}))
-    .finally(() => setLoading(false))
-  }, [setLoading, setOpen])
 
   const phoneRinging = (
     <div
@@ -71,8 +51,7 @@ const Home = ({history}) => {
 
   return (
     <div>
-      {localStorage.getItem('token') ? history.push(`/profile/${localStorage.getItem('lastBoard') ? localStorage.getItem('lastBoard') : 'myProfile'}`) : null }
-      { loading ? <Loading /> : null}
+      {localStorage.getItem('token') ? history.push(`/profile/${localStorage.getItem('lastBoard') ? localStorage.getItem('lastBoard') : 'my'}`) : null }
       <img
         src={images}
         alt={"home"}

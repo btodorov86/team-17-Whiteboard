@@ -24,12 +24,9 @@ import DrawEraserWidget from './DrawEraserWidget';
 const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMouse, sharedUsers, shareMouseHandler, location, undo, history, redo }) => {
   const { user } = useContext(AuthContext);
   const { setOpen } = useContext(ExceptionContext);
-  // const socketRef = useRef();
-  // const [textInput, setTextInput] = useState({
-  //   isOpen: false,
-  //   top: 200,
-  //   left: 400,
-  // })
+  const [isErase, setIsErase] = useState(false);
+  const [strokeWidth, setStrokeWidth] = useState(1);
+  // const [fontSize, setFontSize] = useState(12);
 
   const [shape, setShape] = useState({
     lines: {
@@ -38,7 +35,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
       startDrawing: false,
       isDrawing: false,
       stroke: "black",
-      strokeWidth: 2,
+      strokeWidth : strokeWidth,
       drawingFunc: (obj) => <Line {...obj} />,
       updateSize: (e, x, y, prev) => {
         if (prev.points.length !== 0) {
@@ -54,17 +51,17 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
               Math.abs(prev.points[prev.points.length - 1] - y) > 5 ||
               Math.abs(prev.points[prev.points.length - 2] - x) > 5
             ) {
-              setShape({
-                ...shape,
-                lines: { ...prev, points: [...prev.points, x, y] },
-              });
+              setShape( pre => ({
+                ...pre,
+                lines: { ...pre.lines, points: [...pre.lines.points, x, y] },
+              }));
             }
           }
         } else {
-          setShape({
-            ...shape,
-            lines: { ...prev, points: [...prev.points, x, y] },
-          });
+          setShape(pre => ({
+            ...pre,
+            lines: { ...pre.lines, points: [...pre.lines.points, x, y] },
+          }));
         }
       },
       endDrawing: (prop) => {
@@ -99,22 +96,15 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
           msg: err.message,
           statusType: exceptionStatus.error,
         }))
-        // setShape((prev) => ({
-        //   ...shape,
-        //   line: {
-        //     ...prev.line,
-        //     startDrawing: false,
-        //     points: [],
-        //   },
-        // }));
       },
-      onStartDrawing: (shapeType, color, x, y) =>
+      onStartDrawing: (shapeType, color, x, y, strokeWidth) =>
         setShape((prev) => ({
           ...prev,
           [shapeType]: {
             ...prev[shapeType],
             startDrawing: true,
             stroke: color,
+            strokeWidth: strokeWidth,
           },
         })),
         clearDrawingObj: () => setShape((prev) => ({
@@ -132,7 +122,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
       isDrawing: false,
       stroke: "black",
       fill: "",
-      strokeWidth: 1,
+      strokeWidth: strokeWidth,
       radius: 0,
       drawingFunc: (obj) => <Circle {...obj} />,
       updateSize: (e, x, y, prev) => {
@@ -183,7 +173,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
         }))
 
       },
-      onStartDrawing: (shapeType, color, x, y) =>
+      onStartDrawing: (shapeType, color, x, y, strokeWidth) =>
         setShape((prev) => ({
           ...prev,
           [shapeType]: {
@@ -194,6 +184,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
             x,
             y,
             radius: 10,
+            strokeWidth,
           },
         })),
         clearDrawingObj: () => setShape((prev) => ({
@@ -244,9 +235,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
         .then( r => r.json())
         .then( resp => {
           isErrorResponse(resp);
-          console.log(shapes.length);
           setShapes((prev) => [...prev, resp]);
-          console.log(shapes.length);
           setShape((prev) => ({
           ...shape,
           rectangles: {
@@ -266,7 +255,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
         }))
 
       },
-      onStartDrawing: (shapeType, color, x, y) =>
+      onStartDrawing: (shapeType, color, x, y, strokeWidth) =>
         setShape((prev) => ({
           ...prev,
           [shapeType]: {
@@ -278,6 +267,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
             y,
             height: 10,
             width: 10,
+            strokeWidth,
           },
         })),
         clearDrawingObj: () => setShape((prev) => ({
@@ -297,7 +287,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
       startDrawing: false,
       isDrawing: false,
       text: "",
-      fontSize: 20,
+      fontSize: 12,
       fontStyle: "normal",
       fill: "black",
       textDecoration: '',
@@ -346,21 +336,22 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
         }))
 
       },
-      onStartDrawing: (shapeType, color, x, y) =>
+      onStartDrawing: (shapeType, color, x, y) => {
+      // console.log(`from onStart ${fontSize}`)
         setShape((prev) => ({
           ...prev,
           [shapeType]: {
             ...prev[shapeType],
             startDrawing: true,
             text: "",
-            fontSize: 40,
+            // fontSize: fontSize,
             fill: color,
             x,
             y,
             // height: 10,
             // width: 10,
           },
-        })),
+        }))},
       clearDrawingObj: () => setShape((prev) => ({
         ...shape,
         textBoxes: {
@@ -377,23 +368,9 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
       return [...acc, ...currentWhiteboard[value]]
     }
     return acc
-  }, []));
+  }, []).sort((a, b) => a.itemPosition - b.itemPosition));
 
-  // const [shapes, setShapes] = useState(
-  //   Object.keys(currentWhiteboard).reduce((acc, value) => {
-  //     if (value === "circle") {
-  //       return [...acc, ...currentWhiteboard[value]];
-  //     }
-  //     return acc;
-  //   }, [])
-  // );
-  const [avatar, setAvatar] = useState("");
-  // const [sharedUsers, setSharedUsers] = useState([]);
-  // const [shareMouse, setShareMouse] = useState({
-  //   isShare: false,
-  //   mouseX: 0,
-  //   mouseY: 0,
-  // });
+  console.log(shape.lines);
   useEffect(() => {
     if (location.pathname.includes('undo')) {
       undo(shapes, history)
@@ -448,12 +425,17 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
   //   });
   // }, []);
 
-  const updateShapeProp = (shapeType, prop, token = false) => {
+  const updateShapeProp = (shapeType, prop, token = false, erase = true) => {
     if (token) {
       Object.keys(shape)
       .filter((y) => y !== shapeType)
       .map((x) => (shape[x].isDrawing = false));
     }
+
+    if (erase) {
+      setIsErase(false)
+    }
+
     setShape(prev => ({
       ...prev,                                    // update funk with setIsDrawing funk
       [shapeType]: {
@@ -461,7 +443,8 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
         ...prop,
         // [prop]: value,
       }
-    }))
+    }));
+
   }
 
   // const shareMouseHandler = (x, y) => {
@@ -474,26 +457,19 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
   //     room: currentWhiteboard.id,
   //   });
   // };
-
   const mouseDown = (e, x, y) => {
     const shapeType = Object.keys(shape).find((x) => shape[x].isDrawing);
     if (shapeType) {
-      shape[shapeType].onStartDrawing(shapeType, color, x, y);
-      // fetch(sgaaeh)
-
-      // setShape({
-      //   ...shape,
-      //   [shapeType]: {
-      //     ...shape[shapeType],
-      //     startDrawing: true,
-      //     stroke: color,
-      //     strokeWidth: stroke1,
-      //     position: shapes.length + 1,
-
-      //   },
-      // });
+      if (shapeType === 'lines' && isErase) {
+        shape[shapeType].onStartDrawing(shapeType, '#fafafa', x, y, strokeWidth);
+      } else {
+        // console.log(fontSize);
+        shape[shapeType].onStartDrawing(shapeType, color, x, y, strokeWidth);
+      }
     }
   };
+
+  console.log(isErase);
 
   const mouseMove = (e, x, y) => {
     if (!location.pathname.includes('guest') && shareMouse.isShare) {
@@ -534,43 +510,8 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
           shape[shapeType].clearDrawingObj();
         }
       }
-
-      // setShape({
-      //   ...shape,
-      //   [shapeType]: {
-      //     ...shape[shapeType],
-      //     startDrawing: false,
-      //     points: [],
-      //   },
-      // });
     }
   };
-
-  // const setIsDrawing = (prop) => {
-  //   Object.keys(shape)
-  //     .filter((y) => y !== prop)
-  //     .map((x) => (shape[x].isDrawing = false));
-  //   setShape({
-  //     ...shape,
-  //     [prop]: {
-  //       ...shape[prop],
-  //       isDrawing: !shape[prop].isDrawing,
-  //     },
-  //   });
-  // };
-
-  // const handleNewUserMessage = (data) =>
-  //   socketRef.current.emit("send-message", {
-  //     message: data,
-  //     room: currentWhiteboard.id,
-  //     avatar: user.avatar,
-  //   });
-
-  // const drawingLine = (obj) => <Line {...obj} />
-
-  console.log(Object.keys(shape).find(
-    (x) => shape[x].isDrawing && shape[x].isDrawing
-  ));
 
   const shareHandler = (e) =>
     setShareMouse({ ...shareMouse, isShare: !shareMouse.isShare });
@@ -580,7 +521,6 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
       (x) => shape[x].isDrawing && shape[x].isDrawing
     );
 
-    console.log(shapeType);
     return shape[shapeType]
       ? shape[shapeType].drawingFunc(shape[shapeType])
       : null;
@@ -600,42 +540,6 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
           {shapes.length !== 0
             ? shapes.map((x) => shape[x.type].drawingFunc(x))
             : null}
-            {/* <Circle position={3}
-            radius={100}
-            stroke="black"
-            fill="red"
-            strokeWidth={5}
-            type="circle"
-            x={372}
-            y={436} /> */}
-            {/* {shape['circle'].drawingFunc({position:3,
-            radius:10,
-            stroke:"black",
-            strokeWidth:5,
-            type:"circle",
-            x:372,
-            y:436},)} */}
-
-          {/* {shapes.length !== 0
-            ? shapes.map((shape) => <Line key={uuid()} {...shape} />)
-            : null} */}
-          {/* <Rect
-            x={300}
-            y={400}
-            height={100}
-            width={100}
-            stroke="black"
-            strokeWidth={5}
-            fill={"red"}
-          />
-          <Text
-            text={"Nice man your are the best"}
-            x={400}
-            y={500}
-            fill={"red"}
-            draggable
-            fontSize={40}
-          /> */}
           {renderSingleDrawingElement()}
         </Layer>
       </Stage>
@@ -647,7 +551,7 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
         display={"inline-block"}
       /> : null } */}
       {/* {currentWhiteboard ? <Chat currentWhiteboard={currentWhiteboard} /> : null} */}
-      <TextBoxKonva shapeTextBoxes={shape.textBoxes} setShapes={setShapes} />
+      <TextBoxKonva shapeTextBoxes={shape.textBoxes} setShapes={setShapes} color={color} />
       {/* <Chat socketRef={socketRef} /> */}
       <div style={{position: 'fixed'}}>
       <DrawExtrasWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
@@ -655,8 +559,8 @@ const DrawingPage = ({ color, currentWhiteboard, match, shareMouse, setShareMous
       <DrawRectangleWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
       <DrawCircleWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
       <DrawBrushWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
-      <DrawPencilWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} color={color} />
-      <DrawEraserWidget shareHandler={shareHandler} updateShapeProp={updateShapeProp} />
+      <DrawPencilWidget setStrokeWidth={setStrokeWidth} updateShapeProp={updateShapeProp} color={color} strokeWidth={strokeWidth} />
+      <DrawEraserWidget setIsErase={setIsErase} updateShapeProp={updateShapeProp} strokeWidth={strokeWidth} />
       </div>
       {!location.pathname.includes('guest') && sharedUsers.length !== 0
         ? sharedUsers.map((user) => (

@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 const ColorPalette = ({color, setColor, match}) => {
 
-    return match.params.id !== 'myProfile' ? (
+    return match.params.id !== 'my' ? (
         <div
       style={{
         position: "absolute",

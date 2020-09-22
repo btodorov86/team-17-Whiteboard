@@ -22,18 +22,20 @@ export class TextBoxService {
   ): Promise<ReturnTextBoxDTO> {
     const whiteboard = await this.whiteboardsRepo.findOne({
       where: { id: whiteboardId, isDeleted: false },
-      relations: ['textBoxes', 'invitedUsers', 'author'],
+      relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes', 'invitedUsers'],
     });
 
     if (!whiteboard) {
       throw new NotFoundException();
     }
-    if (userId !== whiteboard.author.id || whiteboard.invitedUsers.find(x => x.id === userId)) {
+    if (userId !== whiteboard.author.id && !whiteboard.invitedUsers.find(x => x.id === userId)) {
       throw new UnauthorizedException();
   }
 
+  const currentPosition = whiteboard.circles.length + whiteboard.lines.length + whiteboard.rectangles.length + whiteboard.textBoxes.length;
+
     const newTextBox = await this.textBoxRepo.save({
-      itemPosition: whiteboard.textBoxes.length + 1,
+      itemPosition: currentPosition + 1,
       x: body.x,
       y: body.y,
       fill: body.fill,
@@ -78,16 +80,27 @@ export class TextBoxService {
       ...body,
     });
   }
-  async delete(TextBoxId: string): Promise<string> {
-    const TextBox = await this.textBoxRepo.findOne({
-      where: { id: TextBoxId, isDeleted: false },
-    });
-    if (!TextBox) {
-      throw new NotFoundException();
+  async delete(textBoxId: string): Promise<ReturnTextBoxDTO> {
+    const textBox = await this.textBoxRepo.findOne({
+        where: { id: textBoxId, isDeleted: false }
+    })
+    if (!textBox) {
+        throw new NotFoundException();
     }
+    textBox.isDeleted = true;
 
-    TextBox.isDeleted = true;
+    return await this.textBoxRepo.save(textBox);
+}
+async recover(textBoxId: string): Promise<ReturnTextBoxDTO> {
+    const textBox = await this.textBoxRepo.findOne({
+        where: { id: textBoxId, isDeleted: true }
+    });
 
-    return 'item is Deleted';
-  }
+    if (!textBox) {
+        throw new NotFoundException();
+    }
+    textBox.isDeleted = false;
+
+    return await this.textBoxRepo.save(textBox);
+}
 }

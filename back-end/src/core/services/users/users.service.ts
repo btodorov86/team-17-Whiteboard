@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDTO } from 'src/models/users/create.user.dto';
 import { ReturnUserDTO } from 'src/models/users/return.user.dto';
 import { User } from 'src/models/users/user.entity';
@@ -22,18 +26,14 @@ export class UsersService {
   public async all(): Promise<Partial<ReturnUserDTO>[]> {
     const allUsers = await this.usersRepo.find({
       where: { isDeleted: false },
-      relations: [
-        'whiteboards',
-      ],
+      relations: ['whiteboards'],
     });
     return allUsers.map(user => this.transform.toReturnUserDto(user));
   }
   public async getOne(id: string): Promise<Partial<ReturnUserDTO>> {
     const user = await this.usersRepo.findOne({
       where: { id: id, isDeleted: false },
-      relations: [
-        'whiteboards',
-      ],
+      relations: ['whiteboards'],
     });
 
     if (!user) {
@@ -42,7 +42,6 @@ export class UsersService {
     return this.transform.toReturnUserDto(user);
   }
   public async create(user: CreateUserDTO): Promise<Partial<ReturnUserDTO>> {
-
     const newUser: CreateUserDTO = {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -72,7 +71,11 @@ export class UsersService {
 
     return 'User is deleted';
   }
-  public async update(id: string, currentPassword: string, newPassword: string): Promise<ReturnUserDTO> {
+  public async update(
+    id: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<ReturnUserDTO> {
     const user = await this.usersRepo.findOne({
       where: { id: id, isDeleted: false },
     });
@@ -82,9 +85,9 @@ export class UsersService {
         `User with id: ${id} is not found or has been deleted`,
       );
     }
-    const isPasswordValid = bcrypt.compare(currentPassword, user.password)
+    const isPasswordValid = bcrypt.compare(currentPassword, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException("Invalid Password");
+      throw new UnauthorizedException('Invalid Password');
     }
     if (!/^[a-zA-Z0-9]{6,16}$/.test(newPassword)) {
       // throw some exception
@@ -96,25 +99,29 @@ export class UsersService {
       // throw some exception
     }
 
-    user.password = await bcrypt.hash(newPassword, 10)
-
-    ;
+    user.password = await bcrypt.hash(newPassword, 10);
 
     return this.transform.toReturnUserDto(await this.usersRepo.save(user));
   }
 
   public async upload(id: string, filename: string): Promise<ReturnUserDTO> {
-
-    console.log(filename);
-
     const user = await this.usersRepo.findOne({
       where: { id: id, isDeleted: false },
-    })
+    });
 
     user.avatarURL = filename;
 
-    return this.transform.toReturnUserDto(await this.usersRepo.save(user))
+    return this.transform.toReturnUserDto(await this.usersRepo.save(user));
   }
 
-
+  async recoverPassword(email: string, newPassword: string): Promise<User>{
+    const user = await this.usersRepo.findOne({
+      where: {
+        email,
+        isDeleted: false,
+      },
+    });;
+    user.password = await bcrypt.hash(newPassword, 10);
+    return await this.usersRepo.save(user);
   }
+}
