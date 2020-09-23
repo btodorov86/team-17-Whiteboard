@@ -1,6 +1,7 @@
 {
   "name": "front-end",
   "version": "0.1.0",
+  "homepage": "https://btodorov86.github.io/team-17-Whiteboard/",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
