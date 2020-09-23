@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/team-17-Whiteboard/static/css/main.95194710.chunk.css",
+    "main.js": "/team-17-Whiteboard/static/js/main.cf6b51ab.chunk.js",
+    "main.js.map": "/team-17-Whiteboard/static/js/main.cf6b51ab.chunk.js.map",
+    "runtime-main.js": "/team-17-Whiteboard/static/js/runtime-main.4189c402.js",
+    "runtime-main.js.map": "/team-17-Whiteboard/static/js/runtime-main.4189c402.js.map",
+    "static/css/2.29c4d543.chunk.css": "/team-17-Whiteboard/static/css/2.29c4d543.chunk.css",
+    "static/js/2.2a0a00fa.chunk.js": "/team-17-Whiteboard/static/js/2.2a0a00fa.chunk.js",
+    "static/js/2.2a0a00fa.chunk.js.map": "/team-17-Whiteboard/static/js/2.2a0a00fa.chunk.js.map",
+    "index.html": "/team-17-Whiteboard/index.html",
+    "precache-manifest.af3d60c8065454d64297d7118187928a.js": "/team-17-Whiteboard/precache-manifest.af3d60c8065454d64297d7118187928a.js",
+    "service-worker.js": "/team-17-Whiteboard/service-worker.js",
+    "static/css/2.29c4d543.chunk.css.map": "/team-17-Whiteboard/static/css/2.29c4d543.chunk.css.map",
+    "static/css/main.95194710.chunk.css.map": "/team-17-Whiteboard/static/css/main.95194710.chunk.css.map",
+    "static/js/2.2a0a00fa.chunk.js.LICENSE.txt": "/team-17-Whiteboard/static/js/2.2a0a00fa.chunk.js.LICENSE.txt",
+    "static/media/500-internal-server-error.png": "/team-17-Whiteboard/static/media/500-internal-server-error.77f2d328.png",
+    "static/media/earth.PNG": "/team-17-Whiteboard/static/media/earth.8ca3c397.PNG",
+    "static/media/image404.PNG": "/team-17-Whiteboard/static/media/image404.6d200ff6.PNG",
+    "static/media/img11.png": "/team-17-Whiteboard/static/media/img11.d1cf4d8c.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.4189c402.js",
+    "static/css/2.29c4d543.chunk.css",
+    "static/js/2.2a0a00fa.chunk.js",
+    "static/css/main.95194710.chunk.css",
+    "static/js/main.cf6b51ab.chunk.js"
+  ]
+}
