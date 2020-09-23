@@ -74,7 +74,7 @@ export class LineService {
         return this.transformService.toReturnLineDto(returnLine);
 
     }
-    async delete(lineId: string): Promise<string> {
+    async delete(lineId: string): Promise<ReturnLineDTO> {
         const line = await this.lineRepo.findOne({
             where: { id: lineId, isDeleted: false }
         })
@@ -84,7 +84,7 @@ export class LineService {
         line.isDeleted = true;
         await this.lineRepo.save(line);
 
-        return "item is Deleted"
+        return this.transformService.toReturnLineDto(await this.lineRepo.save(line))
     }
     async recover(lineId: string): Promise<ReturnLineDTO> {
         const line = await this.lineRepo.findOne({

@@ -15,9 +15,12 @@ import {
 import "react-chat-widget/lib/styles.css";
 import Test from "./DrawingPage";
 import ColorPalette from './ColorPalette';
+import DrawingPage from './DrawingPage';
 
 const GuestUserHomePage = ({ history }) => {
   const { user, setUser } = useContext(AuthContext);
+  const [shapes, setShapes] = useState([]);
+  const [comments, setComments] = useState([]);
   const useStyles = makeStyles((theme) => ({
     root: {
       display: "flex",
@@ -77,7 +80,14 @@ const GuestUserHomePage = ({ history }) => {
           />
         </Toolbar>
       </AppBar>
-      <Test color={color} currentWhiteboard={currentWhiteboard} />
+      <DrawingPage
+      color={color}
+      currentWhiteboard={currentWhiteboard}
+      shapes={shapes}
+      setShapes={setShapes}
+      comments={comments}
+      setComments={setComments}
+      />
       <ColorPalette color={color} setColor={setColor} />
     </div>
   );

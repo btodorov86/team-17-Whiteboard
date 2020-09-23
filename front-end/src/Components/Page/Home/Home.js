@@ -78,7 +78,11 @@ const Home = ({history}) => {
       }}>
       </button> */}
 
-      <button class="learn-more">Learn More</button>
+      <button class="learn-more" onClick={(e) => {
+          e.preventDefault();
+          setOpenModal(true);
+        }}>Learn More
+        </button>
 
       <Modal
         aria-labelledby="transition-modal-title"

@@ -30,9 +30,9 @@ const SearchWhiteboard = ({ setIsSearchBoard, history, match, leaveRoom }) => {
       },
     })
       .then((r) => (r.status >= 500 ? history.push("/servererror") : r.json()))
-      .then((secondResp) => {
-        isErrorResponse(secondResp);
-        setOptions([...secondResp]);
+      .then((resp) => {
+        isErrorResponse(resp);
+        setOptions([...resp.filter(x => x.id !== match.params.id)]);
       })
       .catch((err) =>
         setOpen({

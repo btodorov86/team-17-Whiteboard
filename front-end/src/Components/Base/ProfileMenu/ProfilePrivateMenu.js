@@ -17,7 +17,31 @@ const ProfilePrivateMenu = ({
   setIsKickUsers,
   setIsShareMouse,
   setIsAddComment,
+  currentWhiteboard,
 }) => {
+
+  const InviteAndKick = (
+  <React.Fragment>
+  <MenuItem
+    onClick={(e) => {
+      setIsInviteUser(true);
+      handleClose();
+    }}
+    style={{ margin: "10px" }}
+  >
+    Invite User
+  </MenuItem>
+    <MenuItem
+    onClick={(e) => {
+      setIsKickUsers(true);
+      handleClose();
+    }}
+    style={{ margin: "10px" }}
+  >
+    Kick User
+  </MenuItem>
+  </React.Fragment>
+  )
 
   return (
     <Menu
@@ -75,26 +99,8 @@ const ProfilePrivateMenu = ({
     >
       Update avatar
     </MenuItem>
-      {/* {toggleUpdateAvatar} */}
       <Divider orientation="horizontal" variant='middle' />
-      <MenuItem
-      onClick={(e) => {
-        setIsInviteUser(true);
-        handleClose();
-      }}
-      style={{ margin: "10px" }}
-    >
-      Invite User
-    </MenuItem>
-      <MenuItem
-      onClick={(e) => {
-        setIsKickUsers(true);
-        handleClose();
-      }}
-      style={{ margin: "10px" }}
-    >
-      Kick User
-    </MenuItem>
+      { currentWhiteboard.isPublic ? null : InviteAndKick }
       <MenuItem
       onClick={(e) => {
         setIsShareMouse(prev => !prev);
@@ -123,12 +129,13 @@ ProfilePrivateMenu.propTypes = {
   handleClose: propTypes.func.isRequired,
   setIsChangePassword: propTypes.func.isRequired,
   setIsCreateWhiteboard: propTypes.func.isRequired,
-  setIsDeleteBoard: propTypes.func.isRequired,  
+  setIsDeleteBoard: propTypes.func.isRequired,
   setIsUpdateBoard: propTypes.func.isRequired,
   setIsChangeAvatar: propTypes.func.isRequired,
   setIsInviteUser: propTypes.func.isRequired,
   setIsKickUsers: propTypes.func.isRequired,
   setIsShareMouse: propTypes.func.isRequired,
+  currentWhiteboard: propTypes.object.isRequired,
 };
 
 export default ProfilePrivateMenu;

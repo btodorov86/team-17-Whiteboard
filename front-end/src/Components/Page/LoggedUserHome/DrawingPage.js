@@ -492,10 +492,12 @@ const DrawingPage = ({
   //   });
   // };
   const mouseDown = (e, x, y) => {
-    if (isAddComment.isActive) {
-      console.log(x, y);
-      setIsAddComment(prev => ({...prev, x, y}))
+    if (!location.pathname.includes('guest')) {
+      if (isAddComment.isActive) {
+        setIsAddComment(prev => ({...prev, x, y}))
+      }
     }
+
     const shapeType = Object.keys(shape).find((x) => shape[x].isDrawing);
     if (shapeType) {
       if (shapeType === 'lines' && isErase) {
@@ -617,8 +619,8 @@ const DrawingPage = ({
             />
           ))
         : null}
-        <CommentInput isAddComment={isAddComment} setComments={setComments} setIsAddComment={setIsAddComment} isDrawShape={isDrawShape} />
-      { comments.length ? comments.map( x => <SingleComment key={x.id} {...x} />) : null }
+        { !location.pathname.includes('guest') ? <CommentInput isAddComment={isAddComment} setComments={setComments} setIsAddComment={setIsAddComment} isDrawShape={isDrawShape} /> : null }
+      { comments.length && !location.pathname.includes('guest') ? comments.map( x => <SingleComment key={x.id} {...x} />) : null }
     </React.Fragment>
   );
 };
@@ -636,7 +638,7 @@ DrawingPage.propTypes = {
   history: propTypes.object.isRequired,
   redo: propTypes.func.isRequired,
   isShareMouse: propTypes.bool.isRequired,
-  
+
 };
 
 export default withRouter(DrawingPage);

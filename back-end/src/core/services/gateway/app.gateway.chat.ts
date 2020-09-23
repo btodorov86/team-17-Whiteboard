@@ -56,6 +56,16 @@ export class AppGatewayChat implements OnGatewayInit{
     console.log(message.room);
     client.broadcast.to(message.room).emit('someOneDrawShape', message)
   }
+  @SubscribeMessage('redo')
+  async redo(client: Socket, message: {room: string, shape: any }): Promise<void> {
+    // console.log(message.room);
+    client.broadcast.to(message.room).emit('someOneRedo', message)
+  }
+  @SubscribeMessage('undo')
+  async undo(client: Socket, message: {room: string, shapeId: string }): Promise<void> {
+    console.log(message.room);
+    client.broadcast.to(message.room).emit('someOneUndo', message)
+  }
   // @SubscribeMessage('update')
   // update(client: Socket, message: { room: string, from: string}): void {
   //   console.log(message);
@@ -99,6 +109,10 @@ export class AppGatewayChat implements OnGatewayInit{
   //   // client.to(message.room).broadcast.emit('joinedToRoom', `${message.userName} has joined`);
   // }
 
+  async youAreAdded(id: string, invitedId: string): Promise<void> {
+    this.wss.emit('addedToBoard', {invitedId: invitedId, boardId: id})
+  }
+
   @SubscribeMessage('invite')
   async invite(client: Socket, message: { whiteboardId: string, from: string, invited: string, whiteboardName: string} ): Promise<void> {
     this.wss.emit('sendInvite', message)
@@ -106,8 +120,9 @@ export class AppGatewayChat implements OnGatewayInit{
   }
   @SubscribeMessage('accept')
   async accept(client: Socket, message: { whiteboardId: string, from: string, invited: string, whiteboardName: string} ): Promise<void> {
-    await this.whiteboardService.inviteToBoard(message.from, message.invited, message.whiteboardId);
+    const boardId = await this.whiteboardService.inviteToBoard(message.from, message.invited, message.whiteboardId);
     this.wss.emit('userAccepted', message);
+    this.wss.emit('addedToBoard', {boardId: boardId, from: message.from, invite: message.invited } )
 
   }
   @SubscribeMessage('kick')
@@ -121,5 +136,6 @@ export class AppGatewayChat implements OnGatewayInit{
     this.wss.emit('userDeclined', message);
 
   }
+
 
 }

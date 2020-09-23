@@ -13,6 +13,7 @@ const ProfileMenu = ({
   setIsChangeAvatar,
   setIsShareMouse,
   location,
+  setIsAddComment,
 }) => {
 
   return (
@@ -63,7 +64,18 @@ const ProfileMenu = ({
     >
       Share mouse
     </MenuItem> : null }
+    <Divider orientation="horizontal" variant='middle' />
+      <MenuItem
+      onClick={(e) => {
+        setIsAddComment(prev => ({...prev, isActive: !prev.isActive}));
+        handleClose();
+      }}
+      style={{ margin: "10px" }}
+    >
+      Add comment
+    </MenuItem>
     </Menu>
+
 
   );
 };
@@ -76,6 +88,7 @@ ProfileMenu.propTypes = {
   setIsChangeAvatar: propTypes.func.isRequired,
   setIsShareMouse: propTypes.func.isRequired,
   location: propTypes.object.isRequired,
+  setIsAddComment: propTypes.func.isRequired,
 };
 
 export default withRouter(ProfileMenu);

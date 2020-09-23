@@ -66,7 +66,7 @@ export class WhiteBoardService{
 
         const whiteboard = await this.whiteboardsRepo.find({
             where: { isPublic: true, isDeleted: false},
-            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes']
+            relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes', 'comments']
         });
 
         if(!user) {
@@ -149,7 +149,7 @@ export class WhiteBoardService{
         return this.transform.toSimpleReturnWhiteboardDto(await this.whiteboardsRepo.save(whiteboard), whiteboard.author)
     }
 
-    public async inviteToBoard(invitedUserName: string, invitesUsername: string, whiteboardId: string): Promise<void> {
+    public async inviteToBoard(invitedUserName: string, invitesUsername: string, whiteboardId: string): Promise<string> {
         const invitedUser = await this.usersRepo.findOne({
           where: { userName: invitedUserName, isDeleted: false }
         });
@@ -168,7 +168,7 @@ export class WhiteBoardService{
             throw new HttpException("Already invite in this whiteboard", 400)
         }
         whiteboard.invitedUsers.push(invitesUser);
-        await this.whiteboardsRepo.save(whiteboard);
+        return (await this.whiteboardsRepo.save(whiteboard)).id
       }
     public async KickFromBoard(kickedUserName: string, kicksUserName: string, whiteboardId: string): Promise<void> {
         const kickedUser = await this.usersRepo.findOne({
@@ -193,5 +193,40 @@ export class WhiteBoardService{
         whiteboard.invitedUsers = result;
         await this.whiteboardsRepo.save(whiteboard)
       }
+
+      // Massive redo !!!!!!
+
+    //   async redo(id: string, userId: string): Promise<any> {
+    //     const whiteboard = await this.whiteboardsRepo.findOne({
+    //         where: { id: id, isDeleted: false},
+    //         relations: ['lines', 'circles', 'rectangles', 'author', 'textBoxes', 'invitedUsers']
+    //     })
+    //     if(!whiteboard) {
+    //         throw new NotFoundException();
+    //     }
+    //     if (!whiteboard.isPublic && userId !== whiteboard.author.id && !whiteboard.invitedUsers.find(x => x.id === userId)) {
+    //         throw new UnauthorizedException();
+    //     }
+
+    //     const filteredLines = whiteboard.lines.filter(x => x.isDeleted === true);
+    //     const filteredCircles = whiteboard.circles.filter(x => x.isDeleted === true);
+    //     const filteredRectangles = whiteboard.rectangles.filter(x => x.isDeleted === true);
+    //     const filteredTextBoxes = whiteboard.textBoxes.filter(x => x.isDeleted === true);
+    //     const result = [...filteredCircles, ...filteredLines, ...filteredRectangles, ...filteredTextBoxes].sort((a, b) => a.itemPosition - b.itemPosition);
+
+    //     if (!result.length) {
+    //         throw new HttpException('Nothing for redo !', 404);
+    //     }
+
+    //     const forReturn = result[0];
+    //     whiteboard[result[0].type].find(x => x.id === result[0].id).isDeleted = false;
+
+    //     // const redoItem = await this.whiteboardsRepo.save(whiteboard);
+
+    //     // need result[0] instance type !!!!!!!!!!
+
+    //     return
+    // }
+
 
 }

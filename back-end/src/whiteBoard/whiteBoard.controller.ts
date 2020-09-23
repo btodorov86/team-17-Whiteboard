@@ -68,7 +68,7 @@ export class WhiteBoardController {
         return await this.whiteboardService.delete(id)
     }
 
-    @UseGuards(AuthGuard('jwt')) // For test !!!!!!!!!!!!!!
+    @UseGuards(AuthGuard('jwt'))
     @Put(':id')
     async update(
         @Req() req: Request,
@@ -78,6 +78,18 @@ export class WhiteBoardController {
             const user = req.user as User;
         return await this.whiteboardService.update(user.id, body, whiteboardId)
     }
+
+    // Massive redo
+
+    // @UseGuards(AuthGuard('jwt')) // For test !!!!!!!!!!!!!!
+    // @Delete(':id/redo')
+    // async redo(
+    //     @Req() req: Request,
+    //     @Param('id') whiteboardId: string,
+    //     ): Promise<any> {
+    //         const user = req.user as User;
+    //     return await this.whiteboardService.redo(whiteboardId, user.id)
+    // }
 
 
 }

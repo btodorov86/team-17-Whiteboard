@@ -41,7 +41,7 @@ export class LinesController {
     @Delete(':lineId')
     async delete(
         @Param('lineId') lineId: string,
-        ): Promise<string> {
+        ): Promise<ReturnLineDTO> {
         return this.lineService.delete(lineId)
     }
     @Patch(':lineId')

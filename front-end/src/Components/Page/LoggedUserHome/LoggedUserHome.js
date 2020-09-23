@@ -186,6 +186,19 @@ const LoggedUserHomePage = ({ history, match }) => {
     }
 
     });
+    socketRef.current.on('addedToBoard', (data) => {
+      if (data.invite === user.userName) {
+        history.push(`${data.boardId}`)
+      }
+    })
+    socketRef.current.on("someOneRedo", (data) => {
+      console.log(data);
+      setShapes(prev => [...prev, data.shape])
+    });
+    socketRef.current.on("someOneUndo", (data) => {
+      console.log(data);
+      setShapes(prev => [...prev.filter(x => x.id !== data.shapeId)])
+    });
     socketRef.current.on("userAccepted", (data) =>
       data.from === user.userName
         ? setOpen({
@@ -224,7 +237,7 @@ const LoggedUserHomePage = ({ history, match }) => {
           msg: `You are kick from Whiteboard: ${data.whiteboardName} !`,
           statusType: exceptionStatus.warning,
         });
-        history.push("my");
+        return match.params.id === data.whiteboardId ? history.goBack() : null
       }
     });
 
@@ -255,7 +268,7 @@ const LoggedUserHomePage = ({ history, match }) => {
     });
   }, [match.params.id]);
 
-  const undo = (shapes, history) => {
+  const undo = (shapes) => {
     // da se popravi proverkata
     if (!shapes.length) {
       return;
@@ -270,13 +283,15 @@ const LoggedUserHomePage = ({ history, match }) => {
         },
       }
     )
-      .then((r) => r.text())
+      .then((r) => r.json())
       .then((resp) => {
         isErrorResponse(resp);
         setShapeHistory((prev) => [
           ...prev,
           { id: lastShape.id, type: lastShape.type },
         ]);
+        console.log(resp);
+        socketRef.current.emit('undo', {room: match.params.id, shapeId: resp.id });
       })
       .catch((err) =>
         setOpen({
@@ -285,10 +300,10 @@ const LoggedUserHomePage = ({ history, match }) => {
           statusType: exceptionStatus.error,
         })
       )
-      .finally(() => history.push(`/profile/${currentWhiteboard.id}`));
+      // .finally(() => history.push(`/profile/${currentWhiteboard.id}`));
   };
 
-  const redo = (setShapes, history) => {
+  const redo = (setShapes) => {
     const lastShape = shapeHistory.pop();
     fetch(
       `${BASE_URL}/whiteboards/${currentWhiteboard.id}/${lastShape.type}/${lastShape.id}`,
@@ -304,6 +319,7 @@ const LoggedUserHomePage = ({ history, match }) => {
         isErrorResponse(resp);
         setShapeHistory((prev) => [...prev]);
         setShapes((prev) => [...prev, resp]);
+        socketRef.current.emit('redo', {room: match.params.id, shape: resp})
       })
       .catch((err) =>
         setOpen({
@@ -312,7 +328,7 @@ const LoggedUserHomePage = ({ history, match }) => {
           statusType: exceptionStatus.error,
         })
       )
-      .finally(() => history.push(`/profile/${currentWhiteboard.id}`));
+      // .finally(() => history.push(`/profile/${currentWhiteboard.id}`));
   };
 
   const leaveRoom = (room) => {
@@ -333,7 +349,6 @@ const LoggedUserHomePage = ({ history, match }) => {
 
   const accept = () => {
     socketRef.current = io("http://localhost:3000/chat");
-
     socketRef.current.emit("accept", isIncomingInvite.data);
   };
 
@@ -392,7 +407,7 @@ const LoggedUserHomePage = ({ history, match }) => {
 
   const showDrawingPage = currentWhiteboard ? (
     <DrawingPage
-      style={{alignSelf: 'flex-start'}}
+      // style={{alignSelf: 'flex-start'}}
       color={color}
       currentWhiteboard={currentWhiteboard}
       sharedUsers={sharedUsers}
@@ -489,6 +504,7 @@ const LoggedUserHomePage = ({ history, match }) => {
               setIsInviteUser={setIsInviteUser}
               setIsShareMouse={setIsShareMouse}
               currentWhiteboard={currentWhiteboard}
+              setIsAddComment={setIsAddComment}
             />
           )}
 
@@ -497,7 +513,7 @@ const LoggedUserHomePage = ({ history, match }) => {
               <Before
                 onClick={(e) => {
                   e.preventDefault();
-                  history.push(`${currentWhiteboard.id}/undo`);
+                  return shapes.length ? undo(shapes) : null
                 }}
               />
             </IconButton>
@@ -546,7 +562,7 @@ const LoggedUserHomePage = ({ history, match }) => {
                   e.preventDefault();
                   return shapeHistory.length === 0
                     ? null
-                    : history.push(`${currentWhiteboard.id}/redo`);
+                    : redo(setShapes);
                 }}
               />
             </IconButton>
